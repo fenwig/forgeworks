@@ -120,6 +120,9 @@
   .bp-pill.pasl.suf{background:rgba(204,136,0,0.12);box-shadow:0 0 0 1px rgba(204,136,0,0.4);}
   .asl-note{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--tmi-warning);margin-left:4px;}
   .tracker-empty{padding:30px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);letter-spacing:1px;}
+  .tracked-badge{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--tmi-gold);border:1px solid var(--tmi-border);background:var(--tmi-gold-glow);padding:2px 9px;}
+  .order-pill{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--tmi-steel);border:1px solid rgba(138,154,170,0.35);background:rgba(138,154,170,0.08);padding:2px 9px;clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);white-space:nowrap;}
+  .order-pill.ready{border-color:rgba(90,153,85,0.5);color:var(--tmi-success);background:rgba(90,153,85,0.12);}
 
   /* ── VIEW C: MATERIAL NEEDS ── */
   .needs-bar{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:10px 18px;display:flex;align-items:center;gap:10px;}
@@ -249,9 +252,8 @@
 <div class="view" id="view-tracker">
   <div class="tracker-bar">
     <div class="tracker-legend">
-      <div class="legend-item"><div class="legend-dot" style="background:var(--tmi-gold)"></div><span style="font-size:9px;color:var(--tmi-text-dim)">Personal</span></div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--tmi-steel)"></div><span style="font-size:9px;color:var(--tmi-text-dim)">Order ★</span></div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--tmi-gold)"></div><div class="legend-dot" style="background:var(--tmi-steel);margin-left:-4px"></div><span style="font-size:9px;color:var(--tmi-text-dim)">Both</span></div>
+      <div class="legend-item"><span class="tracked-badge">★ TRACKED</span><span style="font-size:12px;color:var(--tmi-text-dim);margin-left:6px">Personal — shows 700/800/900 readiness</span></div>
+      <div class="legend-item"><span class="order-pill">800 ORDER</span><span class="order-pill ready" style="margin-left:6px">800 ORDER ✓</span><span style="font-size:12px;color:var(--tmi-text-dim);margin-left:6px">Order tier — green when materials ready</span></div>
     </div>
   </div>
   <div class="tracker-list" id="tracker-list"></div>
@@ -512,32 +514,53 @@ function renderTracker(){
   if(!tracked.length){list.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
 
+  const allOrders=readActiveOrders();
+
   list.innerHTML=tracked.map(bp=>{
     const t=tracking[bp.id];
     const isExp=expandedTracker.has(bp.id);
-    const label=bp.slot?`${bp.base} ${bp.slot}`:bp.base;
-    const sub=bp.slot?`${bp.category||bp.type} · ${bp.slot}`:(bp.weapon_type||bp.type);
-    const bpOrders=readActiveOrders().filter(o=>o.bpId===bp.id);
-    const orderTotal=bpOrders.reduce((s,o)=>s+o.qty,0);
-    const qty=Math.max(1,(t.personal?1:0)+(t.order?orderTotal:0));
-    const{r700,r800,r900}=checkReady(bp,qty);
+
+    // Same label/tag logic as browser
+    const label=bp.type==='Weapon'?`${bp.base}${bp.weapon_type?' '+bp.weapon_type:''}`:
+                bp.type==='Ammunition'?`${bp.base}${bp.ammo_type?' '+bp.ammo_type:''}`:
+                bp.slot?`${bp.base} ${bp.slot}`:bp.base;
+    const tags=[];
+    if(bp.type==='Armor'){if(bp.finish)tags.push(bp.finish);if(bp.category)tags.push(bp.category);}
+    if(bp.type==='Weapon'&&bp.finish) tags.push(bp.finish);
+    if(bp.type==='Ammunition'&&bp.capacity) tags.push('×'+bp.capacity);
+
+    // Personal readiness — qty=1, all three bands
+    const{r700,r800,r900}=t.personal?checkReady(bp,1):{r700:false,r800:false,r900:false};
+
+    // Order pills — group active orders by quality band
+    const bpOrders=allOrders.filter(o=>o.bpId===bp.id);
+    const qualGroups={};
+    bpOrders.forEach(o=>{qualGroups[o.quality]=(qualGroups[o.quality]||0)+o.qty;});
+    const orderPills=Object.entries(qualGroups).map(([qual,qty])=>{
+      const ready=checkReady(bp,qty)['r'+qual];
+      return`<span class="order-pill${ready?' ready':''}">${qual}${qty>1?' ×'+qty:''} ORDER${ready?' ✓':''}</span>`;
+    }).join('');
+
     const borderClass=t.personal&&t.order?'has-both':t.order?'has-order':'';
-    const star=t.order?`<span class="order-star">★${orderTotal>1?' ×'+orderTotal:''}</span>`:'';
-    return`<div>
-      <div class="tracker-row ${borderClass}" onclick="toggleExpTracker(${bp.id})">
-        <span class="bp-name" style="font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--tmi-text-primary);min-width:160px;">${label}${star}</span>
-        <span class="tracker-sub">${sub.toUpperCase()} · ${t.personal&&t.order?'TRACKED + ORDER':t.order?'ORDER':'TRACKED'}</span>
-        <div class="readiness">
-          <span class="rb r700${r700?' on':''}">${r700?'700 ✓':'700'}</span>
-          <span class="rb r800${r800?' on':''}">${r800?'800 ✓':'800'}</span>
-          <span class="rb r900${r900?' on':''}">${r900?'900 ✓':'900'}</span>
+    const detailQty=Math.max(1,(t.personal?1:0)+(bpOrders.reduce((s,o)=>s+o.qty,0)));
+
+    return`<div class="bp-card ${borderClass}">
+      <div class="bp-card-header" onclick="toggleExpTracker(${bp.id})">
+        <span class="bp-name">${label}</span>
+        ${tags.map(tag=>`<span class="bp-tag">${tag}</span>`).join('')}
+        ${bp.has_mission?'<span class="bp-mission">MISSION</span>':''}
+        <div class="bp-actions" onclick="event.stopPropagation()">
+          ${t.personal?'<span class="tracked-badge">★ TRACKED</span>':''}
+          ${t.personal?`<span class="rb r700${r700?' on':''}">${r700?'700 ✓':'700'}</span><span class="rb r800${r800?' on':''}">${r800?'800 ✓':'800'}</span><span class="rb r900${r900?' on':''}">${r900?'900 ✓':'900'}</span>`:''}
+          ${orderPills}
+          ${t.personal?`<button class="untrack-x" onclick="event.stopPropagation();untrack(${bp.id})" title="Remove tracked">✕</button>`:''}
         </div>
-        ${t.personal?`<button class="untrack-x" onclick="event.stopPropagation();untrack(${bp.id})" title="Remove tracked">✕</button>`:''}
+        <span class="expand-arrow">${isExp?'▲':'▼'}</span>
       </div>
       <div class="tracker-detail${isExp?' open':''}">
         ${bp.ingredients.map(ing=>{
           const isAsl=ing.name==='aslarite';
-          const need=ing.qty*qty;
+          const need=ing.qty*detailQty;
           if(isAsl){
             const b=getBands('aslarite');
             const suf=b.total500plus>=need;
