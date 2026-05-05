@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600&display=swap');
+  :root{
+    --tmi-bg-deep:#0a0804;--tmi-bg-panel:#0f0d09;--tmi-bg-card:#141109;--tmi-bg-hover:#1a1610;
+    --tmi-gold:#c8a84b;--tmi-gold-bright:#e8c96a;--tmi-gold-dim:#8a7030;--tmi-gold-dark:#5a4a20;
+    --tmi-gold-glow:rgba(200,168,75,0.12);
+    --tmi-text-primary:#d4cbb8;--tmi-text-secondary:#7a7060;--tmi-text-dim:#3d3828;
+    --tmi-border:rgba(200,168,75,0.25);--tmi-border-dim:rgba(200,168,75,0.1);
+    --tmi-danger:#cc3333;--tmi-success:#5a9955;--tmi-warning:#cc8800;--tmi-steel:#8a9aaa;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--tmi-bg-deep);color:var(--tmi-text-primary);font-family:'Exo 2',sans-serif;}
+
+  /* HEADER */
+  .mod-header{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;}
+  .mod-eyebrow{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--tmi-gold-dim);text-transform:uppercase;margin-bottom:2px;}
+  .mod-title{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
+
+  /* TABS */
+  .tab-bar{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border);display:flex;}
+  .tab{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:10px 18px;cursor:pointer;color:var(--tmi-text-secondary);border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap;}
+  .tab:hover{color:var(--tmi-text-primary);}
+  .tab.active{color:var(--tmi-gold);border-bottom-color:var(--tmi-gold);}
+  .tab-count{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--tmi-gold-dim);background:var(--tmi-gold-glow);border:1px solid var(--tmi-border-dim);padding:1px 6px;margin-left:6px;}
+  .view{display:none;}
+  .view.active{display:block;}
+
+  /* SHARED */
+  .form-select{background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);color:var(--tmi-text-primary);font-family:'Share Tech Mono',monospace;font-size:11px;padding:6px 10px;outline:none;transition:border-color 0.15s;}
+  .form-select:focus{border-color:var(--tmi-border);}
+  .form-select option{background:var(--tmi-bg-panel);}
+  .filter-btn{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:1px;color:var(--tmi-text-secondary);background:transparent;border:1px solid var(--tmi-border-dim);padding:5px 12px;cursor:pointer;text-transform:uppercase;transition:all 0.15s;clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);white-space:nowrap;}
+  .filter-btn:hover{border-color:var(--tmi-border);color:var(--tmi-text-primary);}
+  .filter-btn.active{background:var(--tmi-gold-glow);border-color:var(--tmi-gold);color:var(--tmi-gold);}
+
+  /* ── VIEW A: BROWSER ── */
+  .browser-bar{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:10px 18px;display:flex;gap:10px;align-items:center;}
+  .search-input{flex:1;background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);color:var(--tmi-text-primary);font-family:'Share Tech Mono',monospace;font-size:12px;padding:7px 12px;outline:none;transition:border-color 0.15s;}
+  .search-input:focus{border-color:var(--tmi-border);}
+  .search-input::placeholder{color:var(--tmi-text-dim);}
+
+  .bp-list{padding:10px 18px;display:flex;flex-direction:column;gap:6px;}
+  .bp-card{background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);border-left:2px solid var(--tmi-gold-dark);transition:all 0.15s;}
+  .bp-card:hover{border-left-color:var(--tmi-gold);background:var(--tmi-bg-hover);}
+  .bp-card.owned{border-left-color:var(--tmi-success);}
+  .bp-card-header{padding:9px 14px;display:flex;align-items:center;gap:8px;cursor:pointer;}
+  .bp-name{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;color:var(--tmi-text-primary);text-transform:uppercase;}
+  .bp-tag{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:1px;padding:2px 7px;border:1px solid var(--tmi-border-dim);color:var(--tmi-text-secondary);}
+  .bp-mission{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--tmi-warning);border:1px solid rgba(204,136,0,0.3);background:rgba(204,136,0,0.08);padding:2px 6px;}
+  .bp-actions{margin-left:auto;display:flex;gap:5px;align-items:center;}
+  .own-btn{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:1px;padding:3px 8px;cursor:pointer;text-transform:uppercase;transition:all 0.15s;border:1px solid var(--tmi-border-dim);color:var(--tmi-text-dim);background:transparent;}
+  .own-btn:hover{border-color:rgba(90,153,85,0.4);color:var(--tmi-success);}
+  .own-btn.owned{border-color:rgba(90,153,85,0.5);color:var(--tmi-success);background:rgba(90,153,85,0.1);}
+  .track-btn{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:1px;padding:3px 8px;cursor:pointer;text-transform:uppercase;transition:all 0.15s;border:1px solid var(--tmi-border-dim);color:var(--tmi-text-dim);background:transparent;}
+  .track-btn:hover{border-color:var(--tmi-border);color:var(--tmi-gold);}
+  .track-btn.tracked{border-color:var(--tmi-border);color:var(--tmi-gold);background:var(--tmi-gold-glow);}
+  .expand-arrow{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--tmi-text-dim);margin-left:2px;}
+  .bp-ingredients{display:none;padding:0 14px 10px;border-top:1px solid var(--tmi-border-dim);}
+  .bp-ingredients.open{display:block;}
+  .ing-title{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;padding:7px 0 5px;}
+  .ing-row{display:flex;align-items:center;gap:10px;padding:2px 0;}
+  .ing-name{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:capitalize;min-width:100px;color:var(--tmi-text-primary);}
+  .ing-gem{font-family:'Share Tech Mono',monospace;font-size:7px;color:var(--tmi-success);border:1px solid rgba(90,153,85,0.3);padding:1px 4px;margin-left:3px;}
+  .ing-asl{font-family:'Share Tech Mono',monospace;font-size:7px;color:var(--tmi-warning);border:1px solid rgba(204,136,0,0.3);padding:1px 4px;margin-left:3px;}
+  .ing-qty{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-text-secondary);}
+  .no-results{padding:30px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-text-dim);letter-spacing:1px;}
+
+  /* ── VIEW B: TRACKER ── */
+  .tracker-bar{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:8px 18px;display:flex;align-items:center;gap:8px;}
+  .tracker-legend{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--tmi-text-dim);letter-spacing:1px;margin-left:auto;display:flex;align-items:center;gap:12px;}
+  .legend-item{display:flex;align-items:center;gap:5px;}
+  .legend-dot{width:6px;height:6px;}
+
+  .tracker-list{padding:10px 18px;display:flex;flex-direction:column;gap:4px;}
+  .tracker-row{background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);border-left:2px solid var(--tmi-gold-dark);display:flex;align-items:center;gap:10px;padding:8px 14px;cursor:pointer;transition:all 0.15s;}
+  .tracker-row:hover{background:var(--tmi-bg-hover);border-left-color:var(--tmi-gold);}
+  .tracker-row.has-order{border-left-color:var(--tmi-steel);}
+  .tracker-row.has-both{border-left-color:var(--tmi-gold);}
+  .tracker-bp-name{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--tmi-text-primary);min-width:160px;}
+  .tracker-sub{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--tmi-text-dim);flex:1;}
+  .order-star{color:var(--tmi-steel);font-size:11px;margin-left:2px;}
+  .personal-dot{width:6px;height:6px;background:var(--tmi-gold);display:inline-block;margin-right:4px;}
+  .readiness{display:flex;gap:5px;align-items:center;}
+  .rb{font-family:'Share Tech Mono',monospace;font-size:9px;padding:2px 8px;border:1px solid;clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);}
+  .rb.r700{border-color:var(--tmi-gold-dark);color:var(--tmi-gold-dim);background:rgba(138,112,48,0.1);}
+  .rb.r700.on{border-color:rgba(138,112,48,0.7);color:var(--tmi-gold-dim);background:rgba(138,112,48,0.2);}
+  .rb.r800{border-color:var(--tmi-border-dim);color:var(--tmi-text-dim);}
+  .rb.r800.on{border-color:rgba(200,168,75,0.5);color:var(--tmi-gold);background:rgba(200,168,75,0.12);}
+  .rb.r900{border-color:var(--tmi-border-dim);color:var(--tmi-text-dim);}
+  .rb.r900.on{border-color:rgba(232,201,106,0.5);color:var(--tmi-gold-bright);background:rgba(232,201,106,0.12);}
+  .untrack-x{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--tmi-text-dim);background:none;border:none;cursor:pointer;padding:2px 5px;transition:color 0.15s;margin-left:4px;}
+  .untrack-x:hover{color:var(--tmi-danger);}
+
+  /* EXPANDED DETAIL */
+  .tracker-detail{display:none;background:var(--tmi-bg-panel);border:1px solid var(--tmi-border-dim);border-top:none;margin-top:-4px;margin-bottom:4px;padding:10px 14px;}
+  .tracker-detail.open{display:block;}
+  .detail-ing-row{display:flex;align-items:center;gap:12px;padding:5px 0;border-bottom:1px solid var(--tmi-border-dim);}
+  .detail-ing-row:last-child{border-bottom:none;}
+  .detail-ing-name{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:capitalize;min-width:110px;color:var(--tmi-text-primary);}
+  .detail-needed{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--tmi-text-dim);min-width:70px;}
+  .band-pills{display:flex;gap:6px;}
+  .bp-pill{font-family:'Share Tech Mono',monospace;font-size:9px;padding:2px 8px;border:1px solid;}
+  .bp-pill.p700{border-color:var(--tmi-gold-dark);color:var(--tmi-gold-dim);}
+  .bp-pill.p700.suf{background:rgba(138,112,48,0.2);box-shadow:0 0 0 1px var(--tmi-gold-dark);}
+  .bp-pill.p800{border-color:var(--tmi-border-dim);color:var(--tmi-text-dim);}
+  .bp-pill.p800.suf{border-color:rgba(200,168,75,0.5);color:var(--tmi-gold);background:rgba(200,168,75,0.1);box-shadow:0 0 0 1px rgba(200,168,75,0.4);}
+  .bp-pill.p900{border-color:var(--tmi-border-dim);color:var(--tmi-text-dim);}
+  .bp-pill.p900.suf{border-color:rgba(232,201,106,0.5);color:var(--tmi-gold-bright);background:rgba(232,201,106,0.1);box-shadow:0 0 0 1px rgba(232,201,106,0.4);}
+  .bp-pill.pasl{border-color:rgba(204,136,0,0.35);color:var(--tmi-warning);}
+  .bp-pill.pasl.suf{background:rgba(204,136,0,0.12);box-shadow:0 0 0 1px rgba(204,136,0,0.4);}
+  .asl-note{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--tmi-warning);margin-left:4px;}
+  .tracker-empty{padding:30px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-text-dim);letter-spacing:1px;}
+
+  /* ── VIEW C: MATERIAL NEEDS ── */
+  .needs-bar{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:10px 18px;display:flex;align-items:center;gap:10px;}
+  .needs-label{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;}
+  .needs-info{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--tmi-text-dim);margin-left:auto;letter-spacing:1px;}
+  .needs-info span{color:var(--tmi-text-secondary);}
+
+  .needs-table-wrap{padding:12px 18px;}
+  table{width:100%;border-collapse:collapse;}
+  thead tr{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border);}
+  th{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;padding:8px 14px;text-align:left;}
+  th.band{text-align:center;}
+  tbody tr{border-bottom:1px solid var(--tmi-border-dim);transition:background 0.1s;}
+  tbody tr:hover{background:var(--tmi-bg-hover);}
+  td{padding:8px 14px;font-size:12px;vertical-align:middle;}
+  td.band-cell{text-align:center;}
+  .ore-cell{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;text-transform:capitalize;color:var(--tmi-text-primary);}
+  .need-cell{font-family:'Share Tech Mono',monospace;font-size:10px;}
+  .need-ok{color:var(--tmi-success);}
+  .need-short{color:var(--tmi-danger);}
+  .need-zero{color:var(--tmi-text-dim);}
+  .need-asl{color:var(--tmi-warning);}
+  .needs-empty{padding:30px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-text-dim);letter-spacing:1px;}
+  .th-700{color:var(--tmi-gold-dim);}
+  .th-800{color:var(--tmi-gold);}
+  .th-900{color:var(--tmi-gold-bright);}
+</style>
+</head>
+<body>
+<h2 class="sr-only">FORGE-X Blueprint Database — browser, crafting tracker, and material needs</h2>
+
+<div class="mod-header">
+  <div>
+    <div class="mod-eyebrow">Module 04</div>
+    <div class="mod-title">Blueprint Database</div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <div class="tab active" onclick="switchTab('browser')">Blueprint Browser <span class="tab-count" id="tc-browser">0</span></div>
+  <div class="tab" onclick="switchTab('tracker')">Crafting Tracker <span class="tab-count" id="tc-tracker">0</span></div>
+  <div class="tab" onclick="switchTab('needs')">Material Needs <span class="tab-count" id="tc-needs">0</span></div>
+</div>
+
+<!-- VIEW A -->
+<div class="view active" id="view-browser">
+  <div class="browser-bar">
+    <input class="search-input" id="search-input" placeholder="Search blueprints by name..." oninput="renderBrowser()">
+    <button class="filter-btn active" id="owned-filter" onclick="toggleOwnedFilter()">All Blueprints</button>
+  </div>
+  <div class="bp-list" id="bp-list"></div>
+  <div class="no-results" id="no-results" style="display:none">NO BLUEPRINTS MATCH YOUR SEARCH</div>
+</div>
+
+<!-- VIEW B -->
+<div class="view" id="view-tracker">
+  <div class="tracker-bar">
+    <div class="tracker-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--tmi-gold)"></div><span style="font-size:9px;color:var(--tmi-text-dim)">Personal</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--tmi-steel)"></div><span style="font-size:9px;color:var(--tmi-text-dim)">Order ★</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--tmi-gold)"></div><div class="legend-dot" style="background:var(--tmi-steel);margin-left:-4px"></div><span style="font-size:9px;color:var(--tmi-text-dim)">Both</span></div>
+    </div>
+  </div>
+  <div class="tracker-list" id="tracker-list"></div>
+  <div class="tracker-empty" id="tracker-empty" style="display:none">NO BLUEPRINTS TRACKED — USE THE BROWSER TAB TO ADD</div>
+</div>
+
+<!-- VIEW C -->
+<div class="view" id="view-needs">
+  <div class="needs-bar">
+    <span class="needs-label">Target Band</span>
+    <button class="filter-btn" id="nb-all" onclick="setNeedsBand('all',this)">All</button>
+    <button class="filter-btn active" id="nb-700" onclick="setNeedsBand('700',this)">700+</button>
+    <button class="filter-btn" id="nb-800" onclick="setNeedsBand('800',this)">800+</button>
+    <button class="filter-btn" id="nb-900" onclick="setNeedsBand('900',this)">900+</button>
+    <span class="needs-info">Aggregated across <span id="needs-bp-count">0</span> tracked blueprints</span>
+  </div>
+  <div class="needs-table-wrap">
+    <table id="needs-table" style="display:none">
+      <thead>
+        <tr>
+          <th>Ore / Material</th>
+          <th class="band th-700" id="th-700">700–799 cSCU</th>
+          <th class="band th-800" id="th-800">800–899 cSCU</th>
+          <th class="band th-900" id="th-900">900–1000 cSCU</th>
+        </tr>
+      </thead>
+      <tbody id="needs-body"></tbody>
+    </table>
+    <div class="needs-empty" id="needs-empty">NO BLUEPRINTS TRACKED</div>
+  </div>
+</div>
+
+<script>
+const GEM_NAMES=new Set(['hadanite','janalite','dolvine','aphorite','sadaryx','carinite','beradom','jaclium','saldynium','feynmaline','glacosite']);
+
+const blueprints=[
+  {id:1,base:'Aztalan',slot:'Helmet',type:'Armor',category:'Combat',weapon_type:null,ammo_type:null,capacity:null,has_mission:false,ingredients:[{name:'aslarite',qty:6},{name:'lindinium',qty:4},{name:'taranite',qty:3}]},
+  {id:2,base:'Aztalan',slot:'Core',type:'Armor',category:'Combat',weapon_type:null,ammo_type:null,capacity:null,has_mission:false,ingredients:[{name:'aslarite',qty:12},{name:'lindinium',qty:8},{name:'taranite',qty:6}]},
+  {id:3,base:'Aztalan',slot:'Legs',type:'Armor',category:'Combat',weapon_type:null,ammo_type:null,capacity:null,has_mission:false,ingredients:[{name:'aslarite',qty:10},{name:'lindinium',qty:6},{name:'taranite',qty:5}]},
+  {id:4,base:'Aztalan',slot:'Arms',type:'Armor',category:'Combat',weapon_type:null,ammo_type:null,capacity:null,has_mission:false,ingredients:[{name:'aslarite',qty:8},{name:'lindinium',qty:5},{name:'taranite',qty:4}]},
+  {id:5,base:'Corbel',slot:'Helmet',type:'Armor',category:'Combat',weapon_type:null,ammo_type:null,capacity:null,has_mission:true,ingredients:[{name:'laranite',qty:5},{name:'titanium',qty:6},{name:'aslarite',qty:4}]},
+  {id:6,base:'Corbel',slot:'Core',type:'Armor',category:'Combat',weapon_type:null,ammo_type:null,capacity:null,has_mission:true,ingredients:[{name:'laranite',qty:10},{name:'titanium',qty:12},{name:'aslarite',qty:8}]},
+  {id:7,base:'Corbel',slot:'Legs',type:'Armor',category:'Combat',weapon_type:null,ammo_type:null,capacity:null,has_mission:true,ingredients:[{name:'laranite',qty:8},{name:'titanium',qty:10},{name:'aslarite',qty:6}]},
+  {id:8,base:'Corbel',slot:'Arms',type:'Armor',category:'Combat',weapon_type:null,ammo_type:null,capacity:null,has_mission:true,ingredients:[{name:'laranite',qty:6},{name:'titanium',qty:8},{name:'aslarite',qty:5}]},
+  {id:9,base:'Demeco',slot:null,type:'Weapon',category:null,weapon_type:'LMG',ammo_type:'Battery',capacity:100,has_mission:false,ingredients:[{name:'corundum',qty:14},{name:'copper',qty:10},{name:'hadanite',qty:5}]},
+  {id:10,base:'Demeco',slot:null,type:'Ammunition',category:null,weapon_type:'LMG',ammo_type:'Battery',capacity:100,has_mission:false,ingredients:[{name:'copper',qty:6},{name:'corundum',qty:4}]},
+];
+
+const inventory=[
+  {ore:'aslarite',quality:534,qty:200},{ore:'aslarite',quality:580,qty:80},
+  {ore:'laranite',quality:743,qty:45},{ore:'laranite',quality:812,qty:18},
+  {ore:'taranite',quality:756,qty:30},{ore:'taranite',quality:880,qty:12},
+  {ore:'lindinium',quality:720,qty:22},{ore:'titanium',quality:690,qty:15},
+  {ore:'corundum',quality:760,qty:40},{ore:'copper',quality:700,qty:25},
+  {ore:'hadanite',quality:920,qty:7},
+];
+
+// tracking state: {id: {personal:bool, order:bool}}
+let tracking={
+  2:{personal:true,order:false},
+  6:{personal:false,order:true},
+  9:{personal:true,order:true}
+};
+let ownedIds=new Set([1,2,3,4,9]);
+let expandedBrowser=new Set();
+let expandedTracker=new Set();
+let showOwnedOnly=false;
+let needsBand='700';
+let currentTab='browser';
+
+function switchTab(tab){
+  currentTab=tab;
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['browser','tracker','needs'][i]===tab));
+  ['browser','tracker','needs'].forEach(v=>document.getElementById('view-'+v).classList.toggle('active',v===tab));
+  if(tab==='tracker') renderTracker();
+  if(tab==='needs') renderNeeds();
+}
+
+function toggleOwnedFilter(){
+  showOwnedOnly=!showOwnedOnly;
+  const btn=document.getElementById('owned-filter');
+  btn.textContent=showOwnedOnly?'Owned Only':'All Blueprints';
+  btn.classList.toggle('active',!showOwnedOnly);
+  renderBrowser();
+}
+
+function setNeedsBand(band,btn){
+  needsBand=band;
+  document.querySelectorAll('.needs-bar .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderNeeds();
+}
+
+/* ── INVENTORY HELPERS ── */
+function getBands(ore){
+  const lots=inventory.filter(l=>l.ore===ore);
+  return{
+    b500:lots.filter(l=>l.quality>=500&&l.quality<600).reduce((s,l)=>s+l.qty,0),
+    b600:lots.filter(l=>l.quality>=600&&l.quality<700).reduce((s,l)=>s+l.qty,0),
+    b700:lots.filter(l=>l.quality>=700&&l.quality<800).reduce((s,l)=>s+l.qty,0),
+    b800:lots.filter(l=>l.quality>=800&&l.quality<900).reduce((s,l)=>s+l.qty,0),
+    b900:lots.filter(l=>l.quality>=900).reduce((s,l)=>s+l.qty,0),
+    total500plus:lots.filter(l=>l.quality>=500).reduce((s,l)=>s+l.qty,0),
+  };
+}
+
+function checkReady(bp,qty=1){
+  const nonAsl=bp.ingredients.filter(i=>i.name!=='aslarite');
+  const aslIng=bp.ingredients.find(i=>i.name==='aslarite');
+  const aslOk=aslIng?(getBands('aslarite').total500plus>=(aslIng.qty*qty)):true;
+  if(!aslOk) return{r700:false,r800:false,r900:false};
+  const chk=band=>nonAsl.every(ing=>{
+    const b=getBands(ing.name);
+    const av=band===700?b.b700:band===800?b.b800:b.b900;
+    return av>=(ing.qty*qty);
+  });
+  return{r700:chk(700),r800:chk(800),r900:chk(900)};
+}
+
+/* ── VIEW A ── */
+function renderBrowser(){
+  const q=document.getElementById('search-input').value.toLowerCase().trim();
+  const filtered=blueprints.filter(bp=>{
+    if(showOwnedOnly&&!ownedIds.has(bp.id)) return false;
+    const name=(bp.base+(bp.slot?' '+bp.slot:'')).toLowerCase();
+    return !q||name.includes(q)||bp.base.toLowerCase().includes(q);
+  });
+  document.getElementById('tc-browser').textContent=blueprints.length;
+  const list=document.getElementById('bp-list');
+  const noRes=document.getElementById('no-results');
+  if(!filtered.length){list.innerHTML='';noRes.style.display='block';return;}
+  noRes.style.display='none';
+  const tr=tracking;
+  list.innerHTML=filtered.map(bp=>{
+    const isOwned=ownedIds.has(bp.id);
+    const t=tr[bp.id]||{};
+    const isTracked=t.personal||t.order;
+    const isExp=expandedBrowser.has(bp.id);
+    const label=bp.slot?`${bp.base} ${bp.slot}`:bp.base;
+    const tags=[];
+    if(bp.type==='Armor') tags.push(bp.category||'Armor',bp.slot||'');
+    if(bp.type==='Weapon') tags.push(bp.weapon_type||'Weapon');
+    if(bp.type==='Ammunition') tags.push('Ammo','Battery ×'+bp.capacity);
+    return`<div class="bp-card${isOwned?' owned':''}">
+      <div class="bp-card-header" onclick="toggleExpBrowser(${bp.id})">
+        <span class="bp-name">${label}</span>
+        <span class="bp-tag">${tags.filter(Boolean).join(' · ')}</span>
+        ${bp.has_mission?'<span class="bp-mission">MISSION</span>':''}
+        <div class="bp-actions" onclick="event.stopPropagation()">
+          <button class="own-btn${isOwned?' owned':''}" onclick="toggleOwned(${bp.id})">${isOwned?'✓ OWNED':'OWNED'}</button>
+          <button class="track-btn${isTracked?' tracked':''}" onclick="openTrackMenu(${bp.id})">${isTracked?'★ TRACKING':'TRACK'}</button>
+        </div>
+        <span class="expand-arrow">${isExp?'▲':'▼'}</span>
+      </div>
+      <div class="bp-ingredients${isExp?' open':''}">
+        <div class="ing-title">Ingredients</div>
+        ${bp.ingredients.map(i=>`<div class="ing-row">
+          <span class="ing-name">${i.name}${GEM_NAMES.has(i.name)?'<span class="ing-gem">GEM</span>':''}${i.name==='aslarite'?'<span class="ing-asl">500+OK</span>':''}</span>
+          <span class="ing-qty">${i.qty} cSCU</span>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleExpBrowser(id){expandedBrowser.has(id)?expandedBrowser.delete(id):expandedBrowser.add(id);renderBrowser();}
+function toggleOwned(id){ownedIds.has(id)?ownedIds.delete(id):ownedIds.add(id);renderBrowser();}
+
+function openTrackMenu(id){
+  const t=tracking[id]||{personal:false,order:false};
+  const p=!t.personal&&!t.order?true:!t.personal;
+  const newP=t.personal||t.order?!t.personal:true;
+  // cycle: none→personal→order→both→none
+  if(!t.personal&&!t.order){tracking[id]={personal:true,order:false};}
+  else if(t.personal&&!t.order){tracking[id]={personal:false,order:true};}
+  else if(!t.personal&&t.order){tracking[id]={personal:true,order:true};}
+  else{delete tracking[id];}
+  updateTrackerCount();
+  renderBrowser();
+}
+
+function updateTrackerCount(){
+  const c=Object.keys(tracking).length;
+  document.getElementById('tc-tracker').textContent=c;
+  document.getElementById('tc-needs').textContent=c;
+}
+
+/* ── VIEW B ── */
+function renderTracker(){
+  updateTrackerCount();
+  const list=document.getElementById('tracker-list');
+  const empty=document.getElementById('tracker-empty');
+  const tracked=blueprints.filter(bp=>tracking[bp.id]);
+  if(!tracked.length){list.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+
+  list.innerHTML=tracked.map(bp=>{
+    const t=tracking[bp.id];
+    const isExp=expandedTracker.has(bp.id);
+    const label=bp.slot?`${bp.base} ${bp.slot}`:bp.base;
+    const sub=bp.slot?`${bp.category||bp.type} · ${bp.slot}`:(bp.weapon_type||bp.type);
+    const qty=t.order?2:1;
+    const{r700,r800,r900}=checkReady(bp,qty);
+    const borderClass=t.personal&&t.order?'has-both':t.order?'has-order':'';
+    const star=t.order?'<span class="order-star">★</span>':'';
+    return`<div>
+      <div class="tracker-row ${borderClass}" onclick="toggleExpTracker(${bp.id})">
+        <span class="bp-name" style="font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--tmi-text-primary);min-width:160px;">${label}${star}</span>
+        <span class="tracker-sub">${sub.toUpperCase()}${t.personal&&t.order?' · PERSONAL + ORDER':t.order?' · ORDER':' · PERSONAL'}</span>
+        <div class="readiness">
+          <span class="rb r700${r700?' on':''}">${r700?'700 ✓':'700'}</span>
+          <span class="rb r800${r800?' on':''}">${r800?'800 ✓':'800'}</span>
+          <span class="rb r900${r900?' on':''}">${r900?'900 ✓':'900'}</span>
+        </div>
+        <button class="untrack-x" onclick="event.stopPropagation();untrack(${bp.id})">✕</button>
+      </div>
+      <div class="tracker-detail${isExp?' open':''}">
+        ${bp.ingredients.map(ing=>{
+          const isAsl=ing.name==='aslarite';
+          const need=ing.qty*qty;
+          if(isAsl){
+            const b=getBands('aslarite');
+            const suf=b.total500plus>=need;
+            return`<div class="detail-ing-row">
+              <span class="detail-ing-name">${ing.name}<span class="asl-note">500+OK</span></span>
+              <span class="detail-needed">Need ${need} cSCU</span>
+              <div class="band-pills"><span class="bp-pill pasl${suf?' suf':''}">${b.total500plus} cSCU${suf?' ✓':''}</span></div>
+            </div>`;
+          }
+          const b=getBands(ing.name);
+          const s7=b.b700>=need,s8=b.b800>=need,s9=b.b900>=need;
+          return`<div class="detail-ing-row">
+            <span class="detail-ing-name">${ing.name}${GEM_NAMES.has(ing.name)?'<span class="ing-gem" style="margin-left:4px">GEM</span>':''}</span>
+            <span class="detail-needed">Need ${need} cSCU</span>
+            <div class="band-pills">
+              <span class="bp-pill p700${s7?' suf':''}">${b.b700}${s7?' ✓':''}</span>
+              <span class="bp-pill p800${s8?' suf':''}">${b.b800}${s8?' ✓':''}</span>
+              <span class="bp-pill p900${s9?' suf':''}">${b.b900}${s9?' ✓':''}</span>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleExpTracker(id){expandedTracker.has(id)?expandedTracker.delete(id):expandedTracker.add(id);renderTracker();}
+function untrack(id){delete tracking[id];updateTrackerCount();renderTracker();}
+
+/* ── VIEW C ── */
+function renderNeeds(){
+  const tracked=blueprints.filter(bp=>tracking[bp.id]);
+  document.getElementById('needs-bp-count').textContent=tracked.length;
+  const tbl=document.getElementById('needs-table');
+  const empty=document.getElementById('needs-empty');
+
+  if(!tracked.length){tbl.style.display='none';empty.style.display='block';return;}
+  tbl.style.display='table';empty.style.display='none';
+
+  // aggregate needs per ore
+  const needs={};
+  tracked.forEach(bp=>{
+    const t=tracking[bp.id];
+    const qty=t.order?2:1;
+    bp.ingredients.forEach(ing=>{
+      if(!needs[ing.name]) needs[ing.name]={total:0,isAsl:ing.name==='aslarite',isGem:GEM_NAMES.has(ing.name)};
+      needs[ing.name].total+=ing.qty*qty;
+    });
+  });
+
+  const showAll=needsBand==='all';
+  const bands=[700,800,900];
+
+  // update headers
+  document.getElementById('th-700').style.display=(!showAll&&needsBand!=='700')?'none':'';
+  document.getElementById('th-800').style.display=(!showAll&&needsBand!=='800')?'none':'';
+  document.getElementById('th-900').style.display=(!showAll&&needsBand!=='900')?'none':'';
+
+  const body=document.getElementById('needs-body');
+  body.innerHTML=Object.entries(needs).map(([ore,info])=>{
+    const b=getBands(ore);
+    if(info.isAsl){
+      const have=b.total500plus;
+      const need=info.total;
+      const diff=have-need;
+      const cls=diff>=0?'need-ok':'need-short';
+      const txt=diff>=0?`✓ +${diff}`:`-${Math.abs(diff)}`;
+      const cell=`<td class="band-cell need-asl">${have} avail<br><span class="${cls}" style="font-size:9px">${txt}</span></td>`;
+      return`<tr>
+        <td class="ore-cell">${ore}<span class="asl-note" style="margin-left:6px;font-size:8px">500+</span></td>
+        ${showAll||needsBand==='700'?cell:''}
+        ${showAll||needsBand==='800'?cell:''}
+        ${showAll||needsBand==='900'?cell:''}
+      </tr>`;
+    }
+    const need=info.total;
+    const cells=bands.map(band=>{
+      if(!showAll&&needsBand!==String(band)) return '';
+      const have=band===700?b.b700:band===800?b.b800:b.b900;
+      const diff=have-need;
+      const cls=have===0?'need-zero':diff>=0?'need-ok':'need-short';
+      const txt=have===0?'—':diff>=0?`✓ +${diff}`:`-${Math.abs(diff)}`;
+      return`<td class="band-cell"><span class="need-cell ${cls}">${have} cSCU<br><span style="font-size:9px">${txt}</span></span></td>`;
+    });
+    return`<tr>
+      <td class="ore-cell">${ore}${info.isGem?'<span class="ing-gem" style="margin-left:5px">GEM</span>':''}</td>
+      ${cells.join('')}
+    </tr>`;
+  }).join('');
+}
+
+updateTrackerCount();
+renderBrowser();
+</script>
+</body>
+</html>
