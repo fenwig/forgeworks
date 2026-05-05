@@ -13,6 +13,7 @@
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{background:var(--tmi-bg-deep);color:var(--tmi-text-primary);font-family:'Exo 2',sans-serif;}
+  .page-wrap{max-width:960px;}
 
   /* HEADER */
   .mod-header{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;}
@@ -50,6 +51,7 @@
   .bp-name{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;color:var(--tmi-text-primary);text-transform:uppercase;}
   .bp-tag{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:1px;padding:2px 7px;border:1px solid var(--tmi-border-dim);color:var(--tmi-text-secondary);}
   .bp-mission{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--tmi-warning);border:1px solid rgba(204,136,0,0.3);background:rgba(204,136,0,0.08);padding:2px 6px;}
+  .bp-order-badge{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--tmi-steel);border:1px solid rgba(138,154,170,0.35);background:rgba(138,154,170,0.08);padding:2px 6px;}
   .bp-actions{margin-left:auto;display:flex;gap:5px;align-items:center;}
   .own-btn{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:1px;padding:3px 8px;cursor:pointer;text-transform:uppercase;transition:all 0.15s;border:1px solid var(--tmi-border-dim);color:var(--tmi-text-dim);background:transparent;}
   .own-btn:hover{border-color:rgba(90,153,85,0.4);color:var(--tmi-success);}
@@ -142,6 +144,7 @@
 </style>
 </head>
 <body>
+<div class="page-wrap">
 <h2 class="sr-only">FORGE-X Blueprint Database — browser, crafting tracker, and material needs</h2>
 
 <div class="mod-header">
@@ -162,6 +165,7 @@
   <div class="browser-bar">
     <input class="search-input" id="search-input" placeholder="Search blueprints by name..." oninput="renderBrowser()">
     <button class="filter-btn active" id="owned-filter" onclick="toggleOwnedFilter()">All Blueprints</button>
+    <button class="filter-btn" id="mission-filter" onclick="toggleMissionFilter()">Mission Only</button>
   </div>
   <div class="bp-list" id="bp-list"></div>
   <div class="no-results" id="no-results" style="display:none">NO BLUEPRINTS MATCH YOUR SEARCH</div>
@@ -206,8 +210,15 @@
   </div>
 </div>
 
+</div><!-- /page-wrap -->
 <script>
 const GEM_NAMES=new Set(['hadanite','janalite','dolvine','aphorite','sadaryx','carinite','beradom','jaclium','saldynium','feynmaline','glacosite']);
+const LS_TRACKING='forgex-tracking';
+const LS_ORDERS='forgex-active-orders';
+function readTracking(){try{return JSON.parse(localStorage.getItem(LS_TRACKING)||'{}')}catch{return{};}}
+function writeTracking(t){localStorage.setItem(LS_TRACKING,JSON.stringify(t));}
+function readActiveOrders(){try{return JSON.parse(localStorage.getItem(LS_ORDERS)||'[]')}catch{return[];}}
+
 
 const blueprints=[
   {id:1,base:'Aztalan',slot:'Helmet',type:'Armor',category:'Combat',weapon_type:null,ammo_type:null,capacity:null,has_mission:false,ingredients:[{name:'aslarite',qty:6},{name:'lindinium',qty:4},{name:'taranite',qty:3}]},
@@ -231,21 +242,19 @@ const inventory=[
   {ore:'hadanite',quality:920,qty:7},
 ];
 
-// tracking state: {id: {personal:bool, order:bool}}
-let tracking={
-  2:{personal:true,order:false},
-  6:{personal:false,order:true},
-  9:{personal:true,order:true}
-};
+// tracking state read from localStorage (written by Module 05 for orders, here for personal)
+let tracking=readTracking();
 let ownedIds=new Set([1,2,3,4,9]);
 let expandedBrowser=new Set();
 let expandedTracker=new Set();
 let showOwnedOnly=false;
+let showMissionOnly=false;
 let needsBand='700';
 let currentTab='browser';
 
 function switchTab(tab){
   currentTab=tab;
+  tracking=readTracking();
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['browser','tracker','needs'][i]===tab));
   ['browser','tracker','needs'].forEach(v=>document.getElementById('view-'+v).classList.toggle('active',v===tab));
   if(tab==='tracker') renderTracker();
@@ -257,6 +266,13 @@ function toggleOwnedFilter(){
   const btn=document.getElementById('owned-filter');
   btn.textContent=showOwnedOnly?'Owned Only':'All Blueprints';
   btn.classList.toggle('active',!showOwnedOnly);
+  renderBrowser();
+}
+
+function toggleMissionFilter(){
+  showMissionOnly=!showMissionOnly;
+  const btn=document.getElementById('mission-filter');
+  btn.classList.toggle('active',showMissionOnly);
   renderBrowser();
 }
 
@@ -298,6 +314,7 @@ function renderBrowser(){
   const q=document.getElementById('search-input').value.toLowerCase().trim();
   const filtered=blueprints.filter(bp=>{
     if(showOwnedOnly&&!ownedIds.has(bp.id)) return false;
+    if(showMissionOnly&&!bp.has_mission) return false;
     const name=(bp.base+(bp.slot?' '+bp.slot:'')).toLowerCase();
     return !q||name.includes(q)||bp.base.toLowerCase().includes(q);
   });
@@ -322,9 +339,10 @@ function renderBrowser(){
         <span class="bp-name">${label}</span>
         <span class="bp-tag">${tags.filter(Boolean).join(' · ')}</span>
         ${bp.has_mission?'<span class="bp-mission">MISSION</span>':''}
+        ${t.order?'<span class="bp-order-badge">★ ORDER</span>':''}
         <div class="bp-actions" onclick="event.stopPropagation()">
           <button class="own-btn${isOwned?' owned':''}" onclick="toggleOwned(${bp.id})">${isOwned?'✓ OWNED':'OWNED'}</button>
-          <button class="track-btn${isTracked?' tracked':''}" onclick="openTrackMenu(${bp.id})">${isTracked?'★ TRACKING':'TRACK'}</button>
+          <button class="track-btn${t.personal?' tracked':''}" onclick="togglePersonal(${bp.id})">${t.personal?'✓ TRACKED':'TRACK'}</button>
         </div>
         <span class="expand-arrow">${isExp?'▲':'▼'}</span>
       </div>
@@ -342,15 +360,11 @@ function renderBrowser(){
 function toggleExpBrowser(id){expandedBrowser.has(id)?expandedBrowser.delete(id):expandedBrowser.add(id);renderBrowser();}
 function toggleOwned(id){ownedIds.has(id)?ownedIds.delete(id):ownedIds.add(id);renderBrowser();}
 
-function openTrackMenu(id){
-  const t=tracking[id]||{personal:false,order:false};
-  const p=!t.personal&&!t.order?true:!t.personal;
-  const newP=t.personal||t.order?!t.personal:true;
-  // cycle: none→personal→order→both→none
-  if(!t.personal&&!t.order){tracking[id]={personal:true,order:false};}
-  else if(t.personal&&!t.order){tracking[id]={personal:false,order:true};}
-  else if(!t.personal&&t.order){tracking[id]={personal:true,order:true};}
-  else{delete tracking[id];}
+function togglePersonal(id){
+  if(!tracking[id]) tracking[id]={personal:false,order:false};
+  tracking[id].personal=!tracking[id].personal;
+  if(!tracking[id].personal&&!tracking[id].order) delete tracking[id];
+  writeTracking(tracking);
   updateTrackerCount();
   renderBrowser();
 }
@@ -375,20 +389,22 @@ function renderTracker(){
     const isExp=expandedTracker.has(bp.id);
     const label=bp.slot?`${bp.base} ${bp.slot}`:bp.base;
     const sub=bp.slot?`${bp.category||bp.type} · ${bp.slot}`:(bp.weapon_type||bp.type);
-    const qty=t.order?2:1;
+    const bpOrders=readActiveOrders().filter(o=>o.bpId===bp.id);
+    const orderTotal=bpOrders.reduce((s,o)=>s+o.qty,0);
+    const qty=Math.max(1,(t.personal?1:0)+(t.order?orderTotal:0));
     const{r700,r800,r900}=checkReady(bp,qty);
     const borderClass=t.personal&&t.order?'has-both':t.order?'has-order':'';
-    const star=t.order?'<span class="order-star">★</span>':'';
+    const star=t.order?`<span class="order-star">★${orderTotal>1?' ×'+orderTotal:''}</span>`:'';
     return`<div>
       <div class="tracker-row ${borderClass}" onclick="toggleExpTracker(${bp.id})">
         <span class="bp-name" style="font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--tmi-text-primary);min-width:160px;">${label}${star}</span>
-        <span class="tracker-sub">${sub.toUpperCase()}${t.personal&&t.order?' · PERSONAL + ORDER':t.order?' · ORDER':' · PERSONAL'}</span>
+        <span class="tracker-sub">${sub.toUpperCase()} · ${t.personal&&t.order?'TRACKED + ORDER':t.order?'ORDER':'TRACKED'}</span>
         <div class="readiness">
           <span class="rb r700${r700?' on':''}">${r700?'700 ✓':'700'}</span>
           <span class="rb r800${r800?' on':''}">${r800?'800 ✓':'800'}</span>
           <span class="rb r900${r900?' on':''}">${r900?'900 ✓':'900'}</span>
         </div>
-        <button class="untrack-x" onclick="event.stopPropagation();untrack(${bp.id})">✕</button>
+        ${t.personal?`<button class="untrack-x" onclick="event.stopPropagation();untrack(${bp.id})" title="Remove tracked">✕</button>`:''}
       </div>
       <div class="tracker-detail${isExp?' open':''}">
         ${bp.ingredients.map(ing=>{
@@ -421,7 +437,14 @@ function renderTracker(){
 }
 
 function toggleExpTracker(id){expandedTracker.has(id)?expandedTracker.delete(id):expandedTracker.add(id);renderTracker();}
-function untrack(id){delete tracking[id];updateTrackerCount();renderTracker();}
+function untrack(id){
+  if(!tracking[id]) return;
+  tracking[id].personal=false;
+  if(!tracking[id].order) delete tracking[id];
+  writeTracking(tracking);
+  updateTrackerCount();
+  renderTracker();
+}
 
 /* ── VIEW C ── */
 function renderNeeds(){
@@ -433,21 +456,38 @@ function renderNeeds(){
   if(!tracked.length){tbl.style.display='none';empty.style.display='block';return;}
   tbl.style.display='table';empty.style.display='none';
 
-  // aggregate needs per ore
+  const activeOrders=readActiveOrders();
+
+  // Aggregate per ore, per quality band.
+  // Personal tracking (qty=1) adds to all three bands — can craft at any tier.
+  // Order tracking adds only to the specific quality band of each order.
+  // Aslarite is pooled (500+) regardless of quality.
   const needs={};
   tracked.forEach(bp=>{
     const t=tracking[bp.id];
-    const qty=t.order?2:1;
+    const bpOrders=activeOrders.filter(o=>o.bpId===bp.id);
     bp.ingredients.forEach(ing=>{
-      if(!needs[ing.name]) needs[ing.name]={total:0,isAsl:ing.name==='aslarite',isGem:GEM_NAMES.has(ing.name)};
-      needs[ing.name].total+=ing.qty*qty;
+      const isAsl=ing.name==='aslarite';
+      if(!needs[ing.name]) needs[ing.name]={isAsl,isGem:GEM_NAMES.has(ing.name),n700:0,n800:0,n900:0,nAsl:0};
+      if(isAsl){
+        const total=(t.personal?1:0)+bpOrders.reduce((s,o)=>s+o.qty,0);
+        needs[ing.name].nAsl+=ing.qty*total;
+      } else {
+        if(t.personal){
+          needs[ing.name].n700+=ing.qty;
+          needs[ing.name].n800+=ing.qty;
+          needs[ing.name].n900+=ing.qty;
+        }
+        bpOrders.forEach(o=>{
+          if(o.quality===700) needs[ing.name].n700+=ing.qty*o.qty;
+          else if(o.quality===800) needs[ing.name].n800+=ing.qty*o.qty;
+          else needs[ing.name].n900+=ing.qty*o.qty;
+        });
+      }
     });
   });
 
   const showAll=needsBand==='all';
-  const bands=[700,800,900];
-
-  // update headers
   document.getElementById('th-700').style.display=(!showAll&&needsBand!=='700')?'none':'';
   document.getElementById('th-800').style.display=(!showAll&&needsBand!=='800')?'none':'';
   document.getElementById('th-900').style.display=(!showAll&&needsBand!=='900')?'none':'';
@@ -457,11 +497,11 @@ function renderNeeds(){
     const b=getBands(ore);
     if(info.isAsl){
       const have=b.total500plus;
-      const need=info.total;
+      const need=info.nAsl;
       const diff=have-need;
       const cls=diff>=0?'need-ok':'need-short';
       const txt=diff>=0?`✓ +${diff}`:`-${Math.abs(diff)}`;
-      const cell=`<td class="band-cell need-asl">${have} avail<br><span class="${cls}" style="font-size:9px">${txt}</span></td>`;
+      const cell=`<td class="band-cell need-asl">${need} needed<br><span class="${cls}" style="font-size:9px">${have} avail · ${txt}</span></td>`;
       return`<tr>
         <td class="ore-cell">${ore}<span class="asl-note" style="margin-left:6px;font-size:8px">500+</span></td>
         ${showAll||needsBand==='700'?cell:''}
@@ -469,14 +509,13 @@ function renderNeeds(){
         ${showAll||needsBand==='900'?cell:''}
       </tr>`;
     }
-    const need=info.total;
-    const cells=bands.map(band=>{
-      if(!showAll&&needsBand!==String(band)) return '';
-      const have=band===700?b.b700:band===800?b.b800:b.b900;
+    const cells=[['700',info.n700,b.b700],['800',info.n800,b.b800],['900',info.n900,b.b900]].map(([band,need,have])=>{
+      if(!showAll&&needsBand!==band) return '';
+      if(need===0) return`<td class="band-cell"><span class="need-cell need-zero">—</span></td>`;
       const diff=have-need;
-      const cls=have===0?'need-zero':diff>=0?'need-ok':'need-short';
-      const txt=have===0?'—':diff>=0?`✓ +${diff}`:`-${Math.abs(diff)}`;
-      return`<td class="band-cell"><span class="need-cell ${cls}">${have} cSCU<br><span style="font-size:9px">${txt}</span></span></td>`;
+      const cls=diff>=0?'need-ok':'need-short';
+      const txt=diff>=0?`✓ +${diff}`:`-${Math.abs(diff)}`;
+      return`<td class="band-cell"><span class="need-cell ${cls}">${need} needed<br><span style="font-size:9px">${have} avail · ${txt}</span></span></td>`;
     });
     return`<tr>
       <td class="ore-cell">${ore}${info.isGem?'<span class="ing-gem" style="margin-left:5px">GEM</span>':''}</td>
