@@ -7,16 +7,17 @@
     --tmi-bg-deep:#0a0804;--tmi-bg-panel:#0f0d09;--tmi-bg-card:#141109;--tmi-bg-hover:#1a1610;
     --tmi-gold:#c8a84b;--tmi-gold-bright:#e8c96a;--tmi-gold-dim:#8a7030;--tmi-gold-dark:#5a4a20;
     --tmi-gold-glow:rgba(200,168,75,0.12);--tmi-steel:#8a9aaa;--tmi-steel-dim:#556070;
-    --tmi-text-primary:#d4cbb8;--tmi-text-secondary:#7a7060;--tmi-text-dim:#3d3828;
+    --tmi-text-primary:#e8e0d0;--tmi-text-secondary:#b0a890;--tmi-text-dim:#6a6050;
     --tmi-border:rgba(200,168,75,0.25);--tmi-border-dim:rgba(200,168,75,0.1);
     --tmi-danger:#cc3333;--tmi-success:#5a9955;--tmi-warning:#cc8800;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{background:var(--tmi-bg-deep);color:var(--tmi-text-primary);font-family:'Exo 2',sans-serif;padding:0;}
+  .page-wrap{max-width:960px;}
 
   .mod-header{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;}
-  .mod-eyebrow{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--tmi-gold-dim);text-transform:uppercase;margin-bottom:2px;}
-  .mod-title{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tmi-text-primary);}
+  .mod-eyebrow{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--tmi-gold-dim);text-transform:uppercase;margin-bottom:2px;}
+  .mod-title{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tmi-text-primary);}
   .mod-stats{display:flex;gap:16px;}
   .stat{text-align:right;}
   .stat-val{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--tmi-gold);}
@@ -24,13 +25,13 @@
 
   .filter-bar{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:10px 18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
   .filter-group{display:flex;gap:6px;align-items:center;}
-  .filter-label{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.5px;color:var(--tmi-text-dim);text-transform:uppercase;white-space:nowrap;}
-  .filter-btn{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:1px;color:var(--tmi-text-secondary);background:transparent;border:1px solid var(--tmi-border-dim);padding:4px 10px;cursor:pointer;text-transform:uppercase;transition:all 0.15s;clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);}
+  .filter-label{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--tmi-text-dim);text-transform:uppercase;white-space:nowrap;}
+  .filter-btn{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;color:var(--tmi-text-secondary);background:transparent;border:1px solid var(--tmi-border-dim);padding:4px 10px;cursor:pointer;text-transform:uppercase;transition:all 0.15s;clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);}
   .filter-btn:hover{border-color:var(--tmi-border);color:var(--tmi-text-primary);}
   .filter-btn.active{background:var(--tmi-gold-glow);border-color:var(--tmi-gold);color:var(--tmi-gold);}
   .filter-sep{width:1px;height:20px;background:var(--tmi-border-dim);}
   .search-wrap{flex:1;min-width:140px;}
-  .search-input{width:100%;background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);color:var(--tmi-text-primary);font-family:'Share Tech Mono',monospace;font-size:11px;padding:5px 10px;outline:none;transition:border-color 0.15s;}
+  .search-input{width:100%;background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);color:var(--tmi-text-primary);font-family:'Share Tech Mono',monospace;font-size:12px;padding:5px 10px;outline:none;transition:border-color 0.15s;}
   .search-input::placeholder{color:var(--tmi-text-dim);}
   .search-input:focus{border-color:var(--tmi-border);}
   .add-btn{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;color:var(--tmi-bg-deep);background:var(--tmi-gold);border:none;padding:6px 14px;cursor:pointer;text-transform:uppercase;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);transition:all 0.2s;white-space:nowrap;}
@@ -39,25 +40,24 @@
   .table-wrap{overflow-x:auto;}
   table{width:100%;border-collapse:collapse;}
   thead tr{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border);}
-  th{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;padding:8px 14px;text-align:left;cursor:pointer;white-space:nowrap;user-select:none;}
+  th{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;padding:8px 14px;text-align:left;cursor:pointer;white-space:nowrap;user-select:none;}
   th:hover{color:var(--tmi-gold);}
   th.sorted{color:var(--tmi-gold);}
   tbody tr{border-bottom:1px solid var(--tmi-border-dim);transition:background 0.1s;}
   tbody tr:hover{background:var(--tmi-bg-hover);}
-  td{padding:8px 14px;font-size:12px;vertical-align:middle;}
+  td{padding:8px 14px;font-size:13px;vertical-align:middle;}
 
-  .ore-name{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;color:var(--tmi-text-primary);text-transform:capitalize;}
-  .gem-tag{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:1px;color:var(--tmi-success);background:rgba(90,153,85,0.12);border:1px solid rgba(90,153,85,0.25);padding:2px 6px;margin-left:6px;}
+  .ore-name{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;letter-spacing:1px;color:var(--tmi-text-primary);text-transform:capitalize;}
+  .gem-tag{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--tmi-success);background:rgba(90,153,85,0.12);border:1px solid rgba(90,153,85,0.25);padding:2px 6px;margin-left:6px;}
   .quality-bar-wrap{display:flex;align-items:center;gap:8px;}
   .quality-bar{height:4px;width:60px;background:var(--tmi-bg-panel);border:1px solid var(--tmi-border-dim);position:relative;overflow:hidden;}
   .quality-fill{height:100%;position:absolute;left:0;top:0;}
-  .quality-val{font-family:'Share Tech Mono',monospace;font-size:11px;min-width:32px;}
-  .qty-val{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;}
-  .scu-label{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--tmi-text-dim);margin-left:3px;}
-  .loc-tag{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-steel);}
+  .quality-val{font-family:'Share Tech Mono',monospace;font-size:12px;min-width:32px;font-weight:600;}
+  .qty-val{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;}
+  .scu-label{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-text-dim);margin-left:3px;}
+  .loc-tag{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--tmi-steel);}
   .loc-default{color:var(--tmi-gold-dim);}
-  .date-val{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-text-dim);}
-  .notes-val{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-text-secondary);}
+  .date-val{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--tmi-text-secondary);}
 
   .action-btn{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--tmi-text-dim);background:transparent;border:1px solid transparent;padding:3px 8px;cursor:pointer;text-transform:uppercase;transition:all 0.15s;}
   .action-btn:hover{border-color:var(--tmi-border);color:var(--tmi-text-secondary);}
@@ -107,6 +107,7 @@
 </style>
 </head>
 <body>
+<div class="page-wrap">
 <h2 class="sr-only">FORGE-X Material Database — inventory of ore lots and hand-mined gems with storage location tracking</h2>
 
 <div class="mod-header">
@@ -156,7 +157,6 @@
       <th onclick="setSort('qty')">Quantity <span id="s-qty"></span></th>
       <th onclick="setSort('location')">Location <span id="s-location"></span></th>
       <th onclick="setSort('date')">Added <span id="s-date"></span></th>
-      <th>Notes</th>
       <th></th>
     </tr>
   </thead>
@@ -238,10 +238,6 @@
           <input class="form-input" id="f-loc-custom" type="text" placeholder="Enter location" style="display:none;">
         </div>
       </div>
-      <div class="form-row">
-        <label class="form-lbl">Notes (optional)</label>
-        <input class="form-input" id="f-notes" type="text" placeholder="e.g. high purity node">
-      </div>
       <div class="form-toggle-row">
         <label class="toggle-switch">
           <input type="checkbox" id="f-handmined">
@@ -258,6 +254,7 @@
   </div>
 </div>
 
+</div><!-- /page-wrap -->
 <script>
 const GEM_NAMES = new Set(['hadanite','janalite','dolvine','aphorite','sadaryx','carinite','beradom','jaclium','saldynium','feynmaline','glacosite']);
 const DEFAULT_LOC = 'Levsky';
@@ -282,8 +279,8 @@ function getQualityColor(q){
   if(q>=900) return '#e8c96a';
   if(q>=800) return '#c8a84b';
   if(q>=700) return '#8a7030';
-  if(q>=600) return '#556070';
-  return '#3d3828';
+  if(q>=600) return '#8a9aaa';
+  return '#7a7060';
 }
 
 function setFilter(key,val,btn){
@@ -307,7 +304,7 @@ function getFiltered(){
       if(filters.qual==='1000'){if(l.quality!==1000) return false;}
       else{const band=parseInt(filters.qual);if(l.quality<band||l.quality>=band+100) return false;}
     }
-    if(q&&!l.ore.includes(q)&&!(l.location||'').toLowerCase().includes(q)&&!(l.notes||'').toLowerCase().includes(q)) return false;
+    if(q&&!l.ore.includes(q)&&!(l.location||'').toLowerCase().includes(q)) return false;
     return true;
   });
 }
@@ -372,7 +369,6 @@ function renderTable(){
       </td>
       <td><span class="loc-tag ${isDefault?'loc-default':''}">${l.location||DEFAULT_LOC}</span></td>
       <td><span class="date-val">${l.date}</span></td>
-      <td><span class="notes-val">${l.notes||'—'}</span></td>
       <td style="white-space:nowrap">
         <button class="action-btn" onclick="startQtyEdit(${l.id})">QTY</button>
         <button class="action-btn del" onclick="deleteLot(${l.id})">DEL</button>
@@ -439,7 +435,6 @@ function closeAddForm(){
   document.getElementById('add-overlay').classList.remove('open');
   document.getElementById('f-quality').value='';
   document.getElementById('f-qty').value='';
-  document.getElementById('f-notes').value='';
   document.getElementById('f-loc-custom').value='';
 }
 
@@ -447,7 +442,6 @@ function saveLot(){
   const ore=document.getElementById('f-ore').value;
   const quality=parseInt(document.getElementById('f-quality').value);
   const qty=parseInt(document.getElementById('f-qty').value);
-  const notes=document.getElementById('f-notes').value.trim();
   const hand_mined=document.getElementById('f-handmined').checked;
   const locPreset=document.getElementById('f-loc-preset').value;
   const locCustom=document.getElementById('f-loc-custom').value.trim();
@@ -455,7 +449,7 @@ function saveLot(){
   if(!ore||isNaN(quality)||quality<1||quality>1000||isNaN(qty)||qty<1) return;
   const today=new Date();
   const date=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
-  lots.push({id:nextId++,ore,quality,qty,location,notes,hand_mined,date});
+  lots.push({id:nextId++,ore,quality,qty,location,hand_mined,date});
   closeAddForm();
   renderTable();
 }
