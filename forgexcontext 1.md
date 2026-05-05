@@ -62,9 +62,9 @@
 | `--tmi-gold` | `#c8a84b` | Primary accent |
 | `--tmi-gold-bright` | `#e8c96a` | Hover / 900-quality |
 | `--tmi-gold-dim` | `#8a7030` | 700-quality, eyebrow text |
-| `--tmi-text-primary` | `#e8e0d0` | Main readable text |
-| `--tmi-text-secondary` | `#b0a890` | Supporting text |
-| `--tmi-text-dim` | `#6a6050` | Labels, metadata |
+| `--tmi-text-primary` | `#ffffff` | Main readable text — full white |
+| `--tmi-text-secondary` | `#d0c4b0` | Supporting text — warm off-white ~80% |
+| `--tmi-text-dim` | `#90806e` | Labels, metadata — warm mid-tone ~55% |
 | `--tmi-success` | `#5a9955` | Online / ready / crafted |
 | `--tmi-warning` | `#cc8800` | Pending / near-deadline |
 | `--tmi-danger` | `#cc3333` | Shortage / overdue |
@@ -77,9 +77,16 @@
 | Share Tech Mono | Data values, badges, monospace UI |
 | Exo 2 | Body text, descriptions |
 
-- **Minimum font size:** 14px across all non-header UI text
-- **Header eyebrow:** `~10px` Share Tech Mono, gold-dim, uppercase
+- **Minimum font size:** 14px — applies to every text element outside the module header. The blueprint/item name on order cards (`.order-item`, 14px Rajdhani) is the established floor. Anything smaller is a bug to fix on next edit.
+- **Header eyebrow:** `~10px` Share Tech Mono, gold-dim, uppercase (exception to 14px floor — intentionally small)
 - **Module title:** `~20px` Rajdhani, bold
+
+> **TEXT COLOR RULE — apply on every module edit:**
+> Always use the three canonical text tokens. Never hardcode hex text colors.
+> - `--tmi-text-primary: #ffffff` — primary readable text (full white)
+> - `--tmi-text-secondary: #d0c4b0` — supporting text (warm off-white)
+> - `--tmi-text-dim: #90806e` — labels, metadata, placeholders
+> When editing any module, update its `:root` vars to these values if they differ.
 
 ### Header Pattern (all modules)
 ```

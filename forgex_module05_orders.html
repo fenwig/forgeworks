@@ -7,7 +7,7 @@
     --tmi-bg-deep:#0a0804;--tmi-bg-panel:#0f0d09;--tmi-bg-card:#141109;--tmi-bg-hover:#1a1610;
     --tmi-gold:#c8a84b;--tmi-gold-bright:#e8c96a;--tmi-gold-dim:#8a7030;--tmi-gold-dark:#5a4a20;
     --tmi-gold-glow:rgba(200,168,75,0.12);
-    --tmi-text-primary:#e8e0d0;--tmi-text-secondary:#b0a890;--tmi-text-dim:#6a6050;
+    --tmi-text-primary:#ffffff;--tmi-text-secondary:#d0c4b0;--tmi-text-dim:#90806e;
     --tmi-border:rgba(200,168,75,0.25);--tmi-border-dim:rgba(200,168,75,0.1);
     --tmi-danger:#cc3333;--tmi-success:#5a9955;--tmi-warning:#cc8800;--tmi-steel:#8a9aaa;
   }
@@ -26,7 +26,7 @@
   .stats-bar{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:8px 18px;display:flex;gap:24px;align-items:center;}
   .stat-block{display:flex;flex-direction:column;}
   .stat-val{font-family:'Share Tech Mono',monospace;font-size:17px;color:var(--tmi-gold);}
-  .stat-lbl{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;}
+  .stat-lbl{font-family:'Share Tech Mono',monospace;font-size:14px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;}
   .stat-div{width:1px;height:28px;background:var(--tmi-border-dim);}
 
   /* TABS */
@@ -34,7 +34,7 @@
   .tab{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:10px 18px;cursor:pointer;color:var(--tmi-text-secondary);border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap;}
   .tab:hover{color:var(--tmi-text-primary);}
   .tab.active{color:var(--tmi-gold);border-bottom-color:var(--tmi-gold);}
-  .tab-count{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-gold-dim);background:var(--tmi-gold-glow);border:1px solid var(--tmi-border-dim);padding:1px 6px;margin-left:6px;}
+  .tab-count{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-gold-dim);background:var(--tmi-gold-glow);border:1px solid var(--tmi-border-dim);padding:1px 6px;margin-left:6px;}
   .view{display:none;}
   .view.active{display:block;}
 
@@ -42,12 +42,12 @@
   .form-select{background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);color:var(--tmi-text-primary);font-family:'Share Tech Mono',monospace;font-size:14px;padding:6px 10px;outline:none;transition:border-color 0.15s;width:100%;}
   .form-select:focus{border-color:var(--tmi-border);}
   .form-select option{background:var(--tmi-bg-panel);}
-  .filter-btn{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;color:var(--tmi-text-secondary);background:transparent;border:1px solid var(--tmi-border-dim);padding:5px 12px;cursor:pointer;text-transform:uppercase;transition:all 0.15s;clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);white-space:nowrap;}
+  .filter-btn{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;letter-spacing:1px;color:var(--tmi-text-secondary);background:transparent;border:1px solid var(--tmi-border-dim);padding:5px 12px;cursor:pointer;text-transform:uppercase;transition:all 0.15s;clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);white-space:nowrap;}
   .filter-btn:hover{border-color:var(--tmi-border);color:var(--tmi-text-primary);}
   .filter-btn.active{background:var(--tmi-gold-glow);border-color:var(--tmi-gold);color:var(--tmi-gold);}
 
   /* ACTION BUTTONS */
-  .action-btn{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;color:var(--tmi-text-secondary);background:transparent;border:1px solid var(--tmi-border-dim);padding:5px 12px;cursor:pointer;text-transform:uppercase;transition:all 0.15s;clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);white-space:nowrap;}
+  .action-btn{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;letter-spacing:1px;color:var(--tmi-text-secondary);background:transparent;border:1px solid var(--tmi-border-dim);padding:5px 12px;cursor:pointer;text-transform:uppercase;transition:all 0.15s;clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);white-space:nowrap;}
   .action-btn:hover{border-color:var(--tmi-border);color:var(--tmi-gold);}
   .action-btn.advance{border-color:var(--tmi-gold-dark);color:var(--tmi-gold-dim);}
   .action-btn.advance:hover{border-color:var(--tmi-gold);color:var(--tmi-gold);background:var(--tmi-gold-glow);}
@@ -62,23 +62,23 @@
   .detail-actions{display:flex;gap:8px;align-items:center;margin-top:12px;padding-top:10px;border-top:1px solid var(--tmi-border-dim);}
 
   /* STATUS PILLS */
-  .status-pill{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:1px;padding:2px 8px;text-transform:uppercase;}
+  .status-pill{font-family:'Share Tech Mono',monospace;font-size:14px;letter-spacing:1px;padding:2px 8px;text-transform:uppercase;}
   .status-inprogress{border:1px solid rgba(204,136,0,0.4);color:var(--tmi-warning);background:rgba(204,136,0,0.08);}
   .status-ready{border:1px solid rgba(200,168,75,0.4);color:var(--tmi-gold);background:var(--tmi-gold-glow);}
   .status-delivered{border:1px solid rgba(90,153,85,0.4);color:var(--tmi-success);background:rgba(90,153,85,0.08);}
 
   /* QUALITY BADGE */
-  .qual-badge{font-family:'Share Tech Mono',monospace;font-size:12px;padding:2px 8px;border:1px solid;}
+  .qual-badge{font-family:'Share Tech Mono',monospace;font-size:14px;padding:2px 9px;border:1px solid;}
   .qual-700{border-color:var(--tmi-gold-dark);color:var(--tmi-gold-dim);}
   .qual-800{border-color:var(--tmi-border);color:var(--tmi-gold);}
   .qual-900{border-color:rgba(232,201,106,0.5);color:var(--tmi-gold-bright);}
 
   /* MAT READY BADGE */
-  .mat-ready{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-success);border:1px solid rgba(90,153,85,0.35);padding:2px 8px;background:rgba(90,153,85,0.06);}
+  .mat-ready{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-success);border:1px solid rgba(90,153,85,0.35);padding:2px 9px;background:rgba(90,153,85,0.06);}
 
   /* ORDER BAR */
   .order-bar{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:8px 18px;display:flex;align-items:center;gap:8px;}
-  .bar-label{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;}
+  .bar-label{font-family:'Share Tech Mono',monospace;font-size:14px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;}
 
   /* ORDER ROWS */
   .order-list{padding:10px 18px;display:flex;flex-direction:column;gap:5px;}
@@ -88,14 +88,14 @@
   .order-row.s-delivered{border-left-color:var(--tmi-success);opacity:0.7;}
   .order-row:hover{background:var(--tmi-bg-hover);}
   .order-header{padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;}
-  .order-id{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-dim);min-width:42px;}
+  .order-id{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);min-width:46px;}
   .order-customer{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--tmi-text-primary);min-width:130px;}
   .order-item{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;letter-spacing:1px;color:var(--tmi-text-secondary);flex:1;text-transform:uppercase;}
-  .order-deadline{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-dim);min-width:80px;text-align:right;}
+  .order-deadline{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);min-width:90px;text-align:right;}
   .order-deadline.near{color:var(--tmi-warning);}
   .order-deadline.overdue{color:var(--tmi-danger);}
   .order-actions{display:flex;gap:5px;align-items:center;margin-left:6px;}
-  .expand-arrow{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-dim);margin-left:4px;}
+  .expand-arrow{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);margin-left:4px;}
   .order-empty{padding:30px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);letter-spacing:1px;}
 
   /* ORDER DETAIL */
@@ -103,16 +103,16 @@
   .order-detail.open{display:block;}
   .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;margin-bottom:12px;}
   .detail-field{display:flex;flex-direction:column;gap:2px;}
-  .detail-lbl{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;}
+  .detail-lbl{font-family:'Share Tech Mono',monospace;font-size:14px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;}
   .detail-val{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-secondary);}
   .detail-notes{font-family:'Exo 2',sans-serif;font-size:14px;color:var(--tmi-text-secondary);font-style:italic;}
-  .detail-mats-title{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;margin-bottom:6px;}
+  .detail-mats-title{font-family:'Share Tech Mono',monospace;font-size:14px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;margin-bottom:6px;}
   .detail-ing-row{display:flex;align-items:center;gap:12px;padding:5px 0;border-bottom:1px solid var(--tmi-border-dim);}
   .detail-ing-row:last-child{border-bottom:none;}
   .detail-ing-name{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;letter-spacing:1px;text-transform:capitalize;min-width:120px;color:var(--tmi-text-primary);}
-  .detail-needed{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-dim);min-width:80px;}
+  .detail-needed{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);min-width:90px;}
   .band-pills{display:flex;gap:6px;}
-  .bp-pill{font-family:'Share Tech Mono',monospace;font-size:12px;padding:2px 9px;border:1px solid;}
+  .bp-pill{font-family:'Share Tech Mono',monospace;font-size:14px;padding:2px 10px;border:1px solid;}
   .bp-pill.p700{border-color:var(--tmi-gold-dark);color:var(--tmi-gold-dim);}
   .bp-pill.p700.suf{background:rgba(138,112,48,0.2);box-shadow:0 0 0 1px var(--tmi-gold-dark);}
   .bp-pill.p800{border-color:var(--tmi-border-dim);color:var(--tmi-text-dim);}
@@ -121,11 +121,11 @@
   .bp-pill.p900.suf{border-color:rgba(232,201,106,0.5);color:var(--tmi-gold-bright);background:rgba(232,201,106,0.1);box-shadow:0 0 0 1px rgba(232,201,106,0.4);}
   .bp-pill.pasl{border-color:rgba(204,136,0,0.35);color:var(--tmi-warning);}
   .bp-pill.pasl.suf{background:rgba(204,136,0,0.12);box-shadow:0 0 0 1px rgba(204,136,0,0.4);}
-  .asl-note{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--tmi-warning);margin-left:4px;}
-  .ing-gem-tag{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--tmi-success);border:1px solid rgba(90,153,85,0.3);padding:1px 5px;margin-left:4px;}
+  .asl-note{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-warning);margin-left:4px;}
+  .ing-gem-tag{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--tmi-success);border:1px solid rgba(90,153,85,0.3);padding:2px 6px;margin-left:4px;}
   .readiness-row{display:flex;gap:6px;align-items:center;margin-top:10px;}
-  .readiness-lbl{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;margin-right:4px;}
-  .rb{font-family:'Share Tech Mono',monospace;font-size:12px;padding:3px 10px;border:1px solid;clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);}
+  .readiness-lbl{font-family:'Share Tech Mono',monospace;font-size:14px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;margin-right:4px;}
+  .rb{font-family:'Share Tech Mono',monospace;font-size:14px;padding:3px 12px;border:1px solid;clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);}
   .rb.r700{border-color:var(--tmi-gold-dark);color:var(--tmi-gold-dim);background:rgba(138,112,48,0.08);}
   .rb.r700.on{border-color:rgba(138,112,48,0.7);color:var(--tmi-gold-dim);background:rgba(138,112,48,0.2);}
   .rb.r800{border-color:var(--tmi-border-dim);color:var(--tmi-text-dim);}
@@ -135,11 +135,11 @@
 
   /* NEW ORDER FORM */
   .form-panel{padding:18px;}
-  .form-title{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:3px;color:var(--tmi-gold-dim);text-transform:uppercase;margin-bottom:14px;}
+  .form-title{font-family:'Share Tech Mono',monospace;font-size:14px;letter-spacing:3px;color:var(--tmi-gold-dim);text-transform:uppercase;margin-bottom:14px;}
   .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;margin-bottom:14px;max-width:680px;}
   .form-group{display:flex;flex-direction:column;gap:5px;}
   .form-group.wide{grid-column:1/-1;}
-  .form-label{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;}
+  .form-label{font-family:'Share Tech Mono',monospace;font-size:14px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;}
   .form-input{background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);color:var(--tmi-text-primary);font-family:'Share Tech Mono',monospace;font-size:14px;padding:8px 10px;outline:none;transition:border-color 0.15s;width:100%;}
   .form-input:focus{border-color:var(--tmi-border);}
   .form-input::placeholder{color:var(--tmi-text-dim);}
@@ -147,7 +147,7 @@
   .form-textarea:focus{border-color:var(--tmi-border);}
   .form-textarea::placeholder{color:var(--tmi-text-dim);}
   .qual-select-row{display:flex;gap:8px;}
-  .qual-opt{font-family:'Share Tech Mono',monospace;font-size:13px;padding:5px 18px;border:1px solid var(--tmi-border-dim);cursor:pointer;transition:all 0.15s;background:transparent;color:var(--tmi-text-dim);}
+  .qual-opt{font-family:'Share Tech Mono',monospace;font-size:14px;padding:5px 18px;border:1px solid var(--tmi-border-dim);cursor:pointer;transition:all 0.15s;background:transparent;color:var(--tmi-text-dim);}
   .qual-opt:hover{border-color:var(--tmi-border);color:var(--tmi-text-secondary);}
   .qual-opt.sel.q700{border-color:var(--tmi-gold-dark);color:var(--tmi-gold-dim);background:rgba(138,112,48,0.15);}
   .qual-opt.sel.q800{border-color:var(--tmi-border);color:var(--tmi-gold);background:var(--tmi-gold-glow);}
@@ -157,11 +157,11 @@
 
   /* PAST ORDERS */
   .past-bar{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:8px 18px;display:flex;align-items:center;gap:10px;}
-  .past-info{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-dim);margin-left:auto;letter-spacing:1px;}
+  .past-info{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);margin-left:auto;letter-spacing:1px;}
   .past-info span{color:var(--tmi-text-secondary);}
 
   /* TOAST */
-  .toast{position:fixed;bottom:20px;right:20px;background:var(--tmi-bg-panel);border:1px solid var(--tmi-gold-dark);color:var(--tmi-text-primary);font-family:'Share Tech Mono',monospace;font-size:13px;letter-spacing:1px;padding:10px 18px;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);transition:opacity 0.3s;z-index:999;}
+  .toast{position:fixed;bottom:20px;right:20px;background:var(--tmi-bg-panel);border:1px solid var(--tmi-gold-dark);color:var(--tmi-text-primary);font-family:'Share Tech Mono',monospace;font-size:14px;letter-spacing:1px;padding:10px 18px;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);transition:opacity 0.3s;z-index:999;}
   .toast.hidden{opacity:0;pointer-events:none;}
 </style>
 </head>
@@ -279,16 +279,16 @@ const LS_ORDERS='forgex-active-orders';
 function writeActiveOrders(){localStorage.setItem(LS_ORDERS,JSON.stringify(orders.filter(o=>o.status!=='delivered')));}
 
 const blueprints=[
-  {id:1,name:'Aztalan Helmet',type:'Armor',ingredients:[{name:'aslarite',qty:6},{name:'lindinium',qty:4},{name:'taranite',qty:3}]},
-  {id:2,name:'Aztalan Core',type:'Armor',ingredients:[{name:'aslarite',qty:12},{name:'lindinium',qty:8},{name:'taranite',qty:6}]},
-  {id:3,name:'Aztalan Legs',type:'Armor',ingredients:[{name:'aslarite',qty:10},{name:'lindinium',qty:6},{name:'taranite',qty:5}]},
-  {id:4,name:'Aztalan Arms',type:'Armor',ingredients:[{name:'aslarite',qty:8},{name:'lindinium',qty:5},{name:'taranite',qty:4}]},
-  {id:5,name:'Corbel Helmet',type:'Armor',ingredients:[{name:'laranite',qty:5},{name:'titanium',qty:6},{name:'aslarite',qty:4}]},
-  {id:6,name:'Corbel Core',type:'Armor',ingredients:[{name:'laranite',qty:10},{name:'titanium',qty:12},{name:'aslarite',qty:8}]},
-  {id:7,name:'Corbel Legs',type:'Armor',ingredients:[{name:'laranite',qty:8},{name:'titanium',qty:10},{name:'aslarite',qty:6}]},
-  {id:8,name:'Corbel Arms',type:'Armor',ingredients:[{name:'laranite',qty:6},{name:'titanium',qty:8},{name:'aslarite',qty:5}]},
-  {id:9,name:'Demeco LMG',type:'Weapon',ingredients:[{name:'corundum',qty:14},{name:'copper',qty:10},{name:'hadanite',qty:5}]},
-  {id:10,name:'Demeco Battery ×100',type:'Ammunition',ingredients:[{name:'copper',qty:6},{name:'corundum',qty:4}]},
+  {id:1,base:'Aztalan',slot:'Helmet',type:'Armor',weight:'Medium',finish:'Nightfall',weapon_type:null,ammo_type:null,ingredients:[{name:'aslarite',qty:6},{name:'lindinium',qty:4},{name:'taranite',qty:3}]},
+  {id:2,base:'Aztalan',slot:'Core',type:'Armor',weight:'Medium',finish:'Nightfall',weapon_type:null,ammo_type:null,ingredients:[{name:'aslarite',qty:12},{name:'lindinium',qty:8},{name:'taranite',qty:6}]},
+  {id:3,base:'Aztalan',slot:'Legs',type:'Armor',weight:'Medium',finish:'Nightfall',weapon_type:null,ammo_type:null,ingredients:[{name:'aslarite',qty:10},{name:'lindinium',qty:6},{name:'taranite',qty:5}]},
+  {id:4,base:'Aztalan',slot:'Arms',type:'Armor',weight:'Medium',finish:'Nightfall',weapon_type:null,ammo_type:null,ingredients:[{name:'aslarite',qty:8},{name:'lindinium',qty:5},{name:'taranite',qty:4}]},
+  {id:5,base:'Corbel',slot:'Helmet',type:'Armor',weight:'Heavy',finish:'Sanguine',weapon_type:null,ammo_type:null,ingredients:[{name:'laranite',qty:5},{name:'titanium',qty:6},{name:'aslarite',qty:4}]},
+  {id:6,base:'Corbel',slot:'Core',type:'Armor',weight:'Heavy',finish:'Sanguine',weapon_type:null,ammo_type:null,ingredients:[{name:'laranite',qty:10},{name:'titanium',qty:12},{name:'aslarite',qty:8}]},
+  {id:7,base:'Corbel',slot:'Legs',type:'Armor',weight:'Heavy',finish:'Sanguine',weapon_type:null,ammo_type:null,ingredients:[{name:'laranite',qty:8},{name:'titanium',qty:10},{name:'aslarite',qty:6}]},
+  {id:8,base:'Corbel',slot:'Arms',type:'Armor',weight:'Heavy',finish:'Sanguine',weapon_type:null,ammo_type:null,ingredients:[{name:'laranite',qty:6},{name:'titanium',qty:8},{name:'aslarite',qty:5}]},
+  {id:9,base:'Demeco',slot:null,type:'Weapon',weight:null,finish:'Ironside',weapon_type:'LMG',ammo_type:null,ingredients:[{name:'corundum',qty:14},{name:'copper',qty:10},{name:'hadanite',qty:5}]},
+  {id:10,base:'Demeco',slot:null,type:'Ammunition',weight:null,finish:null,weapon_type:'LMG',ammo_type:'Battery',ingredients:[{name:'copper',qty:6},{name:'corundum',qty:4}]},
 ];
 
 const inventory=[
@@ -338,13 +338,22 @@ function syncOrderTracking(bpId){
   writeTracking(t);
 }
 
+/* ── BLUEPRINT LABEL ── */
+function getBpLabel(bp){
+  if(bp.type==='Armor')
+    return `${bp.base}${bp.slot?' '+bp.slot:''}${bp.finish?' '+bp.finish:''}`.trim();
+  if(bp.type==='Weapon')
+    return `${bp.base}${bp.weapon_type?' '+bp.weapon_type:''}${bp.finish?' '+bp.finish:''}`.trim();
+  return `${bp.base}${bp.ammo_type?' '+bp.ammo_type:''}`.trim();
+}
+
 /* ── INIT ── */
 function init(){
   const sel=document.getElementById('f-blueprint');
   blueprints.forEach(bp=>{
     const opt=document.createElement('option');
     opt.value=bp.id;
-    opt.textContent=`${bp.name} (${bp.type})`;
+    opt.textContent=getBpLabel(bp);
     sel.appendChild(opt);
   });
   // Sync tracking state for sample orders on load
@@ -433,7 +442,7 @@ function orderRowHtml(order,showActions){
     <div class="order-header" onclick="toggleExpand(${order.id})">
       <span class="order-id">#${String(order.id).padStart(3,'0')}</span>
       <span class="order-customer">${order.customer}</span>
-      <span class="order-item">${bp?bp.name:'Unknown'} ×${order.qty}</span>
+      <span class="order-item">${bp?getBpLabel(bp):'Unknown'} ×${order.qty}</span>
       <span class="qual-badge qual-${order.quality}">${order.quality}+</span>
       <span class="status-pill status-${order.status}">${STATUS_LABELS[order.status]}</span>
       ${matReady&&order.status!=='delivered'?'<span class="mat-ready">MAT ✓</span>':''}
@@ -476,13 +485,13 @@ function renderDetail(order,bp){
         </div>
       </div>`;
     }).join('');
-    const r7=checkReady(bp,qty,700),r8=checkReady(bp,qty,800),r9=checkReady(bp,qty,900);
+    const q=order.quality;
+    const qReady=checkReady(bp,qty,q);
+    const qClass=q===700?'r700':q===800?'r800':'r900';
     matHtml=`<div class="detail-mats-title">Material Requirements (×${qty})</div>${ings}
     <div class="readiness-row">
-      <span class="readiness-lbl">Readiness</span>
-      <span class="rb r700${r7?' on':''}">${r7?'700 ✓':'700'}</span>
-      <span class="rb r800${r8?' on':''}">${r8?'800 ✓':'800'}</span>
-      <span class="rb r900${r9?' on':''}">${r9?'900 ✓':'900'}</span>
+      <span class="readiness-lbl">Readiness at ${q}</span>
+      <span class="rb ${qClass}${qReady?' on':''}">${q}${qReady?' ✓':' — insufficient materials'}</span>
     </div>`;
   }
   const notesHtml=order.notes?`<div class="detail-field wide" style="grid-column:1/-1"><span class="detail-lbl">Notes</span><span class="detail-notes">"${order.notes}"</span></div>`:'';
