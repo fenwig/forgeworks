@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600&display=swap');
+  :root{
+    --tmi-bg-deep:#0a0804;--tmi-bg-panel:#0f0d09;--tmi-bg-card:#141109;--tmi-bg-hover:#1a1610;
+    --tmi-gold:#c8a84b;--tmi-gold-bright:#e8c96a;--tmi-gold-dim:#8a7030;--tmi-gold-dark:#5a4a20;
+    --tmi-gold-glow:rgba(200,168,75,0.12);
+    --tmi-text-primary:#d4cbb8;--tmi-text-secondary:#7a7060;--tmi-text-dim:#3d3828;
+    --tmi-border:rgba(200,168,75,0.25);--tmi-border-dim:rgba(200,168,75,0.1);
+    --tmi-danger:#cc3333;--tmi-success:#5a9955;--tmi-warning:#cc8800;--tmi-steel:#8a9aaa;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--tmi-bg-deep);color:var(--tmi-text-primary);font-family:'Exo 2',sans-serif;}
+
+  /* HEADER */
+  .mod-header{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;}
+  .mod-eyebrow{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--tmi-gold-dim);text-transform:uppercase;margin-bottom:2px;}
+  .mod-title{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
+
+  /* STATS BAR */
+  .stats-bar{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:8px 18px;display:flex;gap:24px;align-items:center;}
+  .stat-block{display:flex;flex-direction:column;}
+  .stat-val{font-family:'Share Tech Mono',monospace;font-size:16px;color:var(--tmi-gold);}
+  .stat-lbl{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;}
+  .stat-div{width:1px;height:28px;background:var(--tmi-border-dim);}
+
+  /* TABS */
+  .tab-bar{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border);display:flex;}
+  .tab{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:10px 18px;cursor:pointer;color:var(--tmi-text-secondary);border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap;}
+  .tab:hover{color:var(--tmi-text-primary);}
+  .tab.active{color:var(--tmi-gold);border-bottom-color:var(--tmi-gold);}
+  .tab-count{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--tmi-gold-dim);background:var(--tmi-gold-glow);border:1px solid var(--tmi-border-dim);padding:1px 6px;margin-left:6px;}
+  .view{display:none;}
+  .view.active{display:block;}
+
+  /* SHARED */
+  .form-select{background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);color:var(--tmi-text-primary);font-family:'Share Tech Mono',monospace;font-size:11px;padding:6px 10px;outline:none;transition:border-color 0.15s;width:100%;}
+  .form-select:focus{border-color:var(--tmi-border);}
+  .form-select option{background:var(--tmi-bg-panel);}
+  .filter-btn{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:1px;color:var(--tmi-text-secondary);background:transparent;border:1px solid var(--tmi-border-dim);padding:5px 12px;cursor:pointer;text-transform:uppercase;transition:all 0.15s;clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);white-space:nowrap;}
+  .filter-btn:hover{border-color:var(--tmi-border);color:var(--tmi-text-primary);}
+  .filter-btn.active{background:var(--tmi-gold-glow);border-color:var(--tmi-gold);color:var(--tmi-gold);}
+
+  /* ACTION BUTTONS */
+  .action-btn{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:600;letter-spacing:1px;color:var(--tmi-text-secondary);background:transparent;border:1px solid var(--tmi-border-dim);padding:4px 10px;cursor:pointer;text-transform:uppercase;transition:all 0.15s;clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);white-space:nowrap;}
+  .action-btn:hover{border-color:var(--tmi-border);color:var(--tmi-gold);}
+  .action-btn.advance{border-color:var(--tmi-gold-dark);color:var(--tmi-gold-dim);}
+  .action-btn.advance:hover{border-color:var(--tmi-gold);color:var(--tmi-gold);background:var(--tmi-gold-glow);}
+  .action-btn.deliver{border-color:rgba(90,153,85,0.35);color:var(--tmi-success);}
+  .action-btn.deliver:hover{border-color:rgba(90,153,85,0.6);background:rgba(90,153,85,0.1);}
+  .action-btn.danger:hover{border-color:rgba(204,51,51,0.5);color:var(--tmi-danger);}
+
+  /* STATUS PILLS */
+  .status-pill{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:1px;padding:2px 8px;text-transform:uppercase;}
+  .status-queued{border:1px solid var(--tmi-border-dim);color:var(--tmi-text-secondary);}
+  .status-crafting{border:1px solid rgba(204,136,0,0.4);color:var(--tmi-warning);background:rgba(204,136,0,0.08);}
+  .status-ready{border:1px solid rgba(200,168,75,0.4);color:var(--tmi-gold);background:var(--tmi-gold-glow);}
+  .status-delivered{border:1px solid rgba(90,153,85,0.4);color:var(--tmi-success);background:rgba(90,153,85,0.08);}
+
+  /* QUALITY BADGE */
+  .qual-badge{font-family:'Share Tech Mono',monospace;font-size:8px;padding:2px 7px;border:1px solid;}
+  .qual-700{border-color:var(--tmi-gold-dark);color:var(--tmi-gold-dim);}
+  .qual-800{border-color:var(--tmi-border);color:var(--tmi-gold);}
+  .qual-900{border-color:rgba(232,201,106,0.5);color:var(--tmi-gold-bright);}
+
+  /* MAT READY BADGE */
+  .mat-ready{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--tmi-success);border:1px solid rgba(90,153,85,0.35);padding:2px 6px;background:rgba(90,153,85,0.06);}
+
+  /* ORDER BAR */
+  .order-bar{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:8px 18px;display:flex;align-items:center;gap:8px;}
+  .bar-label{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;}
+
+  /* ORDER ROWS */
+  .order-list{padding:10px 18px;display:flex;flex-direction:column;gap:5px;}
+  .order-row{background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);border-left:2px solid var(--tmi-gold-dark);transition:all 0.15s;}
+  .order-row.s-crafting{border-left-color:var(--tmi-warning);}
+  .order-row.s-ready{border-left-color:var(--tmi-gold);}
+  .order-row.s-delivered{border-left-color:var(--tmi-success);opacity:0.65;}
+  .order-row:hover{background:var(--tmi-bg-hover);}
+  .order-header{padding:9px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;}
+  .order-id{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--tmi-text-dim);min-width:38px;}
+  .order-customer{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--tmi-text-primary);min-width:120px;}
+  .order-item{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;color:var(--tmi-text-secondary);flex:1;text-transform:uppercase;}
+  .order-qty{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-text-secondary);min-width:24px;text-align:right;}
+  .order-deadline{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--tmi-text-dim);min-width:70px;text-align:right;}
+  .order-deadline.near{color:var(--tmi-warning);}
+  .order-deadline.overdue{color:var(--tmi-danger);}
+  .order-actions{display:flex;gap:5px;align-items:center;margin-left:6px;}
+  .expand-arrow{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--tmi-text-dim);margin-left:4px;}
+  .order-empty{padding:30px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-text-dim);letter-spacing:1px;}
+
+  /* ORDER DETAIL */
+  .order-detail{display:none;background:var(--tmi-bg-panel);border-top:1px solid var(--tmi-border-dim);padding:12px 14px;}
+  .order-detail.open{display:block;}
+  .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;margin-bottom:12px;}
+  .detail-field{display:flex;flex-direction:column;gap:2px;}
+  .detail-lbl{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;}
+  .detail-val{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--tmi-text-secondary);}
+  .detail-notes{font-family:'Exo 2',sans-serif;font-size:11px;color:var(--tmi-text-secondary);font-style:italic;}
+  .detail-mats-title{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;margin-bottom:6px;}
+  .detail-ing-row{display:flex;align-items:center;gap:12px;padding:4px 0;border-bottom:1px solid var(--tmi-border-dim);}
+  .detail-ing-row:last-child{border-bottom:none;}
+  .detail-ing-name{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:capitalize;min-width:110px;color:var(--tmi-text-primary);}
+  .detail-needed{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--tmi-text-dim);min-width:70px;}
+  .band-pills{display:flex;gap:6px;}
+  .bp-pill{font-family:'Share Tech Mono',monospace;font-size:9px;padding:2px 8px;border:1px solid;}
+  .bp-pill.p700{border-color:var(--tmi-gold-dark);color:var(--tmi-gold-dim);}
+  .bp-pill.p700.suf{background:rgba(138,112,48,0.2);box-shadow:0 0 0 1px var(--tmi-gold-dark);}
+  .bp-pill.p800{border-color:var(--tmi-border-dim);color:var(--tmi-text-dim);}
+  .bp-pill.p800.suf{border-color:rgba(200,168,75,0.5);color:var(--tmi-gold);background:rgba(200,168,75,0.1);box-shadow:0 0 0 1px rgba(200,168,75,0.4);}
+  .bp-pill.p900{border-color:var(--tmi-border-dim);color:var(--tmi-text-dim);}
+  .bp-pill.p900.suf{border-color:rgba(232,201,106,0.5);color:var(--tmi-gold-bright);background:rgba(232,201,106,0.1);box-shadow:0 0 0 1px rgba(232,201,106,0.4);}
+  .bp-pill.pasl{border-color:rgba(204,136,0,0.35);color:var(--tmi-warning);}
+  .bp-pill.pasl.suf{background:rgba(204,136,0,0.12);box-shadow:0 0 0 1px rgba(204,136,0,0.4);}
+  .asl-note{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--tmi-warning);margin-left:4px;}
+  .ing-gem-tag{font-family:'Share Tech Mono',monospace;font-size:7px;color:var(--tmi-success);border:1px solid rgba(90,153,85,0.3);padding:1px 4px;margin-left:4px;}
+  .readiness-row{display:flex;gap:6px;align-items:center;margin-top:10px;}
+  .readiness-lbl{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;margin-right:4px;}
+  .rb{font-family:'Share Tech Mono',monospace;font-size:9px;padding:2px 8px;border:1px solid;clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);}
+  .rb.r700{border-color:var(--tmi-gold-dark);color:var(--tmi-gold-dim);background:rgba(138,112,48,0.08);}
+  .rb.r700.on{border-color:rgba(138,112,48,0.7);color:var(--tmi-gold-dim);background:rgba(138,112,48,0.2);}
+  .rb.r800{border-color:var(--tmi-border-dim);color:var(--tmi-text-dim);}
+  .rb.r800.on{border-color:rgba(200,168,75,0.5);color:var(--tmi-gold);background:rgba(200,168,75,0.12);}
+  .rb.r900{border-color:var(--tmi-border-dim);color:var(--tmi-text-dim);}
+  .rb.r900.on{border-color:rgba(232,201,106,0.5);color:var(--tmi-gold-bright);background:rgba(232,201,106,0.12);}
+
+  /* NEW ORDER FORM */
+  .form-panel{padding:18px;}
+  .form-title{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--tmi-gold-dim);text-transform:uppercase;margin-bottom:14px;}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;margin-bottom:14px;}
+  .form-group{display:flex;flex-direction:column;gap:5px;}
+  .form-group.wide{grid-column:1/-1;}
+  .form-label{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;}
+  .form-input{background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);color:var(--tmi-text-primary);font-family:'Share Tech Mono',monospace;font-size:11px;padding:7px 10px;outline:none;transition:border-color 0.15s;width:100%;}
+  .form-input:focus{border-color:var(--tmi-border);}
+  .form-input::placeholder{color:var(--tmi-text-dim);}
+  .form-textarea{background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);color:var(--tmi-text-primary);font-family:'Exo 2',sans-serif;font-size:11px;padding:7px 10px;outline:none;transition:border-color 0.15s;width:100%;resize:vertical;min-height:52px;}
+  .form-textarea:focus{border-color:var(--tmi-border);}
+  .form-textarea::placeholder{color:var(--tmi-text-dim);}
+  .qual-select-row{display:flex;gap:8px;}
+  .qual-opt{font-family:'Share Tech Mono',monospace;font-size:10px;padding:5px 16px;border:1px solid var(--tmi-border-dim);cursor:pointer;transition:all 0.15s;background:transparent;color:var(--tmi-text-dim);}
+  .qual-opt:hover{border-color:var(--tmi-border);color:var(--tmi-text-secondary);}
+  .qual-opt.sel.q700{border-color:var(--tmi-gold-dark);color:var(--tmi-gold-dim);background:rgba(138,112,48,0.15);}
+  .qual-opt.sel.q800{border-color:var(--tmi-border);color:var(--tmi-gold);background:var(--tmi-gold-glow);}
+  .qual-opt.sel.q900{border-color:rgba(232,201,106,0.5);color:var(--tmi-gold-bright);background:rgba(232,201,106,0.1);}
+  .submit-btn{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;color:var(--tmi-bg-deep);background:var(--tmi-gold);border:none;padding:9px 26px;cursor:pointer;text-transform:uppercase;transition:background 0.15s;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);}
+  .submit-btn:hover{background:var(--tmi-gold-bright);}
+
+  /* FULFILLMENT */
+  .fulfil-bar{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:10px 18px;display:flex;align-items:center;gap:10px;}
+  .fulfil-info{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--tmi-text-dim);margin-left:auto;letter-spacing:1px;}
+  .fulfil-info span{color:var(--tmi-text-secondary);}
+  .needs-table-wrap{padding:12px 18px;}
+  table{width:100%;border-collapse:collapse;}
+  thead tr{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border);}
+  th{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;padding:8px 14px;text-align:left;}
+  th.band{text-align:center;}
+  tbody tr{border-bottom:1px solid var(--tmi-border-dim);transition:background 0.1s;}
+  tbody tr:hover{background:var(--tmi-bg-hover);}
+  td{padding:8px 14px;font-size:12px;vertical-align:middle;}
+  td.band-cell{text-align:center;}
+  .ore-cell{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;text-transform:capitalize;color:var(--tmi-text-primary);}
+  .need-cell{font-family:'Share Tech Mono',monospace;font-size:10px;}
+  .need-ok{color:var(--tmi-success);}
+  .need-short{color:var(--tmi-danger);}
+  .need-zero{color:var(--tmi-text-dim);}
+  .need-asl{color:var(--tmi-warning);}
+  .th-700{color:var(--tmi-gold-dim);}
+  .th-800{color:var(--tmi-gold);}
+  .th-900{color:var(--tmi-gold-bright);}
+  .fulfil-empty{padding:30px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-text-dim);letter-spacing:1px;}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:20px;right:20px;background:var(--tmi-bg-panel);border:1px solid var(--tmi-gold-dark);color:var(--tmi-text-primary);font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;padding:10px 18px;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);transition:opacity 0.3s;z-index:999;}
+  .toast.hidden{opacity:0;pointer-events:none;}
+</style>
+</head>
+<body>
+<h2 class="sr-only">FORGE-X Order Tracker — active orders, new order form, and fulfillment view</h2>
+
+<div class="mod-header">
+  <div>
+    <div class="mod-eyebrow">Module 05</div>
+    <div class="mod-title">Order Tracker</div>
+  </div>
+</div>
+
+<div class="stats-bar">
+  <div class="stat-block">
+    <span class="stat-val" id="stat-active">0</span>
+    <span class="stat-lbl">Active</span>
+  </div>
+  <div class="stat-div"></div>
+  <div class="stat-block">
+    <span class="stat-val" id="stat-queued">0</span>
+    <span class="stat-lbl">Queued</span>
+  </div>
+  <div class="stat-div"></div>
+  <div class="stat-block">
+    <span class="stat-val" id="stat-crafting">0</span>
+    <span class="stat-lbl">In Progress</span>
+  </div>
+  <div class="stat-div"></div>
+  <div class="stat-block">
+    <span class="stat-val" id="stat-ready">0</span>
+    <span class="stat-lbl">Ready</span>
+  </div>
+  <div class="stat-div"></div>
+  <div class="stat-block">
+    <span class="stat-val" id="stat-delivered">0</span>
+    <span class="stat-lbl">Delivered</span>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <div class="tab active" onclick="switchTab('orders')">Active Orders <span class="tab-count" id="tc-orders">0</span></div>
+  <div class="tab" onclick="switchTab('new')">New Order</div>
+  <div class="tab" onclick="switchTab('fulfil')">Fulfillment <span class="tab-count" id="tc-fulfil">0</span></div>
+</div>
+
+<!-- VIEW A: ACTIVE ORDERS -->
+<div class="view active" id="view-orders">
+  <div class="order-bar">
+    <span class="bar-label">Status</span>
+    <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+    <button class="filter-btn" onclick="setFilter('queued',this)">Queued</button>
+    <button class="filter-btn" onclick="setFilter('crafting',this)">In Progress</button>
+    <button class="filter-btn" onclick="setFilter('ready',this)">Ready</button>
+    <button class="filter-btn" onclick="setFilter('delivered',this)">Delivered</button>
+  </div>
+  <div class="order-list" id="order-list"></div>
+  <div class="order-empty" id="order-empty" style="display:none">NO ORDERS MATCH FILTER</div>
+</div>
+
+<!-- VIEW B: NEW ORDER -->
+<div class="view" id="view-new">
+  <div class="form-panel">
+    <div class="form-title">Create New Order</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Customer</label>
+        <input class="form-input" id="f-customer" placeholder="Handle or name...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Blueprint</label>
+        <select class="form-select" id="f-blueprint">
+          <option value="">Select blueprint...</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Quantity</label>
+        <input class="form-input" id="f-qty" type="number" min="1" max="20" value="1">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Quality Target</label>
+        <div class="qual-select-row">
+          <button class="qual-opt q700 sel" id="qt-700" onclick="selectQuality(700)">700</button>
+          <button class="qual-opt q800" id="qt-800" onclick="selectQuality(800)">800</button>
+          <button class="qual-opt q900" id="qt-900" onclick="selectQuality(900)">900</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Deadline (optional)</label>
+        <input class="form-input" id="f-deadline" type="date">
+      </div>
+      <div class="form-group">
+        <label class="form-label">aUEC Agreed</label>
+        <input class="form-input" id="f-price" type="number" min="0" placeholder="0">
+      </div>
+      <div class="form-group wide">
+        <label class="form-label">Notes</label>
+        <textarea class="form-textarea" id="f-notes" placeholder="Special requests, delivery location, other details..."></textarea>
+      </div>
+    </div>
+    <button class="submit-btn" onclick="submitOrder()">Create Order</button>
+  </div>
+</div>
+
+<!-- VIEW C: FULFILLMENT -->
+<div class="view" id="view-fulfil">
+  <div class="fulfil-bar">
+    <span class="bar-label">Target Band</span>
+    <button class="filter-btn" onclick="setFulfilBand('all',this)">All</button>
+    <button class="filter-btn active" id="fb-700" onclick="setFulfilBand('700',this)">700+</button>
+    <button class="filter-btn" id="fb-800" onclick="setFulfilBand('800',this)">800+</button>
+    <button class="filter-btn" id="fb-900" onclick="setFulfilBand('900',this)">900+</button>
+    <span class="fulfil-info">Aggregated across <span id="fulfil-count">0</span> active orders</span>
+  </div>
+  <div class="needs-table-wrap">
+    <table id="fulfil-table" style="display:none">
+      <thead>
+        <tr>
+          <th>Ore / Material</th>
+          <th class="band th-700" id="fth-700">700 Band</th>
+          <th class="band th-800" id="fth-800">800 Band</th>
+          <th class="band th-900" id="fth-900">900 Band</th>
+        </tr>
+      </thead>
+      <tbody id="fulfil-body"></tbody>
+    </table>
+    <div class="fulfil-empty" id="fulfil-empty">NO ACTIVE ORDERS</div>
+  </div>
+</div>
+
+<div class="toast hidden" id="toast"></div>
+
+<script>
+const GEM_NAMES=new Set(['hadanite','janalite','dolvine','aphorite','sadaryx','carinite','beradom','jaclium','saldynium','feynmaline','glacosite']);
+
+const blueprints=[
+  {id:1,name:'Aztalan Helmet',type:'Armor',ingredients:[{name:'aslarite',qty:6},{name:'lindinium',qty:4},{name:'taranite',qty:3}]},
+  {id:2,name:'Aztalan Core',type:'Armor',ingredients:[{name:'aslarite',qty:12},{name:'lindinium',qty:8},{name:'taranite',qty:6}]},
+  {id:3,name:'Aztalan Legs',type:'Armor',ingredients:[{name:'aslarite',qty:10},{name:'lindinium',qty:6},{name:'taranite',qty:5}]},
+  {id:4,name:'Aztalan Arms',type:'Armor',ingredients:[{name:'aslarite',qty:8},{name:'lindinium',qty:5},{name:'taranite',qty:4}]},
+  {id:5,name:'Corbel Helmet',type:'Armor',ingredients:[{name:'laranite',qty:5},{name:'titanium',qty:6},{name:'aslarite',qty:4}]},
+  {id:6,name:'Corbel Core',type:'Armor',ingredients:[{name:'laranite',qty:10},{name:'titanium',qty:12},{name:'aslarite',qty:8}]},
+  {id:7,name:'Corbel Legs',type:'Armor',ingredients:[{name:'laranite',qty:8},{name:'titanium',qty:10},{name:'aslarite',qty:6}]},
+  {id:8,name:'Corbel Arms',type:'Armor',ingredients:[{name:'laranite',qty:6},{name:'titanium',qty:8},{name:'aslarite',qty:5}]},
+  {id:9,name:'Demeco LMG',type:'Weapon',ingredients:[{name:'corundum',qty:14},{name:'copper',qty:10},{name:'hadanite',qty:5}]},
+  {id:10,name:'Demeco Battery ×100',type:'Ammunition',ingredients:[{name:'copper',qty:6},{name:'corundum',qty:4}]},
+];
+
+const inventory=[
+  {ore:'aslarite',quality:534,qty:200},{ore:'aslarite',quality:580,qty:80},
+  {ore:'laranite',quality:743,qty:45},{ore:'laranite',quality:812,qty:18},
+  {ore:'taranite',quality:756,qty:30},{ore:'taranite',quality:880,qty:12},
+  {ore:'lindinium',quality:720,qty:22},{ore:'titanium',quality:690,qty:15},
+  {ore:'corundum',quality:760,qty:40},{ore:'copper',quality:700,qty:25},
+  {ore:'hadanite',quality:920,qty:7},
+];
+
+let orders=[
+  {id:1,customer:'Kira Voss',bpId:6,qty:1,quality:800,status:'crafting',created:'2954-04-18',deadline:'2954-04-25',price:48000,notes:'Full Corbel set incoming — core first.'},
+  {id:2,customer:'Kira Voss',bpId:7,qty:1,quality:800,status:'queued',created:'2954-04-18',deadline:'2954-04-25',price:38000,notes:''},
+  {id:3,customer:'Mace Torin',bpId:9,qty:2,quality:900,status:'ready',created:'2954-04-15',deadline:'',price:120000,notes:'Paid up front. Pickup at Levsky.'},
+  {id:4,customer:'R. Dallow',bpId:2,qty:1,quality:700,status:'delivered',created:'2954-04-10',deadline:'',price:22000,notes:''},
+];
+let nextId=5;
+let statusFilter='all';
+let fulfilBand='700';
+let selectedQuality=700;
+let expanded=new Set();
+
+/* ── INIT ── */
+function init(){
+  const sel=document.getElementById('f-blueprint');
+  blueprints.forEach(bp=>{
+    const opt=document.createElement('option');
+    opt.value=bp.id;
+    opt.textContent=`${bp.name} (${bp.type})`;
+    sel.appendChild(opt);
+  });
+  renderOrders();
+}
+
+/* ── TABS ── */
+function switchTab(tab){
+  ['orders','new','fulfil'].forEach(v=>document.getElementById('view-'+v).classList.toggle('active',v===tab));
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['orders','new','fulfil'][i]===tab));
+  if(tab==='fulfil') renderFulfil();
+  if(tab==='orders') renderOrders();
+}
+
+/* ── STATS ── */
+function updateStats(){
+  const active=orders.filter(o=>o.status!=='delivered').length;
+  document.getElementById('stat-active').textContent=active;
+  document.getElementById('stat-queued').textContent=orders.filter(o=>o.status==='queued').length;
+  document.getElementById('stat-crafting').textContent=orders.filter(o=>o.status==='crafting').length;
+  document.getElementById('stat-ready').textContent=orders.filter(o=>o.status==='ready').length;
+  document.getElementById('stat-delivered').textContent=orders.filter(o=>o.status==='delivered').length;
+  document.getElementById('tc-orders').textContent=active;
+  document.getElementById('tc-fulfil').textContent=active;
+}
+
+/* ── FILTERS ── */
+function setFilter(s,btn){
+  statusFilter=s;
+  document.querySelectorAll('.order-bar .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderOrders();
+}
+
+function setFulfilBand(band,btn){
+  fulfilBand=band;
+  document.querySelectorAll('.fulfil-bar .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderFulfil();
+}
+
+/* ── INVENTORY HELPERS ── */
+function getBands(ore){
+  const lots=inventory.filter(l=>l.ore===ore);
+  return{
+    b700:lots.filter(l=>l.quality>=700&&l.quality<800).reduce((s,l)=>s+l.qty,0),
+    b800:lots.filter(l=>l.quality>=800&&l.quality<900).reduce((s,l)=>s+l.qty,0),
+    b900:lots.filter(l=>l.quality>=900).reduce((s,l)=>s+l.qty,0),
+    total500plus:lots.filter(l=>l.quality>=500).reduce((s,l)=>s+l.qty,0),
+  };
+}
+
+function checkReady(bp,qty,band){
+  const aslIng=bp.ingredients.find(i=>i.name==='aslarite');
+  if(aslIng&&getBands('aslarite').total500plus<aslIng.qty*qty) return false;
+  return bp.ingredients.filter(i=>i.name!=='aslarite').every(ing=>{
+    const b=getBands(ing.name);
+    const have=band===700?b.b700:band===800?b.b800:b.b900;
+    return have>=ing.qty*qty;
+  });
+}
+
+/* ── STATUS PIPELINE ── */
+const STATUS_NEXT={queued:'crafting',crafting:'ready',ready:'delivered'};
+const STATUS_LABELS={queued:'Queued',crafting:'In Progress',ready:'Ready',delivered:'Delivered'};
+const STATUS_NEXT_LABEL={queued:'Start Crafting',crafting:'Mark Ready',ready:'Mark Delivered'};
+
+/* ── VIEW A: ORDERS ── */
+function renderOrders(){
+  updateStats();
+  const list=document.getElementById('order-list');
+  const empty=document.getElementById('order-empty');
+  const filtered=statusFilter==='all'?orders:orders.filter(o=>o.status===statusFilter);
+  if(!filtered.length){list.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+
+  list.innerHTML=filtered.map(order=>{
+    const bp=blueprints.find(b=>b.id===order.bpId);
+    const isExp=expanded.has(order.id);
+    const matReady=bp&&order.status!=='delivered'?checkReady(bp,order.qty,order.quality):false;
+    const nextStatus=STATUS_NEXT[order.status];
+    const dlClass=deadlineClass(order.deadline,order.status);
+
+    return`<div class="order-row s-${order.status}">
+      <div class="order-header" onclick="toggleExpand(${order.id})">
+        <span class="order-id">#${String(order.id).padStart(3,'0')}</span>
+        <span class="order-customer">${order.customer}</span>
+        <span class="order-item">${bp?bp.name:'Unknown'} ×${order.qty}</span>
+        <span class="qual-badge qual-${order.quality}">${order.quality}+</span>
+        <span class="status-pill status-${order.status}">${STATUS_LABELS[order.status]}</span>
+        ${matReady?'<span class="mat-ready">MAT ✓</span>':''}
+        <span class="order-deadline${dlClass?' '+dlClass:''}">${order.deadline||'—'}</span>
+        <div class="order-actions" onclick="event.stopPropagation()">
+          ${nextStatus?`<button class="action-btn ${order.status==='ready'?'deliver':'advance'}" onclick="advanceStatus(${order.id})">${STATUS_NEXT_LABEL[order.status]}</button>`:''}
+          <button class="action-btn danger" onclick="deleteOrder(${order.id})" title="Delete">✕</button>
+        </div>
+        <span class="expand-arrow">${isExp?'▲':'▼'}</span>
+      </div>
+      <div class="order-detail${isExp?' open':''}">
+        ${renderDetail(order,bp)}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderDetail(order,bp){
+  const price=order.price>0?order.price.toLocaleString()+' aUEC':'—';
+  let matHtml='';
+  if(bp){
+    const qty=order.qty;
+    const ings=bp.ingredients.map(ing=>{
+      const isAsl=ing.name==='aslarite';
+      const need=ing.qty*qty;
+      if(isAsl){
+        const b=getBands('aslarite');
+        const suf=b.total500plus>=need;
+        return`<div class="detail-ing-row">
+          <span class="detail-ing-name">${ing.name}<span class="asl-note">500+</span></span>
+          <span class="detail-needed">Need ${need} cSCU</span>
+          <div class="band-pills"><span class="bp-pill pasl${suf?' suf':''}">${b.total500plus} avail${suf?' ✓':''}</span></div>
+        </div>`;
+      }
+      const b=getBands(ing.name);
+      const s7=b.b700>=need,s8=b.b800>=need,s9=b.b900>=need;
+      const gemTag=GEM_NAMES.has(ing.name)?'<span class="ing-gem-tag">GEM</span>':'';
+      return`<div class="detail-ing-row">
+        <span class="detail-ing-name">${ing.name}${gemTag}</span>
+        <span class="detail-needed">Need ${need} cSCU</span>
+        <div class="band-pills">
+          <span class="bp-pill p700${s7?' suf':''}">${b.b700}${s7?' ✓':''}</span>
+          <span class="bp-pill p800${s8?' suf':''}">${b.b800}${s8?' ✓':''}</span>
+          <span class="bp-pill p900${s9?' suf':''}">${b.b900}${s9?' ✓':''}</span>
+        </div>
+      </div>`;
+    }).join('');
+
+    const r7=checkReady(bp,qty,700),r8=checkReady(bp,qty,800),r9=checkReady(bp,qty,900);
+    const readiness=`<div class="readiness-row">
+      <span class="readiness-lbl">Readiness</span>
+      <span class="rb r700${r7?' on':''}">${r7?'700 ✓':'700'}</span>
+      <span class="rb r800${r8?' on':''}">${r8?'800 ✓':'800'}</span>
+      <span class="rb r900${r9?' on':''}">${r9?'900 ✓':'900'}</span>
+    </div>`;
+
+    matHtml=`<div class="detail-mats-title">Material Requirements (×${qty})</div>${ings}${readiness}`;
+  }
+
+  const notesHtml=order.notes?`<div class="detail-field wide" style="grid-column:1/-1"><span class="detail-lbl">Notes</span><span class="detail-notes">"${order.notes}"</span></div>`:'';
+  return`<div class="detail-grid">
+    <div class="detail-field"><span class="detail-lbl">Order ID</span><span class="detail-val">#${String(order.id).padStart(3,'0')}</span></div>
+    <div class="detail-field"><span class="detail-lbl">Price Agreed</span><span class="detail-val">${price}</span></div>
+    <div class="detail-field"><span class="detail-lbl">Created</span><span class="detail-val">${order.created}</span></div>
+    <div class="detail-field"><span class="detail-lbl">Deadline</span><span class="detail-val">${order.deadline||'—'}</span></div>
+    ${notesHtml}
+  </div>
+  ${matHtml}`;
+}
+
+function toggleExpand(id){expanded.has(id)?expanded.delete(id):expanded.add(id);renderOrders();}
+
+function advanceStatus(id){
+  const o=orders.find(o=>o.id===id);
+  if(!o||!STATUS_NEXT[o.status]) return;
+  o.status=STATUS_NEXT[o.status];
+  renderOrders();
+  toast(`ORDER #${String(id).padStart(3,'0')} → ${STATUS_LABELS[o.status].toUpperCase()}`);
+}
+
+function deleteOrder(id){
+  orders=orders.filter(o=>o.id!==id);
+  expanded.delete(id);
+  renderOrders();
+  toast('ORDER REMOVED');
+}
+
+/* ── VIEW B: NEW ORDER ── */
+function selectQuality(q){
+  selectedQuality=q;
+  [700,800,900].forEach(v=>document.getElementById('qt-'+v).classList.toggle('sel',v===q));
+}
+
+function submitOrder(){
+  const customer=document.getElementById('f-customer').value.trim();
+  const bpId=parseInt(document.getElementById('f-blueprint').value);
+  const qty=Math.max(1,parseInt(document.getElementById('f-qty').value)||1);
+  const price=parseInt(document.getElementById('f-price').value)||0;
+  const deadline=document.getElementById('f-deadline').value;
+  const notes=document.getElementById('f-notes').value.trim();
+
+  if(!customer){toast('ENTER CUSTOMER NAME');return;}
+  if(!bpId){toast('SELECT A BLUEPRINT');return;}
+
+  const today=new Date().toISOString().split('T')[0];
+  orders.push({id:nextId++,customer,bpId,qty,quality:selectedQuality,status:'queued',created:today,deadline,price,notes});
+
+  document.getElementById('f-customer').value='';
+  document.getElementById('f-blueprint').value='';
+  document.getElementById('f-qty').value='1';
+  document.getElementById('f-price').value='';
+  document.getElementById('f-deadline').value='';
+  document.getElementById('f-notes').value='';
+  selectQuality(700);
+
+  toast('ORDER CREATED');
+  switchTab('orders');
+}
+
+/* ── VIEW C: FULFILLMENT ── */
+function renderFulfil(){
+  const active=orders.filter(o=>o.status!=='delivered');
+  document.getElementById('fulfil-count').textContent=active.length;
+  const tbl=document.getElementById('fulfil-table');
+  const empty=document.getElementById('fulfil-empty');
+
+  if(!active.length){tbl.style.display='none';empty.style.display='block';return;}
+  tbl.style.display='table';empty.style.display='none';
+
+  const needs={};
+  active.forEach(order=>{
+    const bp=blueprints.find(b=>b.id===order.bpId);
+    if(!bp) return;
+    bp.ingredients.forEach(ing=>{
+      if(!needs[ing.name]) needs[ing.name]={isAsl:ing.name==='aslarite',isGem:GEM_NAMES.has(ing.name),t700:0,t800:0,t900:0,tAsl:0};
+      const n=ing.qty*order.qty;
+      if(ing.name==='aslarite') needs[ing.name].tAsl+=n;
+      else if(order.quality===700) needs[ing.name].t700+=n;
+      else if(order.quality===800) needs[ing.name].t800+=n;
+      else needs[ing.name].t900+=n;
+    });
+  });
+
+  const showAll=fulfilBand==='all';
+  ['700','800','900'].forEach(b=>{
+    document.getElementById('fth-'+b).style.display=(!showAll&&fulfilBand!==b)?'none':'';
+  });
+
+  const body=document.getElementById('fulfil-body');
+  body.innerHTML=Object.entries(needs).map(([ore,info])=>{
+    if(info.isAsl){
+      const b=getBands('aslarite');
+      const need=info.tAsl,have=b.total500plus,diff=have-need;
+      const cls=diff>=0?'need-ok':'need-short';
+      const txt=diff>=0?`✓ +${diff}`:`-${Math.abs(diff)}`;
+      const cell=`<td class="band-cell need-asl">${need} needed<br><span class="${cls}" style="font-size:9px">${have} avail · ${txt}</span></td>`;
+      return`<tr>
+        <td class="ore-cell">${ore}<span class="asl-note" style="margin-left:6px;font-size:8px">500+</span></td>
+        ${showAll||fulfilBand==='700'?cell:''}
+        ${showAll||fulfilBand==='800'?cell:''}
+        ${showAll||fulfilBand==='900'?cell:''}
+      </tr>`;
+    }
+    const b=getBands(ore);
+    const gemTag=info.isGem?`<span style="font-family:'Share Tech Mono',monospace;font-size:7px;color:var(--tmi-success);border:1px solid rgba(90,153,85,0.3);padding:1px 4px;margin-left:5px;">GEM</span>`:'';
+    const cells=[['700',info.t700,b.b700],['800',info.t800,b.b800],['900',info.t900,b.b900]].map(([band,need,have])=>{
+      if(!showAll&&fulfilBand!==band) return '';
+      if(need===0) return`<td class="band-cell"><span class="need-cell need-zero">—</span></td>`;
+      const diff=have-need;
+      const cls=diff>=0?'need-ok':'need-short';
+      const txt=diff>=0?`✓ +${diff}`:`-${Math.abs(diff)}`;
+      return`<td class="band-cell"><span class="need-cell ${cls}">${need} needed<br><span style="font-size:9px">${have} avail · ${txt}</span></span></td>`;
+    });
+    return`<tr>
+      <td class="ore-cell">${ore}${gemTag}</td>
+      ${cells.join('')}
+    </tr>`;
+  }).join('');
+}
+
+/* ── HELPERS ── */
+function deadlineClass(deadline,status){
+  if(!deadline||status==='delivered') return '';
+  const today=new Date();today.setHours(0,0,0,0);
+  const dl=new Date(deadline);
+  const diff=Math.floor((dl-today)/(864e5));
+  if(diff<0) return 'overdue';
+  if(diff<=3) return 'near';
+  return '';
+}
+
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;
+  el.classList.remove('hidden');
+  clearTimeout(toast._t);
+  toast._t=setTimeout(()=>el.classList.add('hidden'),2200);
+}
+
+init();
+</script>
+</body>
+</html>
