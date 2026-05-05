@@ -147,7 +147,7 @@ Troublemaker Incorporated — Custom Arms & Armor   ← eyebrow (small, gold-dim
   bpId:     number,             // references blueprint.id
   qty:      number,             // units ordered
   quality:  number,             // 700 | 800 | 900
-  status:   string,             // 'queued' | 'crafting' | 'ready' | 'delivered'
+  status:   string,             // 'inprogress' | 'ready' | 'delivered'
   created:  string,             // 'YYYY-MM-DD'
   deadline: string,             // 'YYYY-MM-DD' or ''
   price:    number,             // aUEC agreed
@@ -189,19 +189,19 @@ Planned use: One-click refresh on patch day via Data Sync module. Will auto-popu
 
 ## Outstanding TODOs
 
-### Immediate
-- [ ] Apply consistent header branding to **Module 05** (eyebrow still reads "Module 05")
-- [ ] Apply consistent header branding to **Module 05** Order Tracker (same pattern as 02–04)
+### Immediate — next session
+- [ ] **Apply canonical text colors to Modules 01, 02, 03, 04** — update `:root` vars to `#ffffff / #d0c4b0 / #90806e` on next edit of each module
+- [ ] **Build Module 06 — Crafting Tracker** — user indicated this is the next big module
 
 ### Near-term
-- [ ] Build **Module 06 — Crafting Tracker** (record completed crafts, deduct inventory)
 - [ ] Build **Module 07 — The Forge** (craft queue and production planning)
 - [ ] Build **Module 08 — Reports** (activity log, revenue, analytics)
 - [ ] Wire up **iframe shell** in Module 01 (persistent header + sidebar, modules load in content pane)
 
 ### Data & Persistence
-- [ ] Persist material lots to localStorage (Module 02 data currently resets on refresh)
-- [ ] Persist blueprint tracking + orders across sessions (Module 04/05)
+- [ ] Persist material lots to localStorage (Module 02 data resets on refresh)
+- [ ] Persist orders across sessions (Module 05)
+- [ ] Persist blueprint owned/tracking state (Module 04)
 - [ ] **Lot combination** — merge two lots: sum qty, average quality
 - [ ] Implement SC Wiki API import for blueprints (Data Sync module)
 
@@ -219,10 +219,12 @@ Planned use: One-click refresh on patch day via Data Sync module. Will auto-popu
 
 | File | What changed |
 |---|---|
-| `forgex_module04_v2_full.html` | Multi-row context-sensitive filter bar (Type/Category/Slot/Weight/Weapon Type/Finish search); weight + finish added to blueprint schema; branding + font/color consistency |
-| `forgex_module03_acquisition.html` | 960px compact layout; font sizes to 14px min; brighter text colors; org name eyebrow |
-| `forgex_module02_materials_v2.html` | 960px compact; Notes column removed; font sizes to 14px min; brighter text + quality colors; org name eyebrow; title → "Material Database" |
-| `forgex_module01_dashboard_v4.html` | New transparent PNG logos; title → "TI Forgeworks"; removed System Nominal pill; rebuilt module grid (6 cards, correct links); removed Resource Acquisition and Data Sync cards from grid; org stats bar updated |
-| `forgex_module05_orders.html` | Fulfillment tab → Past Orders tab; localStorage bridge (forgex-active-orders); order tracking syncs to Module 04; brighter text; 960px compact |
-| `large logo.png` | New hero logo with transparent background |
-| `small logo.png` | New header corner logo with transparent background |
+| `forgex_module05_orders.html` | White text scheme (#ffffff); 14px floor everywhere; pipeline → In Progress/Ready/Delivered; blueprint schema matches Mod 04; getBpLabel() for dropdown; readiness shows only ordered quality tier; Delete Order with confirmation; Revert button; Quality Tier label; 1200px width |
+| `forgex_module04_v2_full.html` | Crafting Tracker redesigned to match browser cards (tracked-badge, order pills, readiness bands); card labels fixed (weapon type in bold name, finish→category tags); 1200px width; multi-row filter bar; weight+finish in blueprint schema |
+| `forgex_module03_acquisition.html` | 960px compact; 14px fonts; org name eyebrow; old text color scheme |
+| `forgex_module02_materials_v2.html` | 960px compact; Notes removed; 14px fonts; org name eyebrow; title → Material Database; old text color scheme |
+| `forgex_module01_dashboard_v4.html` | New PNG logos; TI Forgeworks title; rebuilt 6-card grid; old text color scheme |
+| `forgexcontext 1.md` | Canonical text colors documented; 14px rule; order status pipeline updated; TODOs refreshed |
+| `SESSION_STATE.md` | Full session summary; unresolved issues; preferences table |
+| `large logo.png` | Hero logo (transparent PNG) |
+| `small logo.png` | Header corner logo (transparent PNG) |

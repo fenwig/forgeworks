@@ -5,7 +5,7 @@ Last updated: 2026-05-05
 
 ## Where to Resume
 
-The user said **"I have other edits"** before ending the session. Resume by asking: *"Ready for your next round of edits — what would you like to change?"*
+Session ended after completing Module 05 refinements. User mentioned a **"big module coming up"** — likely Module 06 (Crafting Tracker). Start a fresh conversation, read this file and `forgexcontext 1.md`, then ask: *"Ready for the next module — want to start with Module 06?"*
 
 ---
 
@@ -17,132 +17,143 @@ The user said **"I have other edits"** before ending the session. Resume by aski
 | Branch | `claude/charming-antonelli-f38c9f` |
 | PR | https://github.com/fenwig/tmi-crafting-app/pull/1 |
 | Worktree | `D:\Support Files\Crafting App\.claude\worktrees\charming-antonelli-f38c9f` |
-| Last commit | `515228b` — Update project context doc |
+| Last commit | `d03203c` — Module 05 white text scheme, 14px floor, blueprint labels, readiness fix |
 
 ---
 
 ## What Was Completed This Session
 
 ### Module 01 — Command Dashboard
-- New transparent PNG logos embedded (large + small)
-- Title changed to "TI Forgeworks" / "Craft Tracker Suite"
-- Removed "System Nominal" status pill from header
-- Rebuilt module grid: 6 cards (Material Database, Blueprint Database, Crafting Tracker, Order Tracker, The Forge, Reports) with correct href links
-- Removed Resource Acquisition and Data Sync cards from grid
-- Removed Module number references
-- Removed Acquisition nav item and number badges from sidebar
+- New transparent PNG logos embedded (`large logo.png`, `small logo.png`)
+- Title → "TI Forgeworks" / "Craft Tracker Suite"
+- Removed "System Nominal" status pill
+- Rebuilt module grid: 6 cards with correct href links
+- Removed Resource Acquisition and Data Sync cards
+- Removed all Module number references
 - Stats bar: replaced Material Lots with Completed Orders
-- Page eyebrow updated to org name
+- Eyebrow → org name
 
 ### Module 02 — Material Database
-- 960px max-width, left-aligned
-- Notes column removed entirely (table, form, search, data model)
-- Text colors updated: primary #e8e0d0, secondary #b0a890, dim #6a6050
-- Minimum font size 14px (scaled up throughout)
-- Low-quality color values brightened (600s = steel-blue, sub-600 = visible grey)
+- 960px max-width
+- Notes column removed entirely
 - sr-only h2 removed
-- Eyebrow → "Troublemaker Incorporated — Custom Arms & Armor"
-- Title → "Material Database"
+- Eyebrow → org name; Title → "Material Database"
+- Text colors: primary #e8e0d0, secondary #b0a890, dim #6a6050 ⚠️ OLD SCHEME — needs update
 
 ### Module 03 — Resource Acquisition
-- 960px max-width, left-aligned
-- Text colors and font sizes matched to Module 02
-- sr-only h2 removed
-- Eyebrow → "Troublemaker Incorporated — Custom Arms & Armor"
+- 960px max-width
+- sr-only h2 removed; eyebrow → org name
+- Text colors and font sizes matched Module 02 ⚠️ OLD SCHEME — needs update
 
 ### Module 04 — Blueprint Database
-- 960px max-width (already had it)
-- Text colors and font sizes matched to Module 02/03
-- sr-only h2 removed
-- Eyebrow → "Troublemaker Incorporated — Custom Arms & Armor"
-- **New multi-row context-sensitive filter bar:**
-  - Row 1 (always): Type (All/Armor/Weapon/Ammo) + Owned Only + Mission Only + search
-  - Row 2a (Armor only): Category dropdown (14 types) + Slot buttons + Weight buttons
-  - Row 2b (Weapon only): Weapon Type dropdown (13 types)
-  - Sub-filters reset when Type changes
-  - Finish searched via name/finish text input
-- Blueprint schema updated: added `weight` and `finish` fields
-- 4 additional sample blueprints added
-- TRACK button simplified to personal-only toggle
-- ORDER badge is separate read-only pill (set by Module 05 via localStorage)
-- ✕ in tracker only removes personal tracking; order-tracked items stay until order fulfilled
+- 1200px max-width
+- sr-only h2 removed; eyebrow → org name
+- Multi-row context-sensitive filter bar (Type / Category / Slot / Weight / Weapon Type / Finish search)
+- Blueprint schema: `weight` and `finish` fields added; 4 additional sample blueprints
+- Card labels: bold shows `base+slot` (armor), `base+weapon_type` (weapon), `base+ammo_type` (ammo)
+- Tag strip: finish → category (no slot repetition)
+- TRACK button = personal-only toggle; ORDER badge = read-only pill set by Module 05
+- **Crafting Tracker redesigned** to match browser card style:
+  - `★ TRACKED` gold badge + 700/800/900 readiness bands (personal)
+  - ORDER pills per quality tier — turn green when materials sufficient for full order qty
+  - Single card per blueprint — no duplication
+  - ✕ only removes personal; order-tracked stays until order fulfilled
+- Material Needs tab font/color consistency
+- Text colors: old scheme ⚠️ OLD SCHEME — needs update
 
-### Module 05 — Order Tracker
-- Fulfillment tab replaced with Past Orders tab
-- Active Orders separated from Past (delivered)
-- Text colors and font sizes updated
-- 960px max-width
-- localStorage bridge: writes `forgex-active-orders` on every state change
-- Order creation auto-sets `order:true` in `forgex-tracking` for that blueprint
-- Delivering last order for a blueprint clears `order:false` (respects personal tracking)
-- **PENDING:** Eyebrow still reads "Module 05" — not yet updated to org name pattern
+### Module 05 — Order Tracker ✓ FULLY UP TO DATE
+- 1200px max-width
+- Eyebrow → org name ✓
+- **NEW canonical text colors: #ffffff / #d0c4b0 / #90806e**
+- All font sizes at 14px minimum throughout all three tabs
+- **Pipeline simplified:** Queued removed → In Progress → Ready → Delivered
+- New orders start at In Progress
+- Blueprint data matches Module 04 schema (base, slot, weight, finish, weapon_type, ammo_type)
+- `getBpLabel()` helper: dropdown + order display shows "Aztalan Arms Nightfall" format
+- Delete Order moved to expanded detail with two-step confirmation
+- Revert button: steps order back one status; reverting Delivered re-syncs localStorage
+- Past Orders tab shows Revert so accidental deliveries can be undone
+- Readiness in detail shows only ordered quality tier (not all three)
+- "Quality Target" → "Quality Tier"
 
 ### Cross-Module Integration (04 ↔ 05)
-- Module 04 reads `forgex-tracking` from localStorage (refreshes on tab switch)
-- Module 04 reads `forgex-active-orders` for real order quantities in Tracker + Material Needs
-- Material Needs now splits needs by quality band (personal = all bands, orders = specific band)
-- Both modules write/read the same localStorage keys
+- `forgex-tracking` — `{ [bpId]: { personal, order } }` written by both modules
+- `forgex-active-orders` — active orders array written by Module 05, read by Module 04
+- Material Needs splits needs by quality band (personal = all bands, orders = specific band)
 
-### Project Context Doc
-- `forgexcontext 1.md` fully rewritten with schemas, architecture, design tokens, TODOs
+### Documentation
+- `forgexcontext 1.md` — updated with schemas, canonical text colors, 14px rule, TODOs
+- `SESSION_STATE.md` — this file
 
 ---
 
-## Known Pending Items
+## Unresolved Issues
 
-### Must Do (explicitly noted)
-- [ ] **Module 05 header** — eyebrow still says "Module 05", needs to read "Troublemaker Incorporated — Custom Arms & Armor" (user was told, said they had other edits first)
-- [ ] **User has additional edits** — unspecified, session ended before they shared them
+1. **Text color scheme inconsistency** — Modules 01, 02, 03, 04 still use the OLD text color values (`#e8e0d0 / #b0a890 / #6a6050`). Module 05 is the only one on the new canonical white scheme (`#ffffff / #d0c4b0 / #90806e`). Must update all modules to match when next editing them.
 
-### Modules to Build
-- [ ] Module 06 — Crafting Tracker (`forgex_module06_crafting.html`)
-- [ ] Module 07 — The Forge (`forgex_module07_forge.html`)
-- [ ] Module 08 — Reports (`forgex_module08_reports.html`)
-- [ ] iframe shell — Module 01 becomes persistent frame, others load inside it
+2. **Module 04 ORDER pill border class** — tracker rows use `.has-order` / `.has-both` CSS classes inherited from old design. These may conflict visually with the new bp-card layout used by the tracker. Check rendering on next Module 04 edit.
 
-### Data Persistence
-- [ ] All module data currently resets on page refresh (in-page JS arrays only)
-- [ ] Need localStorage persistence for: material lots, blueprint owned/tracking state, orders
+3. **Data persistence** — all module data (lots, orders, blueprints owned/tracked) resets on page refresh. Only cross-module tracking state persists via localStorage. Full localStorage persistence not yet implemented.
+
+4. **Blueprint data out of sync** — Module 05's blueprint list is a manual copy of Module 04's. Any new blueprints added to Module 04 must be manually mirrored to Module 05 until the SC Wiki API import is built.
+
+---
+
+## Outstanding TODOs
+
+### Immediate — next session
+- [ ] **Apply canonical text colors to Modules 01, 02, 03, 04** (`#ffffff / #d0c4b0 / #90806e`) on next edit
+- [ ] **Build Module 06 — Crafting Tracker** (`forgex_module06_crafting.html`) — user indicated this is the "big module coming up"
+
+### Near-term
+- [ ] Build Module 07 — The Forge (`forgex_module07_forge.html`)
+- [ ] Build Module 08 — Reports (`forgex_module08_reports.html`)
+- [ ] iframe shell — Module 01 becomes persistent frame with sidebar; modules load in content pane
+
+### Data & Persistence
+- [ ] Persist material lots to localStorage (Module 02)
+- [ ] Persist orders across sessions (Module 05)
+- [ ] Persist blueprint owned/tracking state (Module 04)
 - [ ] Lot combination feature: merge two lots → sum qty, average quality
 
 ### Future
-- [ ] SC Wiki API import: `https://api.star-citizen.wiki/blueprints`
-- [ ] Ship components in blueprint list (Type/Class/Tier/Size)
-- [ ] OCR ore import
+- [ ] SC Wiki API import (`https://api.star-citizen.wiki/blueprints`) for blueprint data
+- [ ] Ship components in blueprint list (Type / Class / Tier / Size)
+- [ ] OCR ore import (Module 03 currently manual entry only)
 
 ---
 
-## User Preferences & Conventions Established This Session
+## User Preferences & Conventions (Full Reference)
 
-- **Always wait for "go" before coding** — present plan, wait for explicit confirmation
-- **No AskUserQuestion tool** — ask questions as plain text
-- **Receive ALL feedback before starting** — user often has multiple items
-- **Minimum font size: 14px** across all non-header UI text
-- **Header pattern (all modules):**
-  ```
-  Troublemaker Incorporated — Custom Arms & Armor   ← eyebrow
-  [Module Title]                                     ← title
-  ```
-- **960px max-width, left-aligned** on all modules
-- **No sr-only h2 elements** — remove whenever found
-- **No module number references** in UI (no "Module 02" visible to user)
-- **Notes field removed** from material lots
-- **Finish** = the stylistic name of a blueprint (e.g. "Necropolis") — not "color"
-- **Commit and push after each logical chunk** of work
-- **PR #1** is the ongoing PR for this branch — don't create new ones
+| Rule | Detail |
+|---|---|
+| Confirm before coding | Always present plan, wait for explicit "go" |
+| Receive all feedback first | User gives multiple items before starting |
+| No AskUserQuestion tool | Ask questions as plain text |
+| Header pattern | Eyebrow: org name (small) / Title: module name (large) |
+| Page width | **1200px** max-width, left-aligned |
+| Min font size | **14px** — `.order-item` (14px Rajdhani) is the established floor |
+| Text colors | **#ffffff** primary / **#d0c4b0** secondary / **#90806e** dim |
+| Blueprint labels | `Base Slot Finish` (armor) / `Base WeaponType Finish` (weapon) / `Base AmmoType` (ammo) |
+| Finish not color | The stylistic name of a blueprint is called "finish" (e.g. "Necropolis") |
+| No sr-only h2 | Remove whenever found |
+| No module numbers in UI | Never show "Module 02" etc. to user |
+| Notes removed | Material lot Notes field is gone — don't re-add |
+| Commit & push | After each logical chunk of work |
+| PR | Always use PR #1 — don't create new ones |
 
 ---
 
 ## File Inventory
 
-| File | Purpose | Last Modified |
-|---|---|---|
-| `forgex_module01_dashboard_v4.html` | Dashboard / landing | This session |
-| `forgex_module02_materials_v2.html` | Material inventory | This session |
-| `forgex_module03_acquisition.html` | Manual ore entry | This session |
-| `forgex_module04_v2_full.html` | Blueprint browser + tracker + needs | This session |
-| `forgex_module05_orders.html` | Order tracker | This session |
-| `forgexcontext 1.md` | Project context reference | This session |
-| `SESSION_STATE.md` | This file | This session |
-| `large logo.png` | Hero logo (transparent PNG) | This session |
-| `small logo.png` | Header corner logo (transparent PNG) | This session |
+| File | Status |
+|---|---|
+| `forgex_module01_dashboard_v4.html` | ✓ Done — OLD text colors |
+| `forgex_module02_materials_v2.html` | ✓ Done — OLD text colors |
+| `forgex_module03_acquisition.html` | ✓ Done — OLD text colors |
+| `forgex_module04_v2_full.html` | ✓ Done — OLD text colors |
+| `forgex_module05_orders.html` | ✓ Done — NEW text colors ✓ |
+| `forgexcontext 1.md` | ✓ Up to date |
+| `SESSION_STATE.md` | ✓ This file |
+| `large logo.png` | Hero logo (transparent PNG) |
+| `small logo.png` | Header corner logo (transparent PNG) |
