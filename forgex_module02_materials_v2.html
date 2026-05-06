@@ -178,7 +178,8 @@
 
 <div class="footer-bar">
   <div class="footer-info">Showing <span id="footer-showing">0</span> of <span id="footer-total">0</span> lots</div>
-  <div class="footer-sel" id="footer-sel" style="display:none"><span id="footer-sel-count">0</span> SELECTED</div>
+  <div class="footer-info">Total: <span id="footer-cscu">0</span> cSCU &nbsp;(<span id="footer-scu">0.00</span> SCU)</div>
+  <div class="footer-sel" id="footer-sel" style="display:none"><span id="footer-sel-count">0</span> selected &mdash; <span id="footer-sel-qty">0</span> cSCU</div>
   <div class="footer-info" style="margin-left:auto">Sort: <span id="footer-sort">Date ↓</span></div>
 </div>
 
@@ -538,11 +539,13 @@ function updateSelectAllState(){
 }
 
 function updateOpButtons(){
-  const sel=Array.from(selectedIds);
-  const n=sel.length;
-  document.getElementById('btn-combine').disabled=n<2;
+  const selLots=lots.filter(l=>selectedIds.has(l.id));
+  const n=selLots.length;
+  const ores=[...new Set(selLots.map(l=>l.ore))];
+  const locs=[...new Set(selLots.map(l=>l.location))];
+  document.getElementById('btn-combine').disabled=!(n>=2&&ores.length===1&&locs.length===1);
   document.getElementById('btn-split').disabled=n!==1;
-  document.getElementById('btn-move').disabled=n<1;
+  document.getElementById('btn-move').disabled=!(n>=1&&locs.length===1);
 }
 
 function startQtyEdit(id){editingQtyId=id;renderTable();}
@@ -579,11 +582,15 @@ function updateFooter(filtered){
   document.getElementById('footer-showing').textContent=filtered.length;
   document.getElementById('footer-total').textContent=lots.length;
   document.getElementById('footer-sort').textContent=sortCol.charAt(0).toUpperCase()+sortCol.slice(1)+' '+(sortDir===1?'↑':'↓');
-  const selCount=selectedIds.size;
-  const selEl=document.getElementById('footer-sel');
-  const selCountEl=document.getElementById('footer-sel-count');
-  selEl.style.display=selCount>0?'block':'none';
-  if(selCountEl) selCountEl.textContent=selCount;
+  const visTotal=filtered.reduce((s,l)=>s+l.qty,0);
+  document.getElementById('footer-cscu').textContent=visTotal.toLocaleString();
+  document.getElementById('footer-scu').textContent=(visTotal/100).toFixed(2);
+  const selLots=lots.filter(l=>selectedIds.has(l.id));
+  const selCount=selLots.length;
+  const selQty=selLots.reduce((s,l)=>s+l.qty,0);
+  document.getElementById('footer-sel').style.display=selCount>0?'block':'none';
+  document.getElementById('footer-sel-count').textContent=selCount;
+  document.getElementById('footer-sel-qty').textContent=selQty.toLocaleString();
 }
 
 // ── ADD LOT ──────────────────────────────────────────────────────────────────
