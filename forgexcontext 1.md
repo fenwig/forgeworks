@@ -10,7 +10,7 @@
 | Org | Troublemaker Incorporated — Custom Arms & Armor |
 | Target display | 1920×1080 side monitor |
 | Stack | Pure HTML / CSS / JS — no build tools, no framework, no server |
-| Data persistence | **ALL module data must persist to localStorage.** Currently only cross-module tracking flags survive refresh. Retrofit required for Modules 02, 04, 05, 06 before app is production-ready. |
+| Data persistence | **ALL module data must persist to localStorage.** Currently only cross-module tracking flags and crafting log survive refresh. Retrofit required for Modules 02, 04, 05 before app is production-ready. |
 
 ---
 
@@ -23,17 +23,16 @@
 | `forgex_module03_acquisition.html` | Resource Acquisition | ✓ Online |
 | `forgex_module04_v2_full.html` | Blueprint Database | ✓ Online |
 | `forgex_module05_orders.html` | Order Tracker | ✓ Online |
+| `forgex_module06_crafting.html` | The Forge | ✓ Online |
 
 ## Still to Build
 
 | Future file | Title | Notes |
 |---|---|---|
-| `forgex_module06_crafting.html` | Crafting Tracker | Record completed crafts, manage output by quality tier |
-| `forgex_module07_forge.html` | The Forge | Craft queue management and production planning |
-| `forgex_module08_reports.html` | Reports | Activity logs, revenue summaries, analytics |
-| (dashboard shell) | iframe Architecture | Module 01 becomes persistent shell; modules 02–08 load in content area |
-| (integrated) | Data Sync | Pull blueprint data from SC Wiki API on patch day — button in dashboard top right |
-| (integrated) | OCR Import | Import ore lots via OCR scan — accessible from "Import OCR" button on dashboard |
+| `forgex_module07_reports.html` | Reports | Activity logs, revenue summaries, analytics |
+| `forgex_module08_ocr.html` | OCR Import | Import material lots via OCR scan from in-game screenshots |
+| `forgex_module09_datasync.html` | Data Sync | Pull blueprint data from SC Wiki API on patch day |
+| (dashboard shell) | iframe Architecture | Module 01 becomes persistent shell; modules 02–09 load in content area |
 
 ---
 
@@ -77,9 +76,9 @@
 | Share Tech Mono | Data values, badges, monospace UI |
 | Exo 2 | Body text, descriptions |
 
-- **Minimum font size:** 14px — applies to every text element outside the module header. The blueprint/item name on order cards (`.order-item`, 14px Rajdhani) is the established floor. Anything smaller is a bug to fix on next edit.
+- **Minimum font size:** 14px — applies to every readable/functional text element. Intentional exceptions: badges/pills (9px), eyebrow (10px), section header labels (8–10px Share Tech Mono uppercase).
 - **Header eyebrow:** `~10px` Share Tech Mono, gold-dim, uppercase (exception to 14px floor — intentionally small)
-- **Module title:** `~20px` Rajdhani, bold
+- **Module title:** `~20–22px` Rajdhani, bold, **white** (`--tmi-text-primary`) — not gold
 
 > **TEXT COLOR RULE — apply on every module edit:**
 > Always use the three canonical text tokens. Never hardcode hex text colors.
@@ -91,8 +90,13 @@
 ### Header Pattern (all modules)
 ```
 Troublemaker Incorporated — Custom Arms & Armor   ← eyebrow (small, gold-dim)
-[Module Title]                                     ← title (large, Rajdhani)
+[Module Title]                                     ← title (large, Rajdhani, WHITE)
 ```
+
+### Blueprint Label & Tag Rules
+- **Label** (full item name): `Base Slot Finish` (armor) / `Base WeaponType Finish` (weapon) / `Base AmmoType` (ammo)
+- **Tag** (type descriptor, shown as a small pill): category only for armor (no slot); "Weapon" for weapons (no weapon_type — already in label); "Ammo · WeaponType" for ammo
+- "Finish" is the stylistic name of a blueprint (e.g. "Mire", "Necropolis") — never call it "color"
 
 ### Style Notes
 - Clipped polygon buttons: `clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%)`
@@ -127,7 +131,7 @@ Troublemaker Incorporated — Custom Arms & Armor   ← eyebrow (small, gold-dim
                                 // Flightsuit / Hunter / Medic / Miner / Racer /
                                 // Radiation / Salvager / Stealth / Undersuit
   weight:      string|null,     // Light / Medium / Heavy (armor only)
-  finish:      string|null,     // free text, e.g. 'Necropolis' (part of full name)
+  finish:      string|null,     // free text, e.g. 'Mire', 'Necropolis' (part of full name)
   weapon_type: string|null,     // Sniper Rifle / Pistol / Shotgun / SMG / LMG /
                                 // Energy LMG / Rifle / Energy Assault Rifle /
                                 // Energy SMG / Twin Shotgun / Frag Pistol /
@@ -158,18 +162,20 @@ Troublemaker Incorporated — Custom Arms & Armor   ← eyebrow (small, gold-dim
 ### Crafting Job (Module 06)
 ```js
 {
-  id:        number,
-  bpId:      number,            // references blueprint.id
-  orderId:   number|null,       // references order.id — null if personal craft
-  crafted:   string,            // 'YYYY-MM-DD'
+  id:           number,
+  bpId:         number,         // references blueprint.id
+  bpLabel:      string,         // cached display label e.g. 'Corbel Arms Mire'
+  orderId:      number|null,    // references order.id — null if personal craft
+  crafted:      string,         // 'YYYY-MM-DD'
+  qualityTier:  number|null,    // 700 | 800 | 900 — from non-aslarite avg quality
   materials: [
     {
       name:           string,   // ingredient name, e.g. 'laranite'
-      req_qty:        number,   // cSCU required by blueprint
-      lots_used:      [{ lotId: number, qty_taken: number, quality: number }],
-      avg_quality:    number,   // weighted average quality across lots used
-      characteristic: string,   // e.g. 'Damage Mitigation' — placeholder until API
-      effect_pct:     number|null  // e.g. 4.28 — placeholder until API
+      reqQty:         number,   // cSCU required by blueprint
+      avgQuality:     number,   // weighted avg quality across lots used
+      characteristic: string,   // placeholder '—' until SC Wiki API data
+      effectPct:      number|null,  // placeholder null until API
+      lotsUsed:       [{ lotId: number, qty_taken: number, quality: number }]
     }
   ]
 }
@@ -179,7 +185,7 @@ Troublemaker Incorporated — Custom Arms & Armor   ← eyebrow (small, gold-dim
 ```js
 'forgex-tracking'       // { [bpId]: { personal: bool, order: bool } }
 'forgex-active-orders'  // Order[] — active (non-delivered) orders only
-'forgex-crafting-log'   // CraftingJob[] — all crafted items, persists across sessions
+'forgex-crafting-log'   // CraftingJob[] — persists across sessions ✓ (Module 06 only persistent module data)
 ```
 
 ---
@@ -193,14 +199,14 @@ None. This is a local single-user tool with no login, accounts, or server. All d
 ## Key Game Mechanics
 
 - **Quality bands:** 700–799, 800–899, 900–1000 for crafted armor/weapons
-- **Aslarite:** Universal armor ingredient — usable at quality 500+, not band-locked
+- **Aslarite:** Universal armor ingredient — usable at quality 500+, not band-locked. Excluded from quality tier calculation but included in characteristic/avg quality display.
 - **Hand-mined gems:** Separate tag from mined ore; same inventory system
 - **Gem names:** hadanite, janalite, dolvine, aphorite, sadaryx, carinite, beradom, jaclium, saldynium, feynmaline, glacosite
-- **Crafting quality:** Determined by quality of non-aslarite ingredients at the target band
+- **Crafting quality tier:** Determined by weighted avg quality of non-aslarite ingredients only
 
 ---
 
-## Module 06 — Formula Stub (Crafting Tracker)
+## Module 06 — Formula Stub (The Forge)
 
 After clicking MAKE ITEM, display one row per ingredient:
 
@@ -210,11 +216,10 @@ After clicking MAKE ITEM, display one row per ingredient:
 | Aslarite | 523 | Max / Min Temperature | +0.92% |
 | Titanium | 900 | Damage Mitigation | +4.00% |
 
-- **Characteristic** and **Effect %** are placeholders until game data is pulled via SC Wiki API.
-- **Avg Quality** is calculated: weighted average by qty across all lots used for that ingredient.
-  - Example: 2 cSCU @ 800 + 2 cSCU @ 700 = avg quality 750
-- Each material type maps to one characteristic (e.g. Laranite → Damage Mitigation). Mapping is per-blueprint and will come from API data.
-- Display the stat block in the crafting log entry and on the post-craft result screen.
+- **Characteristic** and **Effect %** are placeholders (`—` / `null`) until game data is pulled via SC Wiki API.
+- **Avg Quality** = weighted average by qty across all lots used for that ingredient. Example: 2 cSCU @ 800 + 2 cSCU @ 700 = avg 750.
+- Aslarite is included in the display but excluded from quality tier calculation.
+- Quality tier blocking: MAKE ITEM is only blocked when an order is attached AND the projected tier doesn't match the order's required tier. Personal crafts always go through.
 
 ---
 
@@ -229,20 +234,21 @@ Planned use: One-click refresh on patch day via Data Sync module. Will auto-popu
 ## Outstanding TODOs
 
 ### Immediate — next session
-- [ ] **Build Module 06 — Crafting Tracker** (`forgex_module06_crafting.html`)
 - [ ] **Apply canonical text colors to Modules 01, 02, 03, 04** — update `:root` vars to `#ffffff / #d0c4b0 / #90806e` on next edit of each module
 
 ### Near-term
-- [ ] Build **Module 07 — The Forge** (craft queue and production planning)
-- [ ] Build **Module 08 — Reports** (activity log, revenue, analytics)
+- [ ] Build **Module 07 — Reports** (`forgex_module07_reports.html`)
+- [ ] Build **Module 08 — OCR Import** (`forgex_module08_ocr.html`)
+- [ ] Build **Module 09 — Data Sync** (`forgex_module09_datasync.html`)
 - [ ] Wire up **iframe shell** in Module 01 (persistent header + sidebar, modules load in content pane)
 - [ ] **Remove `qty` from Order form in Module 05** — one crafted item per order (deferred)
+- [ ] Persist `ownedIds` to localStorage so Module 06 stays in sync with Module 04 owned state
+- [ ] Wire up real game formula data when SC Wiki API available (characteristic + effect % per material)
 
 ### Data & Persistence ⚠️ ALL MODULE DATA MUST PERSIST
 - [ ] Persist material lots to localStorage (Module 02 data resets on refresh)
 - [ ] Persist orders across sessions (Module 05)
 - [ ] Persist blueprint owned/tracking state (Module 04)
-- [ ] Persist crafting log (Module 06 — build with persistence from day one)
 - [ ] **Lot combination** — merge two lots: sum qty, average quality
 - [ ] Implement SC Wiki API import for blueprints (Data Sync module)
 
@@ -260,9 +266,9 @@ Planned use: One-click refresh on patch day via Data Sync module. Will auto-popu
 
 | File | What changed |
 |---|---|
+| `forgex_module06_crafting.html` | Built Module 06 — The Forge. Three-tab layout: Blueprint Browser (search, type filters, Tracked/Orders filters, owned-only), Craft Workbench (ingredient slots with lot picker, order fulfillment, quality tier calc, inline post-craft result), Crafting Log (persistent localStorage, attach/detach orders). 14px font floor, canonical colors throughout. Corbel Arms Mire sample blueprint added. |
 | `forgex_module05_orders.html` | White text scheme (#ffffff); 14px floor everywhere; pipeline → In Progress/Ready/Delivered; blueprint schema matches Mod 04; getBpLabel() for dropdown; readiness shows only ordered quality tier; Delete Order with confirmation; Revert button; Quality Tier label; 1200px width |
 | `forgex_module04_v2_full.html` | Crafting Tracker redesigned to match browser cards (tracked-badge, order pills, readiness bands); card labels fixed (weapon type in bold name, finish→category tags); 1200px width; multi-row filter bar; weight+finish in blueprint schema |
 | `forgex_module03_acquisition.html` | 960px compact; 14px fonts; org name eyebrow; old text color scheme |
 | `forgex_module02_materials_v2.html` | 960px compact; Notes removed; 14px fonts; org name eyebrow; title → Material Database; old text color scheme |
 | `forgex_module01_dashboard_v4.html` | New PNG logos; TI Forgeworks title; rebuilt 6-card grid; old text color scheme |
-| `forgexcontext 1.md` | Copied from charming-antonelli worktree; added persistence warning; added Module 06 formula stub; added CraftingJob schema; added qty removal note on Order schema |

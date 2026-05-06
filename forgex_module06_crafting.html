@@ -18,7 +18,7 @@
   /* HEADER */
   .mod-header{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:12px 18px;}
   .mod-eyebrow{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--tmi-gold-dim);text-transform:uppercase;margin-bottom:2px;}
-  .mod-title{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tmi-gold);}
+  .mod-title{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tmi-text-primary);}
 
   /* STATS BAR */
   .stats-bar{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:8px 18px;display:flex;gap:24px;align-items:center;}
@@ -38,17 +38,17 @@
 
   /* SHARED BUTTONS */
   .btn{font-family:'Rajdhani',sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.15s;clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);border:1px solid;white-space:nowrap;}
-  .btn-ghost{font-size:12px;padding:5px 14px;color:var(--tmi-text-secondary);background:transparent;border-color:var(--tmi-border-dim);}
+  .btn-ghost{font-size:14px;padding:5px 14px;color:var(--tmi-text-secondary);background:transparent;border-color:var(--tmi-border-dim);}
   .btn-ghost:hover{border-color:var(--tmi-border);color:var(--tmi-text-primary);}
-  .btn-gold{font-size:13px;padding:6px 18px;color:var(--tmi-bg-deep);background:var(--tmi-gold);border-color:var(--tmi-gold);}
+  .btn-gold{font-size:14px;padding:6px 18px;color:var(--tmi-bg-deep);background:var(--tmi-gold);border-color:var(--tmi-gold);}
   .btn-gold:hover{background:var(--tmi-gold-bright);border-color:var(--tmi-gold-bright);}
   .btn-gold:disabled{opacity:0.35;cursor:not-allowed;pointer-events:none;}
-  .btn-danger{font-size:11px;padding:4px 10px;color:var(--tmi-text-dim);background:transparent;border-color:var(--tmi-border-dim);}
+  .btn-danger{font-size:12px;padding:4px 10px;color:var(--tmi-text-dim);background:transparent;border-color:var(--tmi-border-dim);}
   .btn-danger:hover{border-color:rgba(204,51,51,0.5);color:var(--tmi-danger);}
-  .btn-order{font-size:12px;padding:5px 14px;color:var(--tmi-steel);background:transparent;border-color:rgba(138,154,170,0.3);}
+  .btn-order{font-size:14px;padding:5px 14px;color:var(--tmi-steel);background:transparent;border-color:rgba(138,154,170,0.3);}
   .btn-order:hover{border-color:var(--tmi-steel);color:#b0c0d0;}
-  .btn-sm{font-size:11px;padding:3px 10px;}
-  .filter-btn{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;color:var(--tmi-text-secondary);background:transparent;border:1px solid var(--tmi-border-dim);padding:5px 12px;cursor:pointer;text-transform:uppercase;transition:all 0.15s;clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);white-space:nowrap;}
+  .btn-sm{font-size:12px;padding:3px 10px;}
+  .filter-btn{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;letter-spacing:1px;color:var(--tmi-text-secondary);background:transparent;border:1px solid var(--tmi-border-dim);padding:5px 12px;cursor:pointer;text-transform:uppercase;transition:all 0.15s;clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);white-space:nowrap;}
   .filter-btn:hover{border-color:var(--tmi-border);color:var(--tmi-text-primary);}
   .filter-btn.active{background:var(--tmi-gold-glow);border-color:var(--tmi-gold);color:var(--tmi-gold);}
 
@@ -60,12 +60,16 @@
   .crafted-badge{font-family:'Share Tech Mono',monospace;font-size:9px;padding:2px 8px;border:1px solid rgba(90,153,85,0.5);color:var(--tmi-success);background:rgba(90,153,85,0.1);}
   .order-badge{font-family:'Share Tech Mono',monospace;font-size:9px;padding:2px 8px;border:1px solid rgba(138,154,170,0.35);color:var(--tmi-steel);background:rgba(138,154,170,0.08);}
   .asl-note{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--tmi-warning);margin-left:4px;}
+  .tracked-badge{font-family:'Share Tech Mono',monospace;font-size:9px;padding:2px 6px;border:1px solid var(--tmi-gold-dark);color:var(--tmi-gold-dim);}
+  .order-track-badge{font-family:'Share Tech Mono',monospace;font-size:9px;padding:2px 6px;border:1px solid rgba(138,154,170,0.35);color:var(--tmi-steel);}
 
   /* ── TAB 1: BLUEPRINT BROWSER ── */
-  .browser-bar{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:10px 18px;display:flex;gap:8px;align-items:center;}
-  .search-input{flex:1;background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);color:var(--tmi-text-primary);font-family:'Share Tech Mono',monospace;font-size:12px;padding:7px 12px;outline:none;transition:border-color 0.15s;}
+  .browser-search-bar{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:10px 18px;}
+  .search-input{width:100%;background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);color:var(--tmi-text-primary);font-family:'Share Tech Mono',monospace;font-size:14px;padding:7px 12px;outline:none;transition:border-color 0.15s;}
   .search-input:focus{border-color:var(--tmi-border);}
   .search-input::placeholder{color:var(--tmi-text-dim);}
+  .browser-filter-bar{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:8px 18px;display:flex;gap:6px;align-items:center;}
+  .filter-divider{width:1px;height:20px;background:var(--tmi-border-dim);margin:0 4px;}
   .bp-list{padding:10px 18px;display:flex;flex-direction:column;gap:6px;}
   .bp-card{background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);border-left:2px solid var(--tmi-gold-dark);transition:all 0.15s;}
   .bp-card:hover{border-left-color:var(--tmi-gold);background:var(--tmi-bg-hover);}
@@ -78,14 +82,14 @@
   .bp-ingredients.open{display:block;}
   .ing-title{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;padding:7px 0 5px;}
   .ing-row{display:flex;align-items:center;gap:10px;padding:2px 0;}
-  .ing-name{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;text-transform:capitalize;min-width:110px;color:var(--tmi-text-primary);}
-  .ing-qty{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-text-secondary);}
+  .ing-name{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;letter-spacing:1px;text-transform:capitalize;min-width:110px;color:var(--tmi-text-primary);}
+  .ing-qty{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-secondary);}
   .ing-gem{font-family:'Share Tech Mono',monospace;font-size:7px;color:var(--tmi-success);border:1px solid rgba(90,153,85,0.3);padding:1px 4px;margin-left:3px;}
   .ing-asl{font-family:'Share Tech Mono',monospace;font-size:7px;color:var(--tmi-warning);border:1px solid rgba(204,136,0,0.3);padding:1px 4px;margin-left:3px;}
-  .no-results{padding:30px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-text-dim);letter-spacing:1px;}
+  .no-results{padding:30px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);letter-spacing:1px;}
 
   /* ── TAB 2: WORKBENCH ── */
-  .wb-empty{padding:40px 18px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--tmi-text-dim);letter-spacing:1px;display:flex;flex-direction:column;align-items:center;gap:14px;}
+  .wb-empty{padding:40px 18px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);letter-spacing:1px;display:flex;flex-direction:column;align-items:center;gap:14px;}
   .wb-area{padding:14px 18px;display:flex;flex-direction:column;gap:12px;}
 
   .wb-info{background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);border-left:3px solid var(--tmi-gold);padding:10px 14px;display:flex;align-items:center;gap:12px;}
@@ -94,7 +98,7 @@
 
   .wb-order-row{display:flex;align-items:center;gap:10px;padding:8px 14px;background:var(--tmi-bg-panel);border:1px solid var(--tmi-border-dim);}
   .wb-order-label{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;flex:1;}
-  .wb-order-info{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--tmi-gold);display:none;}
+  .wb-order-info{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-gold);display:none;}
 
   .order-picker{background:var(--tmi-bg-card);border:1px solid var(--tmi-border);display:none;}
   .order-picker.open{display:block;}
@@ -105,25 +109,25 @@
   .order-picker-row:hover{background:var(--tmi-bg-hover);}
   .op-id{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-text-dim);min-width:40px;}
   .op-customer{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tmi-text-primary);min-width:120px;}
-  .op-item{font-family:'Rajdhani',sans-serif;font-size:13px;color:var(--tmi-text-secondary);flex:1;text-transform:uppercase;}
-  .op-none{padding:12px 14px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-text-dim);}
+  .op-item{font-family:'Rajdhani',sans-serif;font-size:14px;color:var(--tmi-text-secondary);flex:1;text-transform:uppercase;}
+  .op-none{padding:12px 14px;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);}
 
   .wb-slots{display:flex;flex-direction:column;gap:8px;}
   .wb-slot{background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);}
   .wb-slot.filled{border-color:rgba(90,153,85,0.4);}
   .slot-header{padding:10px 14px;display:flex;align-items:center;gap:10px;}
   .slot-name{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;letter-spacing:1px;text-transform:capitalize;color:var(--tmi-text-primary);min-width:120px;}
-  .slot-req{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--tmi-text-dim);}
-  .slot-fill{font-family:'Share Tech Mono',monospace;font-size:11px;flex:1;}
+  .slot-req{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);}
+  .slot-fill{font-family:'Share Tech Mono',monospace;font-size:14px;flex:1;}
   .slot-fill .ok{color:var(--tmi-success);}
   .slot-fill .partial{color:var(--tmi-gold);}
   .slot-fill .empty{color:var(--tmi-text-dim);}
-  .slot-avg{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--tmi-text-secondary);}
+  .slot-avg{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-secondary);}
   .slot-progress{height:3px;background:var(--tmi-border-dim);margin:0 14px;}
   .slot-progress-bar{height:100%;background:var(--tmi-gold-dim);transition:width 0.2s;}
   .slot-progress-bar.full{background:var(--tmi-success);}
   .slot-selections{padding:0 14px 8px;display:flex;flex-direction:column;gap:3px;}
-  .slot-lot-row{display:flex;align-items:center;gap:8px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-text-secondary);}
+  .slot-lot-row{display:flex;align-items:center;gap:8px;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-secondary);}
   .slot-lot-idx{color:var(--tmi-text-dim);min-width:16px;}
   .slot-actions{padding:0 14px 10px;display:flex;gap:6px;}
 
@@ -134,23 +138,21 @@
   .lot-row{padding:6px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--tmi-border-dim);transition:background 0.1s;}
   .lot-row:last-child{border-bottom:none;}
   .lot-row:hover{background:var(--tmi-bg-hover);}
-  .lot-qual{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-gold);min-width:42px;}
-  .lot-qty{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--tmi-text-secondary);min-width:70px;}
-  .lot-loc{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-text-dim);flex:1;}
-  .lot-none{padding:10px 14px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-text-dim);}
+  .lot-qual{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-gold);min-width:42px;}
+  .lot-qty{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-secondary);min-width:70px;}
+  .lot-loc{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-dim);flex:1;}
+  .lot-none{padding:10px 14px;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);}
 
   .wb-tier-row{padding:10px 14px;background:var(--tmi-bg-panel);border:1px solid var(--tmi-border-dim);display:flex;align-items:center;gap:12px;}
   .wb-tier-label{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;}
-  .wb-tier-mismatch{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-danger);margin-left:8px;display:none;}
+  .wb-tier-mismatch{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-danger);margin-left:8px;display:none;}
 
   /* Post-craft result */
-  .result-panel{display:none;padding:18px;}
-  .result-panel.show{display:block;}
   .result-title{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tmi-text-primary);}
   .result-mat-table{width:100%;border-collapse:collapse;margin-bottom:16px;}
   .result-mat-table thead tr{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border);}
   .result-mat-table th{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;padding:7px 12px;text-align:left;}
-  .result-mat-table td{padding:8px 12px;border-bottom:1px solid var(--tmi-border-dim);font-family:'Share Tech Mono',monospace;font-size:12px;}
+  .result-mat-table td{padding:8px 12px;border-bottom:1px solid var(--tmi-border-dim);font-family:'Share Tech Mono',monospace;font-size:14px;}
   .result-mat-table tr:last-child td{border-bottom:none;}
   .result-mat-name{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;text-transform:capitalize;color:var(--tmi-text-primary);}
   .result-qual{color:var(--tmi-gold);}
@@ -168,23 +170,23 @@
   .log-date{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-text-dim);min-width:80px;}
   .log-item{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tmi-text-primary);flex:1;}
   .log-mats{display:flex;gap:6px;align-items:center;}
-  .log-mat-chip{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-text-secondary);}
+  .log-mat-chip{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-secondary);}
   .log-mat-chip span{color:var(--tmi-gold);}
   .log-detail{display:none;background:var(--tmi-bg-panel);border-top:1px solid var(--tmi-border-dim);padding:12px 14px;}
   .log-detail.open{display:block;}
   .log-detail-mat-table{width:100%;border-collapse:collapse;margin-bottom:12px;}
   .log-detail-mat-table thead tr{background:var(--tmi-bg-card);border-bottom:1px solid var(--tmi-border);}
   .log-detail-mat-table th{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;padding:6px 10px;text-align:left;}
-  .log-detail-mat-table td{padding:7px 10px;border-bottom:1px solid var(--tmi-border-dim);font-size:12px;}
+  .log-detail-mat-table td{padding:7px 10px;border-bottom:1px solid var(--tmi-border-dim);font-size:14px;}
   .log-detail-mat-table tr:last-child td{border-bottom:none;}
   .log-detail-actions{display:flex;gap:8px;align-items:center;margin-top:4px;}
-  .log-detail-order-label{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-text-dim);}
-  .log-empty{padding:30px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-text-dim);letter-spacing:1px;}
+  .log-detail-order-label{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-dim);}
+  .log-empty{padding:30px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);letter-spacing:1px;}
   .log-order-picker{background:var(--tmi-bg-card);border:1px solid var(--tmi-border);margin-top:8px;display:none;}
   .log-order-picker.open{display:block;}
 
   /* TOAST */
-  .toast{position:fixed;bottom:20px;right:20px;background:var(--tmi-bg-panel);border:1px solid var(--tmi-gold-dark);color:var(--tmi-text-primary);font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;padding:10px 18px;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);transition:opacity 0.3s;z-index:999;}
+  .toast{position:fixed;bottom:20px;right:20px;background:var(--tmi-bg-panel);border:1px solid var(--tmi-gold-dark);color:var(--tmi-text-primary);font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:1px;padding:10px 18px;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);transition:opacity 0.3s;z-index:999;}
   .toast.hidden{opacity:0;pointer-events:none;}
 </style>
 </head>
@@ -212,12 +214,17 @@
 
 <!-- ── TAB 1: BLUEPRINT BROWSER ── -->
 <div class="view active" id="view-browser">
-  <div class="browser-bar">
+  <div class="browser-search-bar">
     <input class="search-input" id="browser-search" placeholder="Search owned blueprints..." oninput="renderBrowser()">
-    <button class="filter-btn active" id="bf-all" onclick="setBrowserFilter('all',this)">All</button>
-    <button class="filter-btn" id="bf-armor" onclick="setBrowserFilter('Armor',this)">Armor</button>
-    <button class="filter-btn" id="bf-weapon" onclick="setBrowserFilter('Weapon',this)">Weapon</button>
-    <button class="filter-btn" id="bf-ammo" onclick="setBrowserFilter('Ammunition',this)">Ammo</button>
+  </div>
+  <div class="browser-filter-bar">
+    <button class="filter-btn active" onclick="setBrowserFilter('all',this)">All</button>
+    <button class="filter-btn" onclick="setBrowserFilter('Armor',this)">Armor</button>
+    <button class="filter-btn" onclick="setBrowserFilter('Weapon',this)">Weapon</button>
+    <button class="filter-btn" onclick="setBrowserFilter('Ammunition',this)">Ammo</button>
+    <span class="filter-divider"></span>
+    <button class="filter-btn" onclick="setBrowserFilter('tracked',this)">Tracked</button>
+    <button class="filter-btn" onclick="setBrowserFilter('orders',this)">Orders</button>
   </div>
   <div class="bp-list" id="bp-list"></div>
   <div class="no-results" id="no-results" style="display:none">NO OWNED BLUEPRINTS MATCH YOUR SEARCH</div>
@@ -272,14 +279,13 @@
           <span class="crafted-badge">✓ CRAFTED</span>
           <span class="result-title" id="result-bp-name"></span>
           <span class="qual-badge" id="result-tier-badge"></span>
-          <span id="result-order-note" style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--tmi-steel);display:none"></span>
+          <span id="result-order-note" style="font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-steel);display:none"></span>
         </div>
         <table class="result-mat-table">
           <thead><tr><th>Material</th><th>Avg Quality</th><th>Characteristic</th><th>Effect</th></tr></thead>
           <tbody id="result-mat-body"></tbody>
         </table>
         <div class="result-actions">
-          <button class="btn btn-gold" onclick="craftAnother()">Craft Another</button>
           <button class="btn btn-ghost" onclick="switchTab('log')">View Log</button>
         </div>
       </div>
@@ -305,6 +311,7 @@
 
 <script>
 const GEM_NAMES=new Set(['hadanite','janalite','dolvine','aphorite','sadaryx','carinite','beradom','jaclium','saldynium','feynmaline','glacosite']);
+const LS_TRACKING='forgex-tracking';
 const LS_ORDERS='forgex-active-orders';
 const LS_LOG='forgex-crafting-log';
 
@@ -320,10 +327,11 @@ const blueprints=[
   {id:8,base:'Corbel',slot:'Arms',type:'Armor',category:'Combat',weapon_type:null,finish:null,ingredients:[{name:'laranite',qty:6},{name:'titanium',qty:8},{name:'aslarite',qty:5}]},
   {id:9,base:'Demeco',slot:null,type:'Weapon',category:null,weapon_type:'LMG',finish:null,ingredients:[{name:'corundum',qty:14},{name:'copper',qty:10},{name:'hadanite',qty:5}]},
   {id:10,base:'Demeco',slot:null,type:'Ammunition',category:null,weapon_type:'LMG',finish:null,ingredients:[{name:'copper',qty:6},{name:'corundum',qty:4}]},
+  {id:11,base:'Corbel',slot:'Arms',type:'Armor',category:'Combat',weapon_type:null,finish:'Mire',ingredients:[{name:'laranite',qty:6},{name:'titanium',qty:8},{name:'aslarite',qty:5}]},
 ];
 
 // Owned blueprint ids — mirrors Module 04 ownedIds (persist to localStorage in future)
-const ownedIds=new Set([1,2,3,4,9]);
+const ownedIds=new Set([1,2,3,4,9,11]);
 
 // SWAP POINT: Replace with JSON.parse(localStorage.getItem('forgex-lots')||'[]')
 // once Module 02 localStorage persistence is implemented.
@@ -344,7 +352,7 @@ let lots=[
 ];
 
 // ── STATE ──
-let browserTypeFilter='all';
+let browserFilter='all';
 let browserExpanded=new Set();
 let selectedBpId=null;
 let attachedOrderId=null;
@@ -358,6 +366,7 @@ let craftingLog=[];
 let nextJobId=1;
 
 // ── LOCALSTORAGE ──
+function readTracking(){try{return JSON.parse(localStorage.getItem(LS_TRACKING)||'{}')}catch{return{};}}
 function readActiveOrders(){try{return JSON.parse(localStorage.getItem(LS_ORDERS)||'[]')}catch{return[];}}
 function writeActiveOrders(orders){localStorage.setItem(LS_ORDERS,JSON.stringify(orders));}
 function readLog(){try{return JSON.parse(localStorage.getItem(LS_LOG)||'[]')}catch{return[];}}
@@ -372,9 +381,9 @@ function getBpLabel(bp){
   return parts.join(' ');
 }
 function getBpTag(bp){
-  if(bp.type==='Armor') return (bp.category||'Armor')+' · '+(bp.slot||'');
-  if(bp.type==='Weapon') return bp.weapon_type||'Weapon';
-  if(bp.type==='Ammunition') return 'Ammo · '+(bp.weapon_type||'');
+  if(bp.type==='Armor') return bp.category||'Armor';
+  if(bp.type==='Weapon') return 'Weapon';
+  if(bp.type==='Ammunition') return 'Ammo'+(bp.weapon_type?' · '+bp.weapon_type:'');
   return bp.type;
 }
 function qualTierClass(tier){return tier===700?'qual-700':tier===800?'qual-800':'qual-900';}
@@ -427,17 +436,26 @@ function switchTab(tab){
 
 // ── BLUEPRINT BROWSER ──
 function setBrowserFilter(type,btn){
-  browserTypeFilter=type;
-  document.querySelectorAll('.browser-bar .filter-btn').forEach(b=>b.classList.remove('active'));
+  browserFilter=type;
+  document.querySelectorAll('.browser-filter-bar .filter-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   renderBrowser();
 }
 
 function renderBrowser(){
   const q=(document.getElementById('browser-search').value||'').toLowerCase().trim();
+  const tracking=readTracking();
   const owned=blueprints.filter(bp=>ownedIds.has(bp.id));
   const filtered=owned.filter(bp=>{
-    if(browserTypeFilter!=='all'&&bp.type!==browserTypeFilter) return false;
+    if(browserFilter==='Armor'||browserFilter==='Weapon'||browserFilter==='Ammunition'){
+      if(bp.type!==browserFilter) return false;
+    } else if(browserFilter==='tracked'){
+      const t=tracking[bp.id];
+      if(!t||!t.personal) return false;
+    } else if(browserFilter==='orders'){
+      const t=tracking[bp.id];
+      if(!t||!t.order) return false;
+    }
     if(!q) return true;
     return getBpLabel(bp).toLowerCase().includes(q)||bp.base.toLowerCase().includes(q);
   });
@@ -450,6 +468,9 @@ function renderBrowser(){
     const isExp=browserExpanded.has(bp.id);
     const label=getBpLabel(bp);
     const tag=getBpTag(bp);
+    const t=tracking[bp.id]||{};
+    const trackBadge=t.personal?'<span class="tracked-badge">★ TRACKED</span>':'';
+    const orderBadge=t.order?'<span class="order-track-badge">★ ORDER</span>':'';
     const ingHtml=bp.ingredients.map(i=>`<div class="ing-row">
       <span class="ing-name">${i.name}${GEM_NAMES.has(i.name)?'<span class="ing-gem">GEM</span>':''}${i.name==='aslarite'?'<span class="ing-asl">500+OK</span>':''}</span>
       <span class="ing-qty">${i.qty} cSCU</span>
@@ -458,6 +479,7 @@ function renderBrowser(){
       <div class="bp-card-header" onclick="toggleBrowserExp(${bp.id})">
         <span class="bp-name">${label}</span>
         <span class="bp-tag">${tag}</span>
+        ${trackBadge}${orderBadge}
         <div class="bp-actions" onclick="event.stopPropagation()">
           <button class="btn btn-gold btn-sm" onclick="craftThis(${bp.id})">Craft This</button>
         </div>
@@ -488,7 +510,7 @@ function selectBlueprint(bpId){
   openPickerSlot=-1;
   document.getElementById('wb-empty').style.display='none';
   document.getElementById('wb-body').style.display='block';
-  document.getElementById('result-panel').classList.remove('show');
+  document.getElementById('wb-result').style.display='none';
   document.getElementById('wb-bp-name').textContent=getBpLabel(bp);
   document.getElementById('wb-bp-tag').textContent=getBpTag(bp);
   document.getElementById('wb-bp-type').textContent=bp.type;
@@ -734,10 +756,6 @@ function showResult(job){
   </tr>`).join('');
 }
 
-function craftAnother(){
-  document.getElementById('wb-result').style.display='none';
-}
-
 // ── STATS ──
 function updateStats(){
   document.getElementById('stat-total').textContent=craftingLog.length;
@@ -775,9 +793,9 @@ function renderLogRow(job){
 
   const detailMatRows=job.materials.map(m=>`<tr>
     <td style="font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;text-transform:capitalize;color:var(--tmi-text-primary)">${m.name}${m.name==='aslarite'?'<span class="asl-note">500+</span>':''}</td>
-    <td style="font-family:'Share Tech Mono',monospace;color:var(--tmi-gold)">${m.avgQuality||'—'}</td>
-    <td style="font-family:'Share Tech Mono',monospace;color:var(--tmi-text-secondary)">${m.characteristic}</td>
-    <td style="font-family:'Share Tech Mono',monospace;color:var(--tmi-text-dim);font-style:italic">${m.effectPct!==null?'+'+m.effectPct+'%':'pending game data'}</td>
+    <td style="font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-gold)">${m.avgQuality||'—'}</td>
+    <td style="font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-secondary)">${m.characteristic}</td>
+    <td style="font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);font-style:italic">${m.effectPct!==null?'+'+m.effectPct+'%':'pending game data'}</td>
   </tr>`).join('');
 
   let logPickerHtml='';
