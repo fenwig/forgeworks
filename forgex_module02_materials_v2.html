@@ -7,17 +7,17 @@
     --tmi-bg-deep:#0a0804;--tmi-bg-panel:#0f0d09;--tmi-bg-card:#141109;--tmi-bg-hover:#1a1610;
     --tmi-gold:#c8a84b;--tmi-gold-bright:#e8c96a;--tmi-gold-dim:#8a7030;--tmi-gold-dark:#5a4a20;
     --tmi-gold-glow:rgba(200,168,75,0.12);--tmi-steel:#8a9aaa;--tmi-steel-dim:#556070;
-    --tmi-text-primary:#e8e0d0;--tmi-text-secondary:#b0a890;--tmi-text-dim:#6a6050;
+    --tmi-text-primary:#ffffff;--tmi-text-secondary:#d0c4b0;--tmi-text-dim:#90806e;
     --tmi-border:rgba(200,168,75,0.25);--tmi-border-dim:rgba(200,168,75,0.1);
     --tmi-danger:#cc3333;--tmi-success:#5a9955;--tmi-warning:#cc8800;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{background:var(--tmi-bg-deep);color:var(--tmi-text-primary);font-family:'Exo 2',sans-serif;padding:0;}
-  .page-wrap{max-width:960px;}
+  .page-wrap{max-width:1200px;}
 
   .mod-header{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;}
   .mod-eyebrow{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--tmi-gold-dim);text-transform:uppercase;margin-bottom:2px;}
-  .mod-title{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tmi-text-primary);}
+  .mod-title{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#ffffff;}
   .mod-stats{display:flex;gap:16px;}
   .stat{text-align:right;}
   .stat-val{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--tmi-gold);}
@@ -29,13 +29,16 @@
   .filter-btn{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:600;letter-spacing:1px;color:var(--tmi-text-secondary);background:transparent;border:1px solid var(--tmi-border-dim);padding:4px 12px;cursor:pointer;text-transform:uppercase;transition:all 0.15s;clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);}
   .filter-btn:hover{border-color:var(--tmi-border);color:var(--tmi-text-primary);}
   .filter-btn.active{background:var(--tmi-gold-glow);border-color:var(--tmi-gold);color:var(--tmi-gold);}
-  .filter-sep{width:1px;height:24px;background:var(--tmi-border-dim);}
+  .filter-sep{width:1px;height:24px;background:var(--tmi-border-dim);flex-shrink:0;}
   .search-wrap{flex:1;min-width:140px;}
   .search-input{width:100%;background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);color:var(--tmi-text-primary);font-family:'Share Tech Mono',monospace;font-size:14px;padding:6px 10px;outline:none;transition:border-color 0.15s;}
   .search-input::placeholder{color:var(--tmi-text-dim);}
   .search-input:focus{border-color:var(--tmi-border);}
   .add-btn{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;letter-spacing:2px;color:var(--tmi-bg-deep);background:var(--tmi-gold);border:none;padding:7px 16px;cursor:pointer;text-transform:uppercase;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);transition:all 0.2s;white-space:nowrap;}
   .add-btn:hover{background:var(--tmi-gold-bright);}
+  .op-btn{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;letter-spacing:1.5px;color:var(--tmi-text-secondary);background:transparent;border:1px solid var(--tmi-border-dim);padding:5px 14px;cursor:pointer;text-transform:uppercase;transition:all 0.15s;white-space:nowrap;}
+  .op-btn:hover:not([disabled]){border-color:var(--tmi-border);color:var(--tmi-text-primary);}
+  .op-btn[disabled]{opacity:0.3;cursor:not-allowed;}
 
   .table-wrap{overflow-x:auto;}
   table{width:100%;border-collapse:collapse;}
@@ -43,8 +46,11 @@
   th{font-family:'Share Tech Mono',monospace;font-size:14px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;padding:10px 14px;text-align:left;cursor:pointer;white-space:nowrap;user-select:none;}
   th:hover{color:var(--tmi-gold);}
   th.sorted{color:var(--tmi-gold);}
+  th.no-sort{cursor:default;}
+  th.no-sort:hover{color:var(--tmi-text-dim);}
   tbody tr{border-bottom:1px solid var(--tmi-border-dim);transition:background 0.1s;}
   tbody tr:hover{background:var(--tmi-bg-hover);}
+  tbody tr.row-selected{background:rgba(200,168,75,0.06);}
   td{padding:10px 14px;font-size:15px;vertical-align:middle;}
 
   .ore-name{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:600;letter-spacing:1px;color:var(--tmi-text-primary);text-transform:capitalize;}
@@ -58,16 +64,16 @@
   .loc-tag{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-steel);}
   .loc-default{color:var(--tmi-gold-dim);}
   .date-val{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-secondary);}
-
   .action-btn{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:1px;color:var(--tmi-text-dim);background:transparent;border:1px solid transparent;padding:4px 10px;cursor:pointer;text-transform:uppercase;transition:all 0.15s;}
   .action-btn:hover{border-color:var(--tmi-border);color:var(--tmi-text-secondary);}
   .action-btn.del:hover{border-color:rgba(204,51,51,0.4);color:var(--tmi-danger);}
+  .row-check{width:16px;height:16px;cursor:pointer;accent-color:var(--tmi-gold);}
 
   .empty-state{padding:40px;text-align:center;color:var(--tmi-text-dim);font-family:'Share Tech Mono',monospace;font-size:14px;letter-spacing:1px;}
 
   .form-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:100;align-items:center;justify-content:center;}
   .form-overlay.open{display:flex;}
-  .form-panel{background:var(--tmi-bg-panel);border:1px solid var(--tmi-border);width:380px;max-width:95vw;}
+  .form-panel{background:var(--tmi-bg-panel);border:1px solid var(--tmi-border);width:400px;max-width:95vw;}
   .form-header{background:var(--tmi-bg-card);border-bottom:1px solid var(--tmi-border-dim);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;}
   .form-title{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tmi-gold);}
   .form-close{background:none;border:none;color:var(--tmi-text-secondary);cursor:pointer;font-size:18px;padding:0 4px;}
@@ -80,21 +86,23 @@
   .form-select option{background:var(--tmi-bg-panel);}
   .form-row-inline{display:flex;gap:10px;}
   .form-row-inline .form-row{flex:1;}
-  .form-toggle-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
-  .toggle-lbl{font-family:'Share Tech Mono',monospace;font-size:14px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;}
-  .toggle-switch{position:relative;width:36px;height:18px;cursor:pointer;flex-shrink:0;}
-  .toggle-switch input{opacity:0;width:0;height:0;}
-  .toggle-track{position:absolute;inset:0;background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);transition:all 0.2s;}
-  .toggle-thumb{position:absolute;top:3px;left:3px;width:10px;height:10px;background:var(--tmi-text-dim);transition:all 0.2s;}
-  .toggle-switch input:checked + .toggle-track{background:rgba(90,153,85,0.15);border-color:rgba(90,153,85,0.4);}
-  .toggle-switch input:checked ~ .toggle-thumb{left:21px;background:var(--tmi-success);}
   .form-footer{padding:12px 16px;border-top:1px solid var(--tmi-border-dim);display:flex;gap:10px;justify-content:flex-end;}
   .btn-cancel{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;letter-spacing:2px;color:var(--tmi-text-secondary);background:transparent;border:1px solid var(--tmi-border-dim);padding:7px 16px;cursor:pointer;text-transform:uppercase;}
   .btn-save{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:2px;color:var(--tmi-bg-deep);background:var(--tmi-gold);border:none;padding:7px 20px;cursor:pointer;text-transform:uppercase;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);}
 
+  .info-box{background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);padding:10px 12px;margin-bottom:14px;}
+  .info-line{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--tmi-text-secondary);line-height:1.8;}
+  .info-line strong{color:var(--tmi-text-primary);}
+  .info-line.result-line{color:var(--tmi-gold);}
+  .info-line.warn-line{color:var(--tmi-warning);}
+
+  .hm-indicator{display:inline-flex;align-items:center;gap:6px;font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:1px;color:var(--tmi-success);margin-top:6px;}
+  .hm-dot{width:6px;height:6px;background:var(--tmi-success);border-radius:50%;display:inline-block;flex-shrink:0;}
+
   .footer-bar{background:var(--tmi-bg-panel);border-top:1px solid var(--tmi-border-dim);padding:8px 18px;display:flex;align-items:center;gap:16px;}
   .footer-info{font-family:'Share Tech Mono',monospace;font-size:14px;letter-spacing:1.5px;color:var(--tmi-text-dim);}
   .footer-info span{color:var(--tmi-text-secondary);}
+  .footer-sel{font-family:'Share Tech Mono',monospace;font-size:14px;letter-spacing:1.5px;color:var(--tmi-gold);}
 
   .qty-edit-wrap{display:flex;align-items:center;gap:6px;}
   .qty-edit-input{width:80px;background:var(--tmi-bg-card);border:1px solid var(--tmi-border);color:var(--tmi-text-primary);font-family:'Share Tech Mono',monospace;font-size:14px;padding:4px 8px;outline:none;}
@@ -102,12 +110,13 @@
   .qty-cancel-btn{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);background:none;border:none;cursor:pointer;padding:3px;}
 
   .loc-select-row{display:flex;gap:8px;}
-  .loc-select-row .form-select{flex:0 0 120px;}
+  .loc-select-row .form-select{flex:0 0 130px;}
   .loc-select-row .form-input{flex:1;}
 </style>
 </head>
 <body>
 <div class="page-wrap">
+
 <div class="mod-header">
   <div>
     <div class="mod-eyebrow">Troublemaker Incorporated — Custom Arms & Armor</div>
@@ -122,6 +131,10 @@
 </div>
 
 <div class="filter-bar">
+  <div class="search-wrap">
+    <input class="search-input" id="search-input" placeholder="Search ore or location..." oninput="renderTable()">
+  </div>
+  <div class="filter-sep"></div>
   <div class="filter-group">
     <span class="filter-label">Type</span>
     <button class="filter-btn active" onclick="setFilter('type','all',this)">All</button>
@@ -132,17 +145,14 @@
   <div class="filter-group">
     <span class="filter-label">Quality</span>
     <button class="filter-btn active" onclick="setFilter('qual','all',this)">All</button>
-    <button class="filter-btn" onclick="setFilter('qual','500',this)">500s</button>
-    <button class="filter-btn" onclick="setFilter('qual','600',this)">600s</button>
     <button class="filter-btn" onclick="setFilter('qual','700',this)">700s</button>
     <button class="filter-btn" onclick="setFilter('qual','800',this)">800s</button>
     <button class="filter-btn" onclick="setFilter('qual','900',this)">900s</button>
-    <button class="filter-btn" onclick="setFilter('qual','1000',this)">Pure</button>
   </div>
   <div class="filter-sep"></div>
-  <div class="search-wrap">
-    <input class="search-input" id="search-input" placeholder="Search ore or location..." oninput="renderTable()">
-  </div>
+  <button class="op-btn" id="btn-combine" onclick="openCombine()" disabled>Combine</button>
+  <button class="op-btn" id="btn-split" onclick="openSplit()" disabled>Split</button>
+  <button class="op-btn" id="btn-move" onclick="openMove()" disabled>Move</button>
   <button class="add-btn" onclick="openAddForm()">+ Add Lot</button>
 </div>
 
@@ -155,7 +165,10 @@
       <th onclick="setSort('qty')">Quantity <span id="s-qty"></span></th>
       <th onclick="setSort('location')">Location <span id="s-location"></span></th>
       <th onclick="setSort('date')">Added <span id="s-date"></span></th>
-      <th></th>
+      <th class="no-sort">Actions</th>
+      <th class="no-sort" style="width:44px;text-align:center;padding:10px 8px;">
+        <input type="checkbox" class="row-check" id="select-all" title="Select all visible" onchange="toggleSelectAll(this.checked)">
+      </th>
     </tr>
   </thead>
   <tbody id="table-body"></tbody>
@@ -165,9 +178,11 @@
 
 <div class="footer-bar">
   <div class="footer-info">Showing <span id="footer-showing">0</span> of <span id="footer-total">0</span> lots</div>
+  <div class="footer-sel" id="footer-sel" style="display:none"><span id="footer-sel-count">0</span> SELECTED</div>
   <div class="footer-info" style="margin-left:auto">Sort: <span id="footer-sort">Date ↓</span></div>
 </div>
 
+<!-- ADD LOT overlay -->
 <div class="form-overlay" id="add-overlay">
   <div class="form-panel">
     <div class="form-header">
@@ -177,44 +192,52 @@
     <div class="form-body">
       <div class="form-row">
         <label class="form-lbl">Ore / Gem Name</label>
-        <select class="form-select" id="f-ore" onchange="autoDetectGem()">
+        <div style="display:flex;gap:6px;margin-bottom:8px;">
+          <button class="filter-btn active" onclick="setOreFilter('all',this)" style="font-size:12px;padding:3px 10px;">All</button>
+          <button class="filter-btn" onclick="setOreFilter('gem',this)" style="font-size:12px;padding:3px 10px;">Gems</button>
+          <button class="filter-btn" onclick="setOreFilter('ore',this)" style="font-size:12px;padding:3px 10px;">Ore</button>
+        </div>
+        <select class="form-select" id="f-ore" onchange="updateHMIndicator()">
           <optgroup label="— Hand-Mined Gems —">
-            <option value="hadanite">Hadanite</option>
-            <option value="janalite">Janalite</option>
-            <option value="dolvine">Dolvine</option>
             <option value="aphorite">Aphorite</option>
-            <option value="sadaryx">Sadaryx</option>
-            <option value="carinite">Carinite</option>
             <option value="beradom">Beradom</option>
-            <option value="jaclium">Jaclium</option>
-            <option value="saldynium">Saldynium</option>
+            <option value="carinite">Carinite</option>
+            <option value="dolvine">Dolvine</option>
             <option value="feynmaline">Feynmaline</option>
             <option value="glacosite">Glacosite</option>
+            <option value="hadanite">Hadanite</option>
+            <option value="jaclium">Jaclium</option>
+            <option value="janalite">Janalite</option>
+            <option value="sadaryx">Sadaryx</option>
+            <option value="saldynium">Saldynium</option>
           </optgroup>
           <optgroup label="— Mined Ore —">
-            <option value="quantanium">Quantanium</option>
-            <option value="laranite">Laranite</option>
             <option value="agricium">Agricium</option>
+            <option value="aluminum">Aluminum</option>
+            <option value="aslarite">Aslarite</option>
+            <option value="beryl">Beryl</option>
             <option value="bexalite">Bexalite</option>
             <option value="borase">Borase</option>
+            <option value="copper">Copper</option>
+            <option value="corundum">Corundum</option>
+            <option value="diamond">Diamond</option>
+            <option value="gold">Gold</option>
+            <option value="inertite">Inertite</option>
+            <option value="iron">Iron</option>
+            <option value="laranite">Laranite</option>
+            <option value="lindinium">Lindinium</option>
+            <option value="quantanium">Quantanium</option>
+            <option value="quartz">Quartz</option>
+            <option value="silicon">Silicon</option>
+            <option value="stileron">Stileron</option>
             <option value="taranite">Taranite</option>
             <option value="titanium">Titanium</option>
             <option value="tungsten">Tungsten</option>
-            <option value="corundum">Corundum</option>
-            <option value="beryl">Beryl</option>
-            <option value="gold">Gold</option>
-            <option value="diamond">Diamond</option>
-            <option value="copper">Copper</option>
-            <option value="iron">Iron</option>
-            <option value="quartz">Quartz</option>
-            <option value="silicon">Silicon</option>
-            <option value="aluminum">Aluminum</option>
-            <option value="aslarite">Aslarite</option>
-            <option value="lindinium">Lindinium</option>
-            <option value="inertite">Inertite</option>
-            <option value="stileron">Stileron</option>
           </optgroup>
         </select>
+        <div id="hm-indicator" style="display:none">
+          <span class="hm-indicator"><span class="hm-dot"></span>HAND-MINED GEM</span>
+        </div>
       </div>
       <div class="form-row-inline">
         <div class="form-row">
@@ -229,20 +252,12 @@
       <div class="form-row">
         <label class="form-lbl">Storage Location <span class="form-lbl-hint">(defaults to Levsky)</span></label>
         <div class="loc-select-row">
-          <select class="form-select" id="f-loc-preset" onchange="applyLocPreset()" style="flex:0 0 130px;">
+          <select class="form-select" id="f-loc-preset" onchange="applyLocPreset()">
             <option value="Levsky">Levsky</option>
             <option value="custom">Custom...</option>
           </select>
           <input class="form-input" id="f-loc-custom" type="text" placeholder="Enter location" style="display:none;">
         </div>
-      </div>
-      <div class="form-toggle-row">
-        <label class="toggle-switch">
-          <input type="checkbox" id="f-handmined">
-          <div class="toggle-track"></div>
-          <div class="toggle-thumb"></div>
-        </label>
-        <span class="toggle-lbl">Hand-Mined Gem</span>
       </div>
     </div>
     <div class="form-footer">
@@ -252,33 +267,147 @@
   </div>
 </div>
 
+<!-- COMBINE overlay -->
+<div class="form-overlay" id="combine-overlay">
+  <div class="form-panel">
+    <div class="form-header">
+      <span class="form-title">Combine Lots</span>
+      <button class="form-close" onclick="closeOverlay('combine-overlay')">✕</button>
+    </div>
+    <div class="form-body">
+      <div class="info-box" id="combine-info"></div>
+    </div>
+    <div class="form-footer">
+      <button class="btn-cancel" onclick="closeOverlay('combine-overlay')">Cancel</button>
+      <button class="btn-save" id="btn-combine-confirm" onclick="executeCombine()">Combine</button>
+    </div>
+  </div>
+</div>
+
+<!-- SPLIT overlay -->
+<div class="form-overlay" id="split-overlay">
+  <div class="form-panel">
+    <div class="form-header">
+      <span class="form-title">Split Lot</span>
+      <button class="form-close" onclick="closeOverlay('split-overlay')">✕</button>
+    </div>
+    <div class="form-body">
+      <div class="info-box" id="split-info"></div>
+      <div class="form-row">
+        <label class="form-lbl">Split Off (cSCU)</label>
+        <input class="form-input" id="split-qty-input" type="number" min="1" placeholder="Quantity to split off" oninput="updateSplitPreview()">
+      </div>
+      <div id="split-preview" class="info-box" style="display:none"></div>
+    </div>
+    <div class="form-footer">
+      <button class="btn-cancel" onclick="closeOverlay('split-overlay')">Cancel</button>
+      <button class="btn-save" onclick="executeSplit()">Split</button>
+    </div>
+  </div>
+</div>
+
+<!-- MOVE overlay -->
+<div class="form-overlay" id="move-overlay">
+  <div class="form-panel">
+    <div class="form-header">
+      <span class="form-title">Move Lots</span>
+      <button class="form-close" onclick="closeOverlay('move-overlay')">✕</button>
+    </div>
+    <div class="form-body">
+      <div class="info-box" id="move-info"></div>
+      <div class="form-row">
+        <label class="form-lbl">New Location</label>
+        <div class="loc-select-row">
+          <select class="form-select" id="move-loc-preset" onchange="applyMoveLoc()">
+            <option value="Levsky">Levsky</option>
+            <option value="custom">Custom...</option>
+          </select>
+          <input class="form-input" id="move-loc-custom" type="text" placeholder="Enter location" style="display:none;">
+        </div>
+      </div>
+    </div>
+    <div class="form-footer">
+      <button class="btn-cancel" onclick="closeOverlay('move-overlay')">Cancel</button>
+      <button class="btn-save" onclick="executeMove()">Move</button>
+    </div>
+  </div>
+</div>
+
 </div><!-- /page-wrap -->
 <script>
-const GEM_NAMES = new Set(['hadanite','janalite','dolvine','aphorite','sadaryx','carinite','beradom','jaclium','saldynium','feynmaline','glacosite']);
+const GEM_NAMES = new Set(['aphorite','beradom','carinite','dolvine','feynmaline','glacosite','hadanite','jaclium','janalite','sadaryx','saldynium']);
+const ALL_GEMS = ['aphorite','beradom','carinite','dolvine','feynmaline','glacosite','hadanite','jaclium','janalite','sadaryx','saldynium'];
+const ALL_ORES = ['agricium','aluminum','aslarite','beryl','bexalite','borase','copper','corundum','diamond','gold','inertite','iron','laranite','lindinium','quantanium','quartz','silicon','stileron','taranite','titanium','tungsten'];
 const DEFAULT_LOC = 'Levsky';
+const STORAGE_KEY = 'forgex-lots';
+const LOC_KEY = 'forgex-locations';
 
-let lots = [
-  {id:1,ore:'janalite',quality:875,qty:3,location:'Levsky',notes:'',hand_mined:true,date:'2954-01-12'},
-  {id:2,ore:'hadanite',quality:920,qty:7,location:'Levsky',notes:'dense cluster',hand_mined:true,date:'2954-01-14'},
-  {id:3,ore:'laranite',quality:743,qty:45,location:'Levsky',notes:'',hand_mined:false,date:'2954-01-15'},
-  {id:4,ore:'quantanium',quality:812,qty:18,location:'Levsky',notes:'hot rock run',hand_mined:false,date:'2954-01-15'},
-  {id:5,ore:'aphorite',quality:960,qty:2,location:'Levsky',notes:'',hand_mined:true,date:'2954-01-16'},
-  {id:6,ore:'bexalite',quality:688,qty:72,location:'Levsky',notes:'',hand_mined:false,date:'2954-01-16'},
-  {id:7,ore:'sadaryx',quality:840,qty:5,location:'Port Olisar',notes:'moved for order',hand_mined:true,date:'2954-01-17'},
-  {id:8,ore:'aslarite',quality:534,qty:200,location:'Levsky',notes:'armoury run',hand_mined:false,date:'2954-01-18'},
+const SEED_LOTS = [
+  {id:1,ore:'janalite',quality:875,qty:3,location:'Levsky',hand_mined:true,date:'2954-01-12'},
+  {id:2,ore:'hadanite',quality:920,qty:7,location:'Levsky',hand_mined:true,date:'2954-01-14'},
+  {id:3,ore:'laranite',quality:743,qty:45,location:'Levsky',hand_mined:false,date:'2954-01-15'},
+  {id:4,ore:'quantanium',quality:812,qty:18,location:'Levsky',hand_mined:false,date:'2954-01-15'},
+  {id:5,ore:'aphorite',quality:960,qty:2,location:'Levsky',hand_mined:true,date:'2954-01-16'},
+  {id:6,ore:'bexalite',quality:688,qty:72,location:'Levsky',hand_mined:false,date:'2954-01-16'},
+  {id:7,ore:'sadaryx',quality:840,qty:5,location:'Port Olisar',hand_mined:true,date:'2954-01-17'},
+  {id:8,ore:'aslarite',quality:534,qty:200,location:'Levsky',hand_mined:false,date:'2954-01-18'},
 ];
-let nextId = 9;
-let sortCol = 'date';
-let sortDir = -1;
-let filters = {type:'all',qual:'all'};
-let editingQtyId = null;
+
+function loadData(){
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(raw){const p=JSON.parse(raw);if(p&&Array.isArray(p.lots)&&p.lots.length>0) return p;}
+  }catch(e){}
+  return {lots:SEED_LOTS.map(l=>({...l})),nextId:9};
+}
+
+function persist(){
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify({lots,nextId}));}catch(e){}
+}
+
+function loadLocations(){
+  try{const r=localStorage.getItem(LOC_KEY);if(r){const p=JSON.parse(r);if(Array.isArray(p)) return p;}}catch(e){}
+  return [];
+}
+function persistLocations(){try{localStorage.setItem(LOC_KEY,JSON.stringify(customLocations));}catch(e){}}
+function addCustomLocation(loc){
+  if(!loc||loc===DEFAULT_LOC||customLocations.includes(loc)) return;
+  customLocations.push(loc);
+  customLocations.sort();
+  persistLocations();
+}
+function buildLocOptions(selectId){
+  const sel=document.getElementById(selectId);
+  const cur=sel.value;
+  sel.innerHTML='<option value="Levsky">Levsky</option>';
+  customLocations.forEach(loc=>{
+    const o=document.createElement('option');o.value=loc;o.textContent=loc;sel.appendChild(o);
+  });
+  const cust=document.createElement('option');cust.value='custom';cust.textContent='Custom...';sel.appendChild(cust);
+  if(cur&&sel.querySelector(`option[value="${CSS.escape(cur)}"]`)) sel.value=cur;
+}
+
+const _d=loadData();
+let lots=_d.lots;
+let nextId=_d.nextId||9;
+let customLocations=loadLocations();
+let sortCol='date',sortDir=-1;
+let filters={type:'all',qual:'all'};
+let editingQtyId=null;
+let selectedIds=new Set();
+let visibleIds=[];
+
+function today(){
+  const d=new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
 
 function getQualityColor(q){
-  if(q>=900) return '#e8c96a';
-  if(q>=800) return '#c8a84b';
-  if(q>=700) return '#8a7030';
-  if(q>=600) return '#8a9aaa';
-  return '#7a7060';
+  if(q>=900) return '#5a9955';
+  if(q>=800) return '#d8b85a';
+  if(q>=700) return '#c8a84b';
+  if(q>=500) return '#b0a890';
+  return '#90806e';
 }
 
 function setFilter(key,val,btn){
@@ -289,7 +418,7 @@ function setFilter(key,val,btn){
 }
 
 function setSort(col){
-  if(sortCol===col) sortDir*=-1; else {sortCol=col;sortDir=-1;}
+  if(sortCol===col) sortDir*=-1; else{sortCol=col;sortDir=-1;}
   renderTable();
 }
 
@@ -299,10 +428,10 @@ function getFiltered(){
     if(filters.type==='gem'&&!l.hand_mined) return false;
     if(filters.type==='ore'&&l.hand_mined) return false;
     if(filters.qual!=='all'){
-      if(filters.qual==='1000'){if(l.quality!==1000) return false;}
-      else{const band=parseInt(filters.qual);if(l.quality<band||l.quality>=band+100) return false;}
+      const band=parseInt(filters.qual);
+      if(l.quality<band||l.quality>=band+100) return false;
     }
-    if(q&&!l.ore.includes(q)&&!(l.location||'').toLowerCase().includes(q)) return false;
+    if(q&&!l.ore.toLowerCase().includes(q)&&!(l.location||'').toLowerCase().includes(q)) return false;
     return true;
   });
 }
@@ -316,13 +445,14 @@ function getSorted(arr){
     else if(sortCol==='location'){av=a.location||'';bv=b.location||'';}
     else{av=a.date;bv=b.date;}
     if(av<bv) return -1*sortDir;
-    if(av>bv) return 1*sortDir;
+    if(av>bv) return sortDir;
     return 0;
   });
 }
 
 function renderTable(){
   const filtered=getSorted(getFiltered());
+  visibleIds=filtered.map(l=>l.id);
   const tbody=document.getElementById('table-body');
   const empty=document.getElementById('empty-msg');
 
@@ -333,7 +463,7 @@ function renderTable(){
     if(th) th.classList.toggle('sorted',sortCol===c);
   });
 
-  if(filtered.length===0){tbody.innerHTML='';empty.style.display='block';updateStats();updateFooter(filtered);return;}
+  if(filtered.length===0){tbody.innerHTML='';empty.style.display='block';updateStats();updateFooter(filtered);updateOpButtons();return;}
   empty.style.display='none';
 
   tbody.innerHTML=filtered.map(l=>{
@@ -342,7 +472,8 @@ function renderTable(){
     const isEditingQty=editingQtyId===l.id;
     const scu=(l.qty/100).toFixed(2);
     const isDefault=l.location===DEFAULT_LOC;
-    return `<tr>
+    const isSel=selectedIds.has(l.id);
+    return `<tr class="${isSel?'row-selected':''}">
       <td>
         <span class="ore-name">${l.ore}</span>
         ${l.hand_mined?'<span class="gem-tag">GEM</span>':''}
@@ -371,11 +502,47 @@ function renderTable(){
         <button class="action-btn" onclick="startQtyEdit(${l.id})">QTY</button>
         <button class="action-btn del" onclick="deleteLot(${l.id})">DEL</button>
       </td>
+      <td style="text-align:center;padding:10px 8px;">
+        <input type="checkbox" class="row-check" ${isSel?'checked':''} onchange="toggleSelect(${l.id},this.checked)">
+      </td>
     </tr>`;
   }).join('');
 
-  updateStats();updateFooter(filtered);
+  updateStats();
+  updateFooter(filtered);
+  updateOpButtons();
+  updateSelectAllState();
   if(editingQtyId!==null){const inp=document.getElementById('qty-edit-'+editingQtyId);if(inp) inp.focus();}
+}
+
+function toggleSelect(id,checked){
+  if(checked) selectedIds.add(id); else selectedIds.delete(id);
+  const row=document.querySelector(`input[onchange="toggleSelect(${id},this.checked)"]`)?.closest('tr');
+  if(row) row.classList.toggle('row-selected',checked);
+  updateOpButtons();
+  updateSelectAllState();
+  updateFooter(getSorted(getFiltered()));
+}
+
+function toggleSelectAll(checked){
+  visibleIds.forEach(id=>{if(checked) selectedIds.add(id); else selectedIds.delete(id);});
+  renderTable();
+}
+
+function updateSelectAllState(){
+  const sa=document.getElementById('select-all');
+  if(!sa) return;
+  const visibleSel=visibleIds.filter(id=>selectedIds.has(id));
+  sa.checked=visibleIds.length>0&&visibleSel.length===visibleIds.length;
+  sa.indeterminate=visibleSel.length>0&&visibleSel.length<visibleIds.length;
+}
+
+function updateOpButtons(){
+  const sel=Array.from(selectedIds);
+  const n=sel.length;
+  document.getElementById('btn-combine').disabled=n<2;
+  document.getElementById('btn-split').disabled=n!==1;
+  document.getElementById('btn-move').disabled=n<1;
 }
 
 function startQtyEdit(id){editingQtyId=id;renderTable();}
@@ -386,12 +553,17 @@ function applyQty(id){
   const v=parseInt(inp.value);
   if(isNaN(v)||v<0) return;
   const lot=lots.find(l=>l.id===id);
-  if(lot) lot.qty=v;
+  if(lot){lot.qty=v;persist();}
   editingQtyId=null;
   renderTable();
 }
 
-function deleteLot(id){lots=lots.filter(l=>l.id!==id);renderTable();}
+function deleteLot(id){
+  lots=lots.filter(l=>l.id!==id);
+  selectedIds.delete(id);
+  persist();
+  renderTable();
+}
 
 function updateStats(){
   const total=lots.reduce((s,l)=>s+l.qty,0);
@@ -407,48 +579,207 @@ function updateFooter(filtered){
   document.getElementById('footer-showing').textContent=filtered.length;
   document.getElementById('footer-total').textContent=lots.length;
   document.getElementById('footer-sort').textContent=sortCol.charAt(0).toUpperCase()+sortCol.slice(1)+' '+(sortDir===1?'↑':'↓');
+  const selCount=selectedIds.size;
+  const selEl=document.getElementById('footer-sel');
+  const selCountEl=document.getElementById('footer-sel-count');
+  selEl.style.display=selCount>0?'block':'none';
+  if(selCountEl) selCountEl.textContent=selCount;
 }
 
-function autoDetectGem(){
+// ── ADD LOT ──────────────────────────────────────────────────────────────────
+
+function updateHMIndicator(){
   const ore=document.getElementById('f-ore').value;
-  document.getElementById('f-handmined').checked=GEM_NAMES.has(ore);
+  const ind=document.getElementById('hm-indicator');
+  ind.style.display=GEM_NAMES.has(ore)?'block':'none';
+}
+
+function setOreFilter(type,btn){
+  btn.closest('div').querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const sel=document.getElementById('f-ore');
+  sel.innerHTML='';
+  if(type!=='ore'){
+    const g=document.createElement('optgroup');g.label='— Hand-Mined Gems —';
+    ALL_GEMS.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n.charAt(0).toUpperCase()+n.slice(1);g.appendChild(o);});
+    sel.appendChild(g);
+  }
+  if(type!=='gem'){
+    const g=document.createElement('optgroup');g.label='— Mined Ore —';
+    ALL_ORES.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n.charAt(0).toUpperCase()+n.slice(1);g.appendChild(o);});
+    sel.appendChild(g);
+  }
+  updateHMIndicator();
 }
 
 function applyLocPreset(){
   const sel=document.getElementById('f-loc-preset').value;
   const custom=document.getElementById('f-loc-custom');
   if(sel==='custom'){custom.style.display='block';custom.focus();}
-  else{custom.style.display='none';}
+  else custom.style.display='none';
 }
 
 function openAddForm(){
-  document.getElementById('f-loc-preset').value='Levsky';
+  buildLocOptions('f-loc-preset');
   document.getElementById('f-loc-custom').style.display='none';
   document.getElementById('f-loc-custom').value='';
-  document.getElementById('add-overlay').classList.add('open');
-  autoDetectGem();
-}
-
-function closeAddForm(){
-  document.getElementById('add-overlay').classList.remove('open');
   document.getElementById('f-quality').value='';
   document.getElementById('f-qty').value='';
-  document.getElementById('f-loc-custom').value='';
+  // reset ore filter to All
+  const oreFilterBtns=document.querySelectorAll('#add-overlay .filter-btn');
+  oreFilterBtns.forEach(b=>b.classList.remove('active'));
+  if(oreFilterBtns[0]) oreFilterBtns[0].classList.add('active');
+  setOreFilter('all',oreFilterBtns[0]||{closest:()=>({querySelectorAll:()=>[]})});
+  updateHMIndicator();
+  document.getElementById('add-overlay').classList.add('open');
 }
+
+function closeAddForm(){document.getElementById('add-overlay').classList.remove('open');}
 
 function saveLot(){
   const ore=document.getElementById('f-ore').value;
   const quality=parseInt(document.getElementById('f-quality').value);
   const qty=parseInt(document.getElementById('f-qty').value);
-  const hand_mined=document.getElementById('f-handmined').checked;
+  const hand_mined=GEM_NAMES.has(ore);
   const locPreset=document.getElementById('f-loc-preset').value;
   const locCustom=document.getElementById('f-loc-custom').value.trim();
   const location=locPreset==='custom'?(locCustom||DEFAULT_LOC):locPreset;
   if(!ore||isNaN(quality)||quality<1||quality>1000||isNaN(qty)||qty<1) return;
-  const today=new Date();
-  const date=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
-  lots.push({id:nextId++,ore,quality,qty,location,hand_mined,date});
+  if(locPreset==='custom'&&locCustom) addCustomLocation(locCustom);
+  lots.push({id:nextId++,ore,quality,qty,location,hand_mined,date:today()});
+  persist();
   closeAddForm();
+  renderTable();
+}
+
+// ── OVERLAY HELPERS ───────────────────────────────────────────────────────────
+
+function closeOverlay(id){document.getElementById(id).classList.remove('open');}
+
+// ── COMBINE ───────────────────────────────────────────────────────────────────
+
+function openCombine(){
+  const sel=lots.filter(l=>selectedIds.has(l.id));
+  const infoEl=document.getElementById('combine-info');
+  const confirmBtn=document.getElementById('btn-combine-confirm');
+
+  const ores=[...new Set(sel.map(l=>l.ore))];
+  const locations=[...new Set(sel.map(l=>l.location))];
+  if(ores.length>1){
+    infoEl.innerHTML=`<div class="info-line warn-line">Cannot combine — selected lots are different materials:</div>`+
+      ores.map(o=>`<div class="info-line"><strong>${o}</strong></div>`).join('')+
+      `<div class="info-line" style="margin-top:6px">Select lots of the same ore to combine.</div>`;
+    confirmBtn.disabled=true;
+  } else if(locations.length>1){
+    infoEl.innerHTML=`<div class="info-line warn-line">Cannot combine — lots are at different locations:</div>`+
+      locations.map(l=>`<div class="info-line"><strong>${l}</strong></div>`).join('')+
+      `<div class="info-line" style="margin-top:6px">Use MOVE to consolidate lots to one location first.</div>`;
+    confirmBtn.disabled=true;
+  } else {
+    const totalQty=sel.reduce((s,l)=>s+l.qty,0);
+    const weightedQual=Math.round(sel.reduce((s,l)=>s+l.quality*l.qty,0)/totalQty);
+    confirmBtn.disabled=false;
+    infoEl.innerHTML=
+      `<div class="info-line">Combining <strong>${sel.length}</strong> lots of <strong>${ores[0]}</strong> at <strong>${locations[0]}</strong></div>`+
+      `<div class="info-line result-line" style="margin-top:6px">Result: <strong>${totalQty} cSCU</strong> at quality <strong>${weightedQual}</strong></div>`+
+      `<div class="info-line" style="margin-top:4px;color:var(--tmi-text-dim)">This cannot be undone.</div>`;
+  }
+  document.getElementById('combine-overlay').classList.add('open');
+}
+
+function executeCombine(){
+  const sel=lots.filter(l=>selectedIds.has(l.id));
+  const ores=[...new Set(sel.map(l=>l.ore))];
+  if(ores.length>1) return;
+  const totalQty=sel.reduce((s,l)=>s+l.qty,0);
+  const weightedQual=Math.round(sel.reduce((s,l)=>s+l.quality*l.qty,0)/totalQty);
+  const newLot={id:nextId++,ore:ores[0],quality:weightedQual,qty:totalQty,location:sel[0].location,hand_mined:sel[0].hand_mined,date:today()};
+  lots=lots.filter(l=>!selectedIds.has(l.id));
+  lots.push(newLot);
+  selectedIds.clear();
+  persist();
+  closeOverlay('combine-overlay');
+  renderTable();
+}
+
+// ── SPLIT ─────────────────────────────────────────────────────────────────────
+
+let splitLotId=null;
+
+function openSplit(){
+  const sel=lots.filter(l=>selectedIds.has(l.id));
+  if(sel.length!==1) return;
+  splitLotId=sel[0].id;
+  const l=sel[0];
+  document.getElementById('split-info').innerHTML=
+    `<div class="info-line">Splitting lot: <strong>${l.ore}</strong> — quality <strong>${l.quality}</strong></div>`+
+    `<div class="info-line">Current quantity: <strong>${l.qty} cSCU</strong></div>`;
+  document.getElementById('split-qty-input').value='';
+  document.getElementById('split-preview').style.display='none';
+  document.getElementById('split-overlay').classList.add('open');
+}
+
+function updateSplitPreview(){
+  const lot=lots.find(l=>l.id===splitLotId);
+  if(!lot) return;
+  const v=parseInt(document.getElementById('split-qty-input').value);
+  const preview=document.getElementById('split-preview');
+  if(isNaN(v)||v<1||v>=lot.qty){
+    preview.style.display='none';
+    return;
+  }
+  const remain=lot.qty-v;
+  preview.style.display='block';
+  preview.innerHTML=
+    `<div class="info-line result-line">Lot A: <strong>${v} cSCU</strong> at quality ${lot.quality}</div>`+
+    `<div class="info-line result-line">Lot B: <strong>${remain} cSCU</strong> at quality ${lot.quality}</div>`;
+}
+
+function executeSplit(){
+  const lot=lots.find(l=>l.id===splitLotId);
+  if(!lot) return;
+  const v=parseInt(document.getElementById('split-qty-input').value);
+  if(isNaN(v)||v<1||v>=lot.qty) return;
+  const remain=lot.qty-v;
+  lot.qty=v;
+  lots.push({id:nextId++,ore:lot.ore,quality:lot.quality,qty:remain,location:lot.location,hand_mined:lot.hand_mined,date:today()});
+  selectedIds.clear();
+  splitLotId=null;
+  persist();
+  closeOverlay('split-overlay');
+  renderTable();
+}
+
+// ── MOVE ──────────────────────────────────────────────────────────────────────
+
+function applyMoveLoc(){
+  const sel=document.getElementById('move-loc-preset').value;
+  const custom=document.getElementById('move-loc-custom');
+  if(sel==='custom'){custom.style.display='block';custom.focus();}
+  else custom.style.display='none';
+}
+
+function openMove(){
+  const sel=lots.filter(l=>selectedIds.has(l.id));
+  if(sel.length<1) return;
+  document.getElementById('move-info').innerHTML=
+    `<div class="info-line">Moving <strong>${sel.length}</strong> lot${sel.length>1?'s':''}</div>`+
+    sel.map(l=>`<div class="info-line" style="color:var(--tmi-text-dim)">${l.ore} — ${l.qty} cSCU @ ${l.location}</div>`).join('');
+  buildLocOptions('move-loc-preset');
+  document.getElementById('move-loc-custom').style.display='none';
+  document.getElementById('move-loc-custom').value='';
+  document.getElementById('move-overlay').classList.add('open');
+}
+
+function executeMove(){
+  const preset=document.getElementById('move-loc-preset').value;
+  const custom=document.getElementById('move-loc-custom').value.trim();
+  const newLoc=preset==='custom'?(custom||DEFAULT_LOC):preset;
+  if(preset==='custom'&&custom) addCustomLocation(custom);
+  lots.filter(l=>selectedIds.has(l.id)).forEach(l=>l.location=newLoc);
+  selectedIds.clear();
+  persist();
+  closeOverlay('move-overlay');
   renderTable();
 }
 
