@@ -157,7 +157,7 @@
   <div class="entry-panel">
     <div class="entry-zone">
       <div class="entry-row">
-        <input class="entry-input" id="entry-input" placeholder="quality / quantity  e.g. 875 / 3" disabled
+        <input class="entry-input" id="entry-input" placeholder="quality / quantity — press enter to add" disabled
           onkeydown="onEntryKey(event)" oninput="clearError()">
         <button class="add-line-btn" id="add-btn" onclick="addEntry()" disabled>+ ADD</button>
       </div>
@@ -186,6 +186,32 @@
 const GEM_NAMES = new Set(['aphorite','beradom','carinite','dolvine','feynmaline','glacosite','hadanite','jaclium','janalite','sadaryx','saldynium']);
 const ALL_GEMS = ['aphorite','beradom','carinite','dolvine','feynmaline','glacosite','hadanite','jaclium','janalite','sadaryx','saldynium'];
 const ALL_ORES = ['agricium','aluminum','aslarite','beryl','bexalite','borase','copper','corundum','diamond','gold','inertite','iron','laranite','lindinium','quantanium','quartz','silicon','stileron','taranite','titanium','tungsten'];
+const LOC_KEY = 'forgex-locations';
+const DEFAULT_LOC = 'Levsky';
+
+function loadLocations(){
+  try{const r=localStorage.getItem(LOC_KEY);if(r){const p=JSON.parse(r);if(Array.isArray(p)) return p;}}catch(e){}
+  return [];
+}
+function persistLocations(){try{localStorage.setItem(LOC_KEY,JSON.stringify(customLocations));}catch(e){}}
+function addCustomLocation(loc){
+  if(!loc||loc===DEFAULT_LOC||customLocations.includes(loc)) return;
+  customLocations.push(loc);
+  customLocations.sort();
+  persistLocations();
+}
+function buildLocOptions(selectId){
+  const sel=document.getElementById(selectId);
+  const cur=sel.value;
+  sel.innerHTML=`<option value="${DEFAULT_LOC}">${DEFAULT_LOC}</option>`;
+  customLocations.forEach(loc=>{
+    const o=document.createElement('option');o.value=loc;o.textContent=loc;sel.appendChild(o);
+  });
+  const cust=document.createElement('option');cust.value='custom';cust.textContent='Custom...';sel.appendChild(cust);
+  if(cur&&sel.querySelector(`option[value="${CSS.escape(cur)}"]`)) sel.value=cur;
+}
+
+let customLocations=loadLocations();
 
 let queue = [];
 let nextId = 1;
@@ -235,6 +261,14 @@ function onLocChange(){
   updateFooter();
 }
 
+function saveCurrentLocation(){
+  const preset = document.getElementById('loc-preset').value;
+  if(preset === 'custom'){
+    const loc = document.getElementById('loc-custom').value.trim();
+    if(loc){ addCustomLocation(loc); buildLocOptions('loc-preset'); }
+  }
+}
+
 function onOreChange(){
   const sel = document.getElementById('ore-select').value;
   currentOre = sel;
@@ -281,6 +315,7 @@ function addEntry(){
 
   const isGem = GEM_NAMES.has(currentOre);
   const loc = getLocation();
+  saveCurrentLocation();
 
   queue.push({id:nextId++,ore:currentOre,quality,qty,location:loc,hand_mined:isGem});
 
@@ -371,6 +406,7 @@ function showToast(msg){
   setTimeout(()=>t.classList.remove('show'), 3000);
 }
 
+buildLocOptions('loc-preset');
 buildOreSelect();
 renderQueue();
 updateFooter();
