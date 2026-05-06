@@ -2,3 +2,4 @@ Old OCR build/
 __pycache__/
 publish/
 *.pyc
+.claude/
