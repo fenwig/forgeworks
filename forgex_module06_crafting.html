@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600&display=swap');
+  :root{
+    --tmi-bg-deep:#0a0804;--tmi-bg-panel:#0f0d09;--tmi-bg-card:#141109;--tmi-bg-hover:#1a1610;
+    --tmi-gold:#c8a84b;--tmi-gold-bright:#e8c96a;--tmi-gold-dim:#8a7030;--tmi-gold-dark:#5a4a20;
+    --tmi-gold-glow:rgba(200,168,75,0.12);
+    --tmi-text-primary:#ffffff;--tmi-text-secondary:#d0c4b0;--tmi-text-dim:#90806e;
+    --tmi-border:rgba(200,168,75,0.25);--tmi-border-dim:rgba(200,168,75,0.1);
+    --tmi-danger:#cc3333;--tmi-success:#5a9955;--tmi-warning:#cc8800;--tmi-steel:#8a9aaa;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--tmi-bg-deep);color:var(--tmi-text-primary);font-family:'Exo 2',sans-serif;font-size:14px;}
+  .page-wrap{max-width:960px;}
+
+  /* HEADER */
+  .mod-header{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:12px 18px;}
+  .mod-eyebrow{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--tmi-gold-dim);text-transform:uppercase;margin-bottom:2px;}
+  .mod-title{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tmi-text-primary);}
+
+  /* STATS BAR */
+  .stats-bar{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:8px 18px;display:flex;gap:24px;align-items:center;}
+  .stat-block{display:flex;flex-direction:column;}
+  .stat-val{font-family:'Share Tech Mono',monospace;font-size:17px;color:var(--tmi-gold);}
+  .stat-lbl{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;}
+  .stat-div{width:1px;height:28px;background:var(--tmi-border-dim);}
+
+  /* TABS */
+  .tab-bar{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border);display:flex;}
+  .tab{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:10px 18px;cursor:pointer;color:var(--tmi-text-secondary);border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap;}
+  .tab:hover{color:var(--tmi-text-primary);}
+  .tab.active{color:var(--tmi-gold);border-bottom-color:var(--tmi-gold);}
+  .tab-count{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-gold-dim);background:var(--tmi-gold-glow);border:1px solid var(--tmi-border-dim);padding:1px 6px;margin-left:6px;}
+  .view{display:none;}
+  .view.active{display:block;}
+
+  /* SHARED BUTTONS */
+  .btn{font-family:'Rajdhani',sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.15s;clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);border:1px solid;white-space:nowrap;}
+  .btn-ghost{font-size:14px;padding:5px 14px;color:var(--tmi-text-secondary);background:transparent;border-color:var(--tmi-border-dim);}
+  .btn-ghost:hover{border-color:var(--tmi-border);color:var(--tmi-text-primary);}
+  .btn-gold{font-size:14px;padding:6px 18px;color:var(--tmi-bg-deep);background:var(--tmi-gold);border-color:var(--tmi-gold);}
+  .btn-gold:hover{background:var(--tmi-gold-bright);border-color:var(--tmi-gold-bright);}
+  .btn-gold:disabled{opacity:0.35;cursor:not-allowed;pointer-events:none;}
+  .btn-danger{font-size:12px;padding:4px 10px;color:var(--tmi-text-dim);background:transparent;border-color:var(--tmi-border-dim);}
+  .btn-danger:hover{border-color:rgba(204,51,51,0.5);color:var(--tmi-danger);}
+  .btn-order{font-size:14px;padding:5px 14px;color:var(--tmi-steel);background:transparent;border-color:rgba(138,154,170,0.3);}
+  .btn-order:hover{border-color:var(--tmi-steel);color:#b0c0d0;}
+  .btn-sm{font-size:12px;padding:3px 10px;}
+  .filter-btn{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;letter-spacing:1px;color:var(--tmi-text-secondary);background:transparent;border:1px solid var(--tmi-border-dim);padding:5px 12px;cursor:pointer;text-transform:uppercase;transition:all 0.15s;clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);white-space:nowrap;}
+  .filter-btn:hover{border-color:var(--tmi-border);color:var(--tmi-text-primary);}
+  .filter-btn.active{background:var(--tmi-gold-glow);border-color:var(--tmi-gold);color:var(--tmi-gold);}
+
+  /* PILLS / BADGES */
+  .qual-badge{font-family:'Share Tech Mono',monospace;font-size:9px;padding:2px 7px;border:1px solid;}
+  .qual-700{border-color:var(--tmi-gold-dark);color:var(--tmi-gold-dim);}
+  .qual-800{border-color:var(--tmi-border);color:var(--tmi-gold);}
+  .qual-900{border-color:rgba(232,201,106,0.5);color:var(--tmi-gold-bright);}
+  .crafted-badge{font-family:'Share Tech Mono',monospace;font-size:9px;padding:2px 8px;border:1px solid rgba(90,153,85,0.5);color:var(--tmi-success);background:rgba(90,153,85,0.1);}
+  .order-badge{font-family:'Share Tech Mono',monospace;font-size:9px;padding:2px 8px;border:1px solid rgba(138,154,170,0.35);color:var(--tmi-steel);background:rgba(138,154,170,0.08);}
+  .asl-note{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--tmi-warning);margin-left:4px;}
+  .tracked-badge{font-family:'Share Tech Mono',monospace;font-size:9px;padding:2px 6px;border:1px solid var(--tmi-gold-dark);color:var(--tmi-gold-dim);}
+  .order-track-badge{font-family:'Share Tech Mono',monospace;font-size:9px;padding:2px 6px;border:1px solid rgba(138,154,170,0.35);color:var(--tmi-steel);}
+
+  /* ── TAB 1: BLUEPRINT BROWSER ── */
+  .browser-search-bar{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:10px 18px;}
+  .search-input{width:100%;background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);color:var(--tmi-text-primary);font-family:'Share Tech Mono',monospace;font-size:14px;padding:7px 12px;outline:none;transition:border-color 0.15s;}
+  .search-input:focus{border-color:var(--tmi-border);}
+  .search-input::placeholder{color:var(--tmi-text-dim);}
+  .browser-filter-bar{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:8px 18px;display:flex;gap:6px;align-items:center;}
+  .filter-divider{width:1px;height:20px;background:var(--tmi-border-dim);margin:0 4px;}
+  .bp-list{padding:10px 18px;display:flex;flex-direction:column;gap:6px;}
+  .bp-card{background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);border-left:2px solid var(--tmi-gold-dark);transition:all 0.15s;}
+  .bp-card:hover{border-left-color:var(--tmi-gold);background:var(--tmi-bg-hover);}
+  .bp-card-header{padding:9px 14px;display:flex;align-items:center;gap:8px;cursor:pointer;}
+  .bp-name{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:1.5px;color:var(--tmi-text-primary);text-transform:uppercase;}
+  .bp-tag{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;padding:2px 7px;border:1px solid var(--tmi-border-dim);color:var(--tmi-text-secondary);}
+  .bp-actions{margin-left:auto;display:flex;gap:6px;align-items:center;}
+  .expand-arrow{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--tmi-text-dim);}
+  .bp-ingredients{display:none;padding:0 14px 10px;border-top:1px solid var(--tmi-border-dim);}
+  .bp-ingredients.open{display:block;}
+  .ing-title{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;padding:7px 0 5px;}
+  .ing-row{display:flex;align-items:center;gap:10px;padding:2px 0;}
+  .ing-name{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;letter-spacing:1px;text-transform:capitalize;min-width:110px;color:var(--tmi-text-primary);}
+  .ing-qty{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-secondary);}
+  .ing-gem{font-family:'Share Tech Mono',monospace;font-size:7px;color:var(--tmi-success);border:1px solid rgba(90,153,85,0.3);padding:1px 4px;margin-left:3px;}
+  .ing-asl{font-family:'Share Tech Mono',monospace;font-size:7px;color:var(--tmi-warning);border:1px solid rgba(204,136,0,0.3);padding:1px 4px;margin-left:3px;}
+  .no-results{padding:30px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);letter-spacing:1px;}
+
+  /* ── TAB 2: WORKBENCH ── */
+  .wb-empty{padding:40px 18px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);letter-spacing:1px;display:flex;flex-direction:column;align-items:center;gap:14px;}
+  .wb-area{padding:14px 18px;display:flex;flex-direction:column;gap:12px;}
+
+  .wb-info{background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);border-left:3px solid var(--tmi-gold);padding:10px 14px;display:flex;align-items:center;gap:12px;}
+  .wb-bp-name{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--tmi-text-primary);}
+  .wb-bp-tag{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-text-dim);padding:2px 8px;border:1px solid var(--tmi-border-dim);}
+
+  .wb-order-row{display:flex;align-items:center;gap:10px;padding:8px 14px;background:var(--tmi-bg-panel);border:1px solid var(--tmi-border-dim);}
+  .wb-order-label{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;flex:1;}
+  .wb-order-info{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-gold);display:none;}
+
+  .order-picker{background:var(--tmi-bg-card);border:1px solid var(--tmi-border);display:none;}
+  .order-picker.open{display:block;}
+  .order-picker-header{padding:8px 14px;border-bottom:1px solid var(--tmi-border-dim);display:flex;align-items:center;justify-content:space-between;}
+  .order-picker-title{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;}
+  .order-picker-row{padding:8px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--tmi-border-dim);cursor:pointer;transition:background 0.1s;}
+  .order-picker-row:last-child{border-bottom:none;}
+  .order-picker-row:hover{background:var(--tmi-bg-hover);}
+  .op-id{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-text-dim);min-width:40px;}
+  .op-customer{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tmi-text-primary);min-width:120px;}
+  .op-item{font-family:'Rajdhani',sans-serif;font-size:14px;color:var(--tmi-text-secondary);flex:1;text-transform:uppercase;}
+  .op-none{padding:12px 14px;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);}
+
+  .wb-slots{display:flex;flex-direction:column;gap:8px;}
+  .wb-slot{background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);}
+  .wb-slot.filled{border-color:rgba(90,153,85,0.4);}
+  .slot-header{padding:10px 14px;display:flex;align-items:center;gap:10px;}
+  .slot-name{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;letter-spacing:1px;text-transform:capitalize;color:var(--tmi-text-primary);min-width:120px;}
+  .slot-req{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);}
+  .slot-fill{font-family:'Share Tech Mono',monospace;font-size:14px;flex:1;}
+  .slot-fill .ok{color:var(--tmi-success);}
+  .slot-fill .partial{color:var(--tmi-gold);}
+  .slot-fill .empty{color:var(--tmi-text-dim);}
+  .slot-avg{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-secondary);}
+  .slot-progress{height:3px;background:var(--tmi-border-dim);margin:0 14px;}
+  .slot-progress-bar{height:100%;background:var(--tmi-gold-dim);transition:width 0.2s;}
+  .slot-progress-bar.full{background:var(--tmi-success);}
+  .slot-selections{padding:0 14px 8px;display:flex;flex-direction:column;gap:3px;}
+  .slot-lot-row{display:flex;align-items:center;gap:8px;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-secondary);}
+  .slot-lot-idx{color:var(--tmi-text-dim);min-width:16px;}
+  .slot-actions{padding:0 14px 10px;display:flex;gap:6px;}
+
+  .lot-picker{background:var(--tmi-bg-panel);border-top:1px solid var(--tmi-border-dim);display:none;}
+  .lot-picker.open{display:block;}
+  .lot-picker-header{padding:7px 14px;border-bottom:1px solid var(--tmi-border-dim);display:flex;align-items:center;gap:8px;}
+  .lot-picker-title{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;flex:1;}
+  .lot-row{padding:6px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--tmi-border-dim);transition:background 0.1s;}
+  .lot-row:last-child{border-bottom:none;}
+  .lot-row:hover{background:var(--tmi-bg-hover);}
+  .lot-qual{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-gold);min-width:42px;}
+  .lot-qty{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-secondary);min-width:70px;}
+  .lot-loc{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-dim);flex:1;}
+  .lot-none{padding:10px 14px;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);}
+
+  .wb-tier-row{padding:10px 14px;background:var(--tmi-bg-panel);border:1px solid var(--tmi-border-dim);display:flex;align-items:center;gap:12px;}
+  .wb-tier-label{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;}
+  .wb-tier-mismatch{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-danger);margin-left:8px;display:none;}
+
+  /* Post-craft result */
+  .result-title{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tmi-text-primary);}
+  .result-mat-table{width:100%;border-collapse:collapse;margin-bottom:16px;}
+  .result-mat-table thead tr{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border);}
+  .result-mat-table th{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;padding:7px 12px;text-align:left;}
+  .result-mat-table td{padding:8px 12px;border-bottom:1px solid var(--tmi-border-dim);font-family:'Share Tech Mono',monospace;font-size:14px;}
+  .result-mat-table tr:last-child td{border-bottom:none;}
+  .result-mat-name{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;text-transform:capitalize;color:var(--tmi-text-primary);}
+  .result-qual{color:var(--tmi-gold);}
+  .result-char{color:var(--tmi-text-secondary);}
+  .result-eff{color:var(--tmi-text-dim);font-style:italic;}
+  .result-actions{display:flex;gap:10px;}
+
+  /* ── TAB 3: CRAFTING LOG ── */
+  .log-bar{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:8px 18px;display:flex;align-items:center;gap:8px;}
+  .log-list{padding:10px 18px;display:flex;flex-direction:column;gap:5px;}
+  .log-row{background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);border-left:2px solid var(--tmi-gold-dark);}
+  .log-row.is-order{border-left-color:var(--tmi-steel);}
+  .log-header{padding:9px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:background 0.1s;}
+  .log-header:hover{background:var(--tmi-bg-hover);}
+  .log-date{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-text-dim);min-width:80px;}
+  .log-item{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tmi-text-primary);flex:1;}
+  .log-mats{display:flex;gap:6px;align-items:center;}
+  .log-mat-chip{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-secondary);}
+  .log-mat-chip span{color:var(--tmi-gold);}
+  .log-detail{display:none;background:var(--tmi-bg-panel);border-top:1px solid var(--tmi-border-dim);padding:12px 14px;}
+  .log-detail.open{display:block;}
+  .log-detail-mat-table{width:100%;border-collapse:collapse;margin-bottom:12px;}
+  .log-detail-mat-table thead tr{background:var(--tmi-bg-card);border-bottom:1px solid var(--tmi-border);}
+  .log-detail-mat-table th{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;padding:6px 10px;text-align:left;}
+  .log-detail-mat-table td{padding:7px 10px;border-bottom:1px solid var(--tmi-border-dim);font-size:14px;}
+  .log-detail-mat-table tr:last-child td{border-bottom:none;}
+  .log-detail-actions{display:flex;gap:8px;align-items:center;margin-top:4px;}
+  .log-detail-order-label{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-dim);}
+  .log-empty{padding:30px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);letter-spacing:1px;}
+  .log-order-picker{background:var(--tmi-bg-card);border:1px solid var(--tmi-border);margin-top:8px;display:none;}
+  .log-order-picker.open{display:block;}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:20px;right:20px;background:var(--tmi-bg-panel);border:1px solid var(--tmi-gold-dark);color:var(--tmi-text-primary);font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:1px;padding:10px 18px;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);transition:opacity 0.3s;z-index:999;}
+  .toast.hidden{opacity:0;pointer-events:none;}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+<div class="mod-header">
+  <div class="mod-eyebrow">Troublemaker Incorporated — Custom Arms &amp; Armor</div>
+  <div class="mod-title">The Forge</div>
+</div>
+
+<div class="stats-bar">
+  <div class="stat-block"><span class="stat-val" id="stat-total">0</span><span class="stat-lbl">Total Crafted</span></div>
+  <div class="stat-div"></div>
+  <div class="stat-block"><span class="stat-val" id="stat-personal">0</span><span class="stat-lbl">Personal</span></div>
+  <div class="stat-div"></div>
+  <div class="stat-block"><span class="stat-val" id="stat-orders">0</span><span class="stat-lbl">Orders Filled</span></div>
+</div>
+
+<div class="tab-bar">
+  <div class="tab active" onclick="switchTab('browser')">Blueprint Browser <span class="tab-count" id="tc-browser">0</span></div>
+  <div class="tab" onclick="switchTab('workbench')">Craft Workbench</div>
+  <div class="tab" onclick="switchTab('log')">Crafting Log <span class="tab-count" id="tc-log">0</span></div>
+</div>
+
+<!-- ── TAB 1: BLUEPRINT BROWSER ── -->
+<div class="view active" id="view-browser">
+  <div class="browser-search-bar">
+    <input class="search-input" id="browser-search" placeholder="Search owned blueprints..." oninput="renderBrowser()">
+  </div>
+  <div class="browser-filter-bar">
+    <button class="filter-btn active" onclick="setBrowserFilter('all',this)">All</button>
+    <button class="filter-btn" onclick="setBrowserFilter('Armor',this)">Armor</button>
+    <button class="filter-btn" onclick="setBrowserFilter('Weapon',this)">Weapon</button>
+    <button class="filter-btn" onclick="setBrowserFilter('Ammunition',this)">Ammo</button>
+    <span class="filter-divider"></span>
+    <button class="filter-btn" onclick="setBrowserFilter('tracked',this)">Tracked</button>
+    <button class="filter-btn" onclick="setBrowserFilter('orders',this)">Orders</button>
+  </div>
+  <div class="bp-list" id="bp-list"></div>
+  <div class="no-results" id="no-results" style="display:none">NO OWNED BLUEPRINTS MATCH YOUR SEARCH</div>
+</div>
+
+<!-- ── TAB 2: WORKBENCH ── -->
+<div class="view" id="view-workbench">
+
+  <div class="wb-empty" id="wb-empty">
+    <span>NO BLUEPRINT SELECTED</span>
+    <button class="btn btn-ghost" onclick="switchTab('browser')">← Go to Blueprint Browser</button>
+  </div>
+
+  <div id="wb-body" style="display:none">
+    <div class="wb-area">
+
+      <div class="wb-info">
+        <span class="wb-bp-name" id="wb-bp-name"></span>
+        <span class="wb-bp-tag" id="wb-bp-tag"></span>
+        <span class="wb-bp-tag" id="wb-bp-type"></span>
+        <div style="flex:1"></div>
+        <button class="btn btn-ghost btn-sm" onclick="resetWorkbench()">← Change Blueprint</button>
+      </div>
+
+      <div class="wb-order-row">
+        <span class="wb-order-label">Order Fulfillment</span>
+        <span class="wb-order-info" id="wb-order-info"></span>
+        <button class="btn btn-order btn-sm" id="btn-attach-order" onclick="toggleOrderPicker()">Attach Order</button>
+        <button class="btn btn-danger btn-sm" id="btn-detach-order" onclick="detachOrder()" style="display:none">Detach</button>
+      </div>
+      <div class="order-picker" id="order-picker">
+        <div class="order-picker-header">
+          <span class="order-picker-title">Active Orders — Select to Attach</span>
+          <button class="btn btn-ghost btn-sm" onclick="closeOrderPicker()">Cancel</button>
+        </div>
+        <div id="order-picker-body"></div>
+      </div>
+
+      <div class="wb-slots" id="wb-slots"></div>
+
+      <div class="wb-tier-row">
+        <span class="wb-tier-label">Projected Quality Tier</span>
+        <span id="wb-tier-val">—</span>
+        <span class="wb-tier-mismatch" id="wb-tier-mismatch">⚠ TIER DOES NOT MATCH ORDER REQUIREMENT</span>
+        <div style="flex:1"></div>
+        <button class="btn btn-gold" id="btn-make" onclick="makeItem()" disabled>Make Item</button>
+      </div>
+
+      <!-- Inline result — appears after crafting, stays on workbench -->
+      <div id="wb-result" style="display:none;border-top:1px solid var(--tmi-border-dim);padding-top:14px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <span class="crafted-badge">✓ CRAFTED</span>
+          <span class="result-title" id="result-bp-name"></span>
+          <span class="qual-badge" id="result-tier-badge"></span>
+          <span id="result-order-note" style="font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-steel);display:none"></span>
+        </div>
+        <table class="result-mat-table">
+          <thead><tr><th>Material</th><th>Avg Quality</th><th>Characteristic</th><th>Effect</th></tr></thead>
+          <tbody id="result-mat-body"></tbody>
+        </table>
+        <div class="result-actions">
+          <button class="btn btn-ghost" onclick="switchTab('log')">View Log</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /view-workbench -->
+
+<!-- ── TAB 3: CRAFTING LOG ── -->
+<div class="view" id="view-log">
+  <div class="log-bar">
+    <button class="filter-btn active" onclick="setLogFilter('all',this)">All</button>
+    <button class="filter-btn" onclick="setLogFilter('personal',this)">Personal</button>
+    <button class="filter-btn" onclick="setLogFilter('orders',this)">Orders</button>
+  </div>
+  <div class="log-list" id="log-list"></div>
+  <div class="log-empty" id="log-empty" style="display:none">NO CRAFTED ITEMS YET</div>
+</div>
+
+</div><!-- /page-wrap -->
+<div class="toast hidden" id="toast"></div>
+
+<script>
+const GEM_NAMES=new Set(['hadanite','janalite','dolvine','aphorite','sadaryx','carinite','beradom','jaclium','saldynium','feynmaline','glacosite']);
+const LS_TRACKING='forgex-tracking';
+const LS_ORDERS='forgex-active-orders';
+const LS_LOG='forgex-crafting-log';
+
+// ── DATA ──
+const blueprints=[
+  {id:1,base:'Aztalan',slot:'Helmet',type:'Armor',category:'Combat',weapon_type:null,finish:null,ingredients:[{name:'aslarite',qty:6},{name:'lindinium',qty:4},{name:'taranite',qty:3}]},
+  {id:2,base:'Aztalan',slot:'Core',type:'Armor',category:'Combat',weapon_type:null,finish:null,ingredients:[{name:'aslarite',qty:12},{name:'lindinium',qty:8},{name:'taranite',qty:6}]},
+  {id:3,base:'Aztalan',slot:'Legs',type:'Armor',category:'Combat',weapon_type:null,finish:null,ingredients:[{name:'aslarite',qty:10},{name:'lindinium',qty:6},{name:'taranite',qty:5}]},
+  {id:4,base:'Aztalan',slot:'Arms',type:'Armor',category:'Combat',weapon_type:null,finish:null,ingredients:[{name:'aslarite',qty:8},{name:'lindinium',qty:5},{name:'taranite',qty:4}]},
+  {id:5,base:'Corbel',slot:'Helmet',type:'Armor',category:'Combat',weapon_type:null,finish:null,ingredients:[{name:'laranite',qty:5},{name:'titanium',qty:6},{name:'aslarite',qty:4}]},
+  {id:6,base:'Corbel',slot:'Core',type:'Armor',category:'Combat',weapon_type:null,finish:null,ingredients:[{name:'laranite',qty:10},{name:'titanium',qty:12},{name:'aslarite',qty:8}]},
+  {id:7,base:'Corbel',slot:'Legs',type:'Armor',category:'Combat',weapon_type:null,finish:null,ingredients:[{name:'laranite',qty:8},{name:'titanium',qty:10},{name:'aslarite',qty:6}]},
+  {id:8,base:'Corbel',slot:'Arms',type:'Armor',category:'Combat',weapon_type:null,finish:null,ingredients:[{name:'laranite',qty:6},{name:'titanium',qty:8},{name:'aslarite',qty:5}]},
+  {id:9,base:'Demeco',slot:null,type:'Weapon',category:null,weapon_type:'LMG',finish:null,ingredients:[{name:'corundum',qty:14},{name:'copper',qty:10},{name:'hadanite',qty:5}]},
+  {id:10,base:'Demeco',slot:null,type:'Ammunition',category:null,weapon_type:'LMG',finish:null,ingredients:[{name:'copper',qty:6},{name:'corundum',qty:4}]},
+  {id:11,base:'Corbel',slot:'Arms',type:'Armor',category:'Combat',weapon_type:null,finish:'Mire',ingredients:[{name:'laranite',qty:6},{name:'titanium',qty:8},{name:'aslarite',qty:5}]},
+];
+
+// Owned blueprint ids — mirrors Module 04 ownedIds (persist to localStorage in future)
+const ownedIds=new Set([1,2,3,4,9,11]);
+
+// SWAP POINT: Replace with JSON.parse(localStorage.getItem('forgex-lots')||'[]')
+// once Module 02 localStorage persistence is implemented.
+let lots=[
+  {id:1,ore:'aslarite',quality:534,qty:200,location:'Levsky'},
+  {id:2,ore:'aslarite',quality:580,qty:80,location:'Levsky'},
+  {id:3,ore:'laranite',quality:743,qty:45,location:'Hurston'},
+  {id:4,ore:'laranite',quality:812,qty:18,location:'Microtech'},
+  {id:5,ore:'taranite',quality:756,qty:30,location:'ArcCorp'},
+  {id:6,ore:'taranite',quality:880,qty:12,location:'Microtech'},
+  {id:7,ore:'lindinium',quality:720,qty:22,location:'Levsky'},
+  {id:8,ore:'titanium',quality:690,qty:15,location:'Hurston'},
+  {id:9,ore:'corundum',quality:760,qty:40,location:'ArcCorp'},
+  {id:10,ore:'corundum',quality:820,qty:14,location:'Microtech'},
+  {id:11,ore:'copper',quality:700,qty:25,location:'Levsky'},
+  {id:12,ore:'copper',quality:850,qty:9,location:'Hurston'},
+  {id:13,ore:'hadanite',quality:920,qty:7,location:'Microtech'},
+];
+
+// ── STATE ──
+let browserFilter='all';
+let browserExpanded=new Set();
+let selectedBpId=null;
+let attachedOrderId=null;
+let slotSelections=[];
+let openPickerSlot=-1;
+let lotSortHigh=[];
+let logFilter='all';
+let logExpanded=new Set();
+let openLogPicker=null;
+let craftingLog=[];
+let nextJobId=1;
+
+// ── LOCALSTORAGE ──
+function readTracking(){try{return JSON.parse(localStorage.getItem(LS_TRACKING)||'{}')}catch{return{};}}
+function readActiveOrders(){try{return JSON.parse(localStorage.getItem(LS_ORDERS)||'[]')}catch{return[];}}
+function writeActiveOrders(orders){localStorage.setItem(LS_ORDERS,JSON.stringify(orders));}
+function readLog(){try{return JSON.parse(localStorage.getItem(LS_LOG)||'[]')}catch{return[];}}
+function writeLog(){localStorage.setItem(LS_LOG,JSON.stringify(craftingLog));}
+
+// ── HELPERS ──
+function getBpLabel(bp){
+  const parts=[bp.base];
+  if(bp.slot) parts.push(bp.slot);
+  if(bp.weapon_type&&bp.type!=='Ammunition') parts.push(bp.weapon_type);
+  if(bp.finish) parts.push(bp.finish);
+  return parts.join(' ');
+}
+function getBpTag(bp){
+  if(bp.type==='Armor') return bp.category||'Armor';
+  if(bp.type==='Weapon') return 'Weapon';
+  if(bp.type==='Ammunition') return 'Ammo'+(bp.weapon_type?' · '+bp.weapon_type:'');
+  return bp.type;
+}
+function qualTierClass(tier){return tier===700?'qual-700':tier===800?'qual-800':'qual-900';}
+
+function getSlotFilled(si){return slotSelections[si].reduce((s,e)=>s+e.qty_taken,0);}
+function getSlotAvgQuality(si){
+  const sel=slotSelections[si];
+  if(!sel.length) return null;
+  const total=sel.reduce((s,e)=>s+e.qty_taken,0);
+  if(!total) return null;
+  return Math.round(sel.reduce((s,e)=>s+e.qty_taken*e.quality,0)/total);
+}
+function getItemTier(){
+  const bp=blueprints.find(b=>b.id===selectedBpId);
+  if(!bp) return null;
+  const nonAsl=bp.ingredients.filter(i=>i.name!=='aslarite');
+  const avgs=nonAsl.map(ing=>{
+    const si=bp.ingredients.indexOf(ing);
+    return getSlotAvgQuality(si);
+  }).filter(v=>v!==null);
+  if(!avgs.length) return null;
+  const overall=Math.round(avgs.reduce((s,v)=>s+v,0)/avgs.length);
+  if(overall>=900) return 900;
+  if(overall>=800) return 800;
+  if(overall>=700) return 700;
+  return null;
+}
+function allSlotsFilled(){
+  const bp=blueprints.find(b=>b.id===selectedBpId);
+  if(!bp) return false;
+  return bp.ingredients.every((ing,si)=>getSlotFilled(si)>=ing.qty);
+}
+
+// ── INIT ──
+function init(){
+  craftingLog=readLog();
+  if(craftingLog.length) nextJobId=Math.max(...craftingLog.map(j=>j.id))+1;
+  updateStats();
+  renderBrowser();
+  renderLog();
+}
+
+// ── TABS ──
+const TABS=['browser','workbench','log'];
+function switchTab(tab){
+  TABS.forEach(v=>document.getElementById('view-'+v).classList.toggle('active',v===tab));
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',TABS[i]===tab));
+  if(tab==='log') renderLog();
+}
+
+// ── BLUEPRINT BROWSER ──
+function setBrowserFilter(type,btn){
+  browserFilter=type;
+  document.querySelectorAll('.browser-filter-bar .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderBrowser();
+}
+
+function renderBrowser(){
+  const q=(document.getElementById('browser-search').value||'').toLowerCase().trim();
+  const tracking=readTracking();
+  const owned=blueprints.filter(bp=>ownedIds.has(bp.id));
+  const filtered=owned.filter(bp=>{
+    if(browserFilter==='Armor'||browserFilter==='Weapon'||browserFilter==='Ammunition'){
+      if(bp.type!==browserFilter) return false;
+    } else if(browserFilter==='tracked'){
+      const t=tracking[bp.id];
+      if(!t||!t.personal) return false;
+    } else if(browserFilter==='orders'){
+      const t=tracking[bp.id];
+      if(!t||!t.order) return false;
+    }
+    if(!q) return true;
+    return getBpLabel(bp).toLowerCase().includes(q)||bp.base.toLowerCase().includes(q);
+  });
+  document.getElementById('tc-browser').textContent=owned.length;
+  const list=document.getElementById('bp-list');
+  const noRes=document.getElementById('no-results');
+  if(!filtered.length){list.innerHTML='';noRes.style.display='block';return;}
+  noRes.style.display='none';
+  list.innerHTML=filtered.map(bp=>{
+    const isExp=browserExpanded.has(bp.id);
+    const label=getBpLabel(bp);
+    const tag=getBpTag(bp);
+    const t=tracking[bp.id]||{};
+    const trackBadge=t.personal?'<span class="tracked-badge">★ TRACKED</span>':'';
+    const orderBadge=t.order?'<span class="order-track-badge">★ ORDER</span>':'';
+    const ingHtml=bp.ingredients.map(i=>`<div class="ing-row">
+      <span class="ing-name">${i.name}${GEM_NAMES.has(i.name)?'<span class="ing-gem">GEM</span>':''}${i.name==='aslarite'?'<span class="ing-asl">500+OK</span>':''}</span>
+      <span class="ing-qty">${i.qty} cSCU</span>
+    </div>`).join('');
+    return`<div class="bp-card">
+      <div class="bp-card-header" onclick="toggleBrowserExp(${bp.id})">
+        <span class="bp-name">${label}</span>
+        <span class="bp-tag">${tag}</span>
+        ${trackBadge}${orderBadge}
+        <div class="bp-actions" onclick="event.stopPropagation()">
+          <button class="btn btn-gold btn-sm" onclick="craftThis(${bp.id})">Craft This</button>
+        </div>
+        <span class="expand-arrow" style="margin-left:6px">${isExp?'▲':'▼'}</span>
+      </div>
+      <div class="bp-ingredients${isExp?' open':''}">
+        <div class="ing-title">Ingredients</div>
+        ${ingHtml}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleBrowserExp(id){browserExpanded.has(id)?browserExpanded.delete(id):browserExpanded.add(id);renderBrowser();}
+
+function craftThis(bpId){
+  selectBlueprint(bpId);
+  switchTab('workbench');
+}
+
+// ── WORKBENCH ──
+function selectBlueprint(bpId){
+  selectedBpId=bpId;
+  attachedOrderId=null;
+  const bp=blueprints.find(b=>b.id===bpId);
+  slotSelections=bp.ingredients.map(()=>[]);
+  lotSortHigh=bp.ingredients.map(()=>true);
+  openPickerSlot=-1;
+  document.getElementById('wb-empty').style.display='none';
+  document.getElementById('wb-body').style.display='block';
+  document.getElementById('wb-result').style.display='none';
+  document.getElementById('wb-bp-name').textContent=getBpLabel(bp);
+  document.getElementById('wb-bp-tag').textContent=getBpTag(bp);
+  document.getElementById('wb-bp-type').textContent=bp.type;
+  renderOrderRow();
+  renderSlots();
+  renderTierRow();
+}
+
+function resetWorkbench(){
+  selectedBpId=null;
+  attachedOrderId=null;
+  slotSelections=[];
+  openPickerSlot=-1;
+  document.getElementById('wb-empty').style.display='';
+  document.getElementById('wb-body').style.display='none';
+  document.getElementById('wb-result').style.display='none';
+  closeOrderPicker();
+  switchTab('browser');
+}
+
+// ── ORDER ATTACHMENT ──
+function renderOrderRow(){
+  const info=document.getElementById('wb-order-info');
+  const btnAttach=document.getElementById('btn-attach-order');
+  const btnDetach=document.getElementById('btn-detach-order');
+  if(attachedOrderId){
+    const o=readActiveOrders().find(o=>o.id===attachedOrderId);
+    if(o){
+      info.innerHTML=`${o.customer||'Unknown'} &mdash; <span class="qual-badge ${qualTierClass(o.quality)}">TARGET ${o.quality}+</span>`;
+      info.style.display='';
+    }
+    btnAttach.style.display='none';
+    btnDetach.style.display='';
+  } else {
+    info.innerHTML='';
+    info.style.display='none';
+    btnAttach.style.display='';
+    btnDetach.style.display='none';
+  }
+}
+
+function toggleOrderPicker(){
+  const picker=document.getElementById('order-picker');
+  if(picker.classList.contains('open')){closeOrderPicker();return;}
+  const bp=blueprints.find(b=>b.id===selectedBpId);
+  const orders=bp?readActiveOrders().filter(o=>o.bpId===bp.id&&o.status!=='delivered'):[];
+  const body=document.getElementById('order-picker-body');
+  body.innerHTML=orders.length
+    ?orders.map(o=>`<div class="order-picker-row" onclick="attachOrder(${o.id})">
+        <span class="op-id">#${String(o.id).padStart(3,'0')}</span>
+        <span class="op-customer">${o.customer||'—'}</span>
+        <span class="op-item">${getBpLabel(bp)}</span>
+        <span class="qual-badge ${qualTierClass(o.quality)}">${o.quality}+</span>
+      </div>`).join('')
+    :'<div class="op-none">No active orders for this blueprint</div>';
+  picker.classList.add('open');
+}
+
+function closeOrderPicker(){document.getElementById('order-picker').classList.remove('open');}
+
+function attachOrder(orderId){
+  attachedOrderId=orderId;
+  closeOrderPicker();
+  renderOrderRow();
+  renderTierRow();
+  toast('ORDER ATTACHED — TARGET TIER SHOWN');
+}
+
+function detachOrder(){
+  attachedOrderId=null;
+  renderOrderRow();
+  renderTierRow();
+}
+
+// ── INGREDIENT SLOTS ──
+function renderSlots(){
+  const bp=blueprints.find(b=>b.id===selectedBpId);
+  if(!bp) return;
+  document.getElementById('wb-slots').innerHTML=bp.ingredients.map((ing,si)=>renderSlotHtml(bp,ing,si)).join('');
+}
+
+function renderSlotHtml(bp,ing,si){
+  const sel=slotSelections[si]||[];
+  const filled=getSlotFilled(si);
+  const req=ing.qty;
+  const pct=Math.min(100,Math.round(filled/req*100));
+  const isFull=filled>=req;
+  const avgQ=getSlotAvgQuality(si);
+  const isAsl=ing.name==='aslarite';
+  const usedLotIds=new Set(sel.map(e=>e.lotId));
+  const pickerOpen=openPickerSlot===si;
+  const fillClass=isFull?'ok':filled>0?'partial':'empty';
+  const fillText=isFull?`✓ ${filled} / ${req} cSCU`:`${filled} / ${req} cSCU`;
+
+  const selectionsHtml=sel.map((e,idx)=>{
+    const lot=lots.find(l=>l.id===e.lotId);
+    return`<div class="slot-lot-row">
+      <span class="slot-lot-idx">${idx+1}.</span>
+      <span style="color:var(--tmi-gold)">${e.quality}</span>
+      <span style="color:var(--tmi-text-dim)">qual ·</span>
+      <span style="color:var(--tmi-text-secondary)">${e.qty_taken} cSCU</span>
+      <span style="color:var(--tmi-text-dim)">${lot?' from '+lot.location:''}</span>
+    </div>`;
+  }).join('');
+
+  const availLots=lots
+    .filter(l=>l.ore===ing.name&&l.qty>0&&!usedLotIds.has(l.id))
+    .sort((a,b)=>lotSortHigh[si]?b.quality-a.quality:a.quality-b.quality);
+
+  const lotRowsHtml=availLots.length
+    ?availLots.map(l=>`<div class="lot-row">
+        <span class="lot-qual">${l.quality}</span>
+        <span class="lot-qty">${l.qty} cSCU</span>
+        <span class="lot-loc">${l.location}</span>
+        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();selectLot(${si},${l.id})">Select</button>
+      </div>`).join('')
+    :'<div class="lot-none">No available lots</div>';
+
+  return`<div class="wb-slot${isFull?' filled':''}" id="slot-${si}">
+    <div class="slot-header">
+      <span class="slot-name">${ing.name}${isAsl?'<span class="asl-note">500+</span>':''}</span>
+      <span class="slot-req">${req} cSCU required</span>
+      <span class="slot-fill"><span class="${fillClass}">${fillText}</span></span>
+      ${avgQ!==null?`<span class="slot-avg">avg <span style="color:var(--tmi-gold)">${avgQ}</span></span>`:''}
+    </div>
+    <div class="slot-progress"><div class="slot-progress-bar${isFull?' full':''}" style="width:${pct}%"></div></div>
+    ${sel.length?`<div class="slot-selections">${selectionsHtml}</div>`:''}
+    <div class="slot-actions">
+      ${!isFull?`<button class="btn btn-ghost btn-sm" onclick="toggleLotPicker(${si})">${pickerOpen?'Hide Lots':'Add Lot'}</button>`:''}
+      ${sel.length?`<button class="btn btn-danger btn-sm" onclick="removeLastLot(${si})">Remove Last</button>`:''}
+    </div>
+    <div class="lot-picker${pickerOpen?' open':''}" id="picker-${si}">
+      <div class="lot-picker-header">
+        <span class="lot-picker-title">${ing.name} lots</span>
+        <button class="btn btn-ghost btn-sm" onclick="toggleLotSort(${si})">${lotSortHigh[si]?'High → Low':'Low → High'}</button>
+      </div>
+      ${lotRowsHtml}
+    </div>
+  </div>`;
+}
+
+function toggleLotPicker(si){openPickerSlot=openPickerSlot===si?-1:si;renderSlots();}
+function toggleLotSort(si){lotSortHigh[si]=!lotSortHigh[si];renderSlots();}
+
+function selectLot(si,lotId){
+  const bp=blueprints.find(b=>b.id===selectedBpId);
+  const ing=bp.ingredients[si];
+  const lot=lots.find(l=>l.id===lotId);
+  if(!lot||lot.qty<=0) return;
+  const stillNeeded=ing.qty-getSlotFilled(si);
+  if(stillNeeded<=0) return;
+  const take=Math.min(lot.qty,stillNeeded);
+  slotSelections[si].push({lotId,qty_taken:take,quality:lot.quality});
+  if(getSlotFilled(si)>=ing.qty) openPickerSlot=-1;
+  renderSlots();
+  renderTierRow();
+}
+
+function removeLastLot(si){
+  if(!slotSelections[si]||!slotSelections[si].length) return;
+  slotSelections[si].pop();
+  renderSlots();
+  renderTierRow();
+}
+
+// ── TIER ROW ──
+function renderTierRow(){
+  const tierVal=document.getElementById('wb-tier-val');
+  const mismatch=document.getElementById('wb-tier-mismatch');
+  const btnMake=document.getElementById('btn-make');
+  const tier=getItemTier();
+  tierVal.innerHTML=tier?`<span class="qual-badge ${qualTierClass(tier)}">${tier}+</span>`:'—';
+  const filled=allSlotsFilled();
+  let blocked=false;
+  if(filled&&attachedOrderId){
+    const o=readActiveOrders().find(o=>o.id===attachedOrderId);
+    if(o&&tier!==o.quality) blocked=true;
+  }
+  mismatch.style.display=blocked?'':'none';
+  btnMake.disabled=!filled||blocked;
+}
+
+// ── MAKE ITEM ──
+function makeItem(){
+  if(!allSlotsFilled()) return;
+  const bp=blueprints.find(b=>b.id===selectedBpId);
+  const tier=getItemTier();
+
+  bp.ingredients.forEach((ing,si)=>{
+    slotSelections[si].forEach(e=>{
+      const lot=lots.find(l=>l.id===e.lotId);
+      if(lot) lot.qty-=e.qty_taken;
+    });
+  });
+  lots=lots.filter(l=>l.qty>0);
+
+  const materials=bp.ingredients.map((ing,si)=>({
+    name:ing.name,
+    reqQty:ing.qty,
+    avgQuality:getSlotAvgQuality(si)||0,
+    characteristic:'—',
+    effectPct:null,
+    lotsUsed:slotSelections[si].map(e=>({lotId:e.lotId,qty_taken:e.qty_taken,quality:e.quality}))
+  }));
+
+  const today=new Date().toISOString().split('T')[0];
+  const job={id:nextJobId++,bpId:bp.id,bpLabel:getBpLabel(bp),orderId:attachedOrderId,crafted:today,qualityTier:tier,materials};
+  craftingLog.unshift(job);
+  writeLog();
+
+  if(attachedOrderId){
+    const orders=readActiveOrders();
+    const o=orders.find(o=>o.id===attachedOrderId);
+    if(o){o.status='ready';writeActiveOrders(orders);}
+  }
+
+  const hadOrder=!!attachedOrderId;
+  attachedOrderId=null;
+  slotSelections=blueprints.find(b=>b.id===selectedBpId).ingredients.map(()=>[]);
+  openPickerSlot=-1;
+  updateStats();
+  renderOrderRow();
+  renderSlots();
+  renderTierRow();
+  showResult(job);
+  toast('ITEM CRAFTED'+(hadOrder?' — ORDER MARKED READY':''));
+}
+
+function showResult(job){
+  document.getElementById('wb-result').style.display='';
+  document.getElementById('result-bp-name').textContent=job.bpLabel;
+  const tb=document.getElementById('result-tier-badge');
+  if(job.qualityTier){tb.className='qual-badge '+qualTierClass(job.qualityTier);tb.textContent=job.qualityTier+'+';}
+  else{tb.textContent='';tb.className='';}
+  const on=document.getElementById('result-order-note');
+  on.style.display=job.orderId?'':'none';
+  if(job.orderId) on.textContent='ORDER MARKED READY';
+  document.getElementById('result-mat-body').innerHTML=job.materials.map(m=>`<tr>
+    <td class="result-mat-name">${m.name}${m.name==='aslarite'?'<span class="asl-note">500+</span>':''}</td>
+    <td class="result-qual">${m.avgQuality||'—'}</td>
+    <td class="result-char">${m.characteristic}</td>
+    <td class="result-eff">${m.effectPct!==null?'+'+m.effectPct+'%':'pending game data'}</td>
+  </tr>`).join('');
+}
+
+// ── STATS ──
+function updateStats(){
+  document.getElementById('stat-total').textContent=craftingLog.length;
+  document.getElementById('stat-personal').textContent=craftingLog.filter(j=>!j.orderId).length;
+  document.getElementById('stat-orders').textContent=craftingLog.filter(j=>!!j.orderId).length;
+  document.getElementById('tc-log').textContent=craftingLog.length;
+}
+
+// ── CRAFTING LOG ──
+function setLogFilter(f,btn){
+  logFilter=f;
+  document.querySelectorAll('.log-bar .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLog();
+}
+
+function renderLog(){
+  updateStats();
+  const list=document.getElementById('log-list');
+  const empty=document.getElementById('log-empty');
+  let filtered=craftingLog;
+  if(logFilter==='personal') filtered=craftingLog.filter(j=>!j.orderId);
+  if(logFilter==='orders') filtered=craftingLog.filter(j=>!!j.orderId);
+  if(!filtered.length){list.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  list.innerHTML=filtered.map(job=>renderLogRow(job)).join('');
+}
+
+function renderLogRow(job){
+  const isExp=logExpanded.has(job.id);
+  const pickerOpen=openLogPicker===job.id;
+  const tierHtml=job.qualityTier?`<span class="qual-badge ${qualTierClass(job.qualityTier)}" style="margin-right:4px">${job.qualityTier}+</span>`:'';
+  const matsHtml=job.materials.map(m=>`<span class="log-mat-chip">${m.name.charAt(0).toUpperCase()+m.name.slice(1)} <span>${m.avgQuality||'—'}</span></span>`).join('<span style="color:var(--tmi-border-dim);margin:0 3px">·</span>');
+  const orderBadge=job.orderId?`<span class="order-badge">ORDER #${String(job.orderId).padStart(3,'0')}</span>`:'';
+
+  const detailMatRows=job.materials.map(m=>`<tr>
+    <td style="font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;text-transform:capitalize;color:var(--tmi-text-primary)">${m.name}${m.name==='aslarite'?'<span class="asl-note">500+</span>':''}</td>
+    <td style="font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-gold)">${m.avgQuality||'—'}</td>
+    <td style="font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-secondary)">${m.characteristic}</td>
+    <td style="font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);font-style:italic">${m.effectPct!==null?'+'+m.effectPct+'%':'pending game data'}</td>
+  </tr>`).join('');
+
+  let logPickerHtml='';
+  if(pickerOpen){
+    const bp=blueprints.find(b=>b.id===job.bpId);
+    const orders=bp?readActiveOrders().filter(o=>o.bpId===bp.id&&o.status!=='delivered'):[];
+    const rows=orders.length
+      ?orders.map(o=>`<div class="order-picker-row" onclick="attachLogOrder(${job.id},${o.id})">
+          <span class="op-id">#${String(o.id).padStart(3,'0')}</span>
+          <span class="op-customer">${o.customer||'—'}</span>
+          <span class="op-item">${job.bpLabel}</span>
+          <span class="qual-badge ${qualTierClass(o.quality)}">${o.quality}+</span>
+        </div>`).join('')
+      :'<div class="op-none">No matching active orders</div>';
+    logPickerHtml=`<div class="log-order-picker open">
+      <div class="order-picker-header">
+        <span class="order-picker-title">Attach to Order</span>
+        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();closeLogPicker()">Cancel</button>
+      </div>${rows}
+    </div>`;
+  }
+
+  const detailActions=job.orderId
+    ?`<span class="log-detail-order-label">Linked to Order #${String(job.orderId).padStart(3,'0')}</span>
+       <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();detachLogOrder(${job.id})">Detach Order</button>`
+    :`<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openLogOrderPicker(${job.id})">Attach Order</button>${logPickerHtml}`;
+
+  return`<div class="log-row${job.orderId?' is-order':''}">
+    <div class="log-header" onclick="toggleLogEntry(${job.id})">
+      <span class="log-date">${job.crafted}</span>
+      <span class="log-item">${job.bpLabel}</span>
+      ${tierHtml}
+      <div class="log-mats">${matsHtml}</div>
+      ${orderBadge}
+      <span class="expand-arrow" style="margin-left:4px">${isExp?'▲':'▼'}</span>
+    </div>
+    <div class="log-detail${isExp?' open':''}">
+      <table class="log-detail-mat-table">
+        <thead><tr><th>Material</th><th>Avg Quality</th><th>Characteristic</th><th>Effect</th></tr></thead>
+        <tbody>${detailMatRows}</tbody>
+      </table>
+      <div class="log-detail-actions">${detailActions}</div>
+    </div>
+  </div>`;
+}
+
+function toggleLogEntry(id){logExpanded.has(id)?logExpanded.delete(id):logExpanded.add(id);renderLog();}
+function openLogOrderPicker(jobId){openLogPicker=jobId;renderLog();}
+function closeLogPicker(){openLogPicker=null;renderLog();}
+
+function attachLogOrder(jobId,orderId){
+  const job=craftingLog.find(j=>j.id===jobId);
+  if(!job) return;
+  job.orderId=orderId;
+  writeLog();
+  const orders=readActiveOrders();
+  const o=orders.find(o=>o.id===orderId);
+  if(o){o.status='ready';writeActiveOrders(orders);}
+  openLogPicker=null;
+  updateStats();
+  renderLog();
+  toast('ORDER ATTACHED — ORDER MARKED READY');
+}
+
+function detachLogOrder(jobId){
+  const job=craftingLog.find(j=>j.id===jobId);
+  if(!job||!job.orderId) return;
+  const orderId=job.orderId;
+  job.orderId=null;
+  writeLog();
+  const orders=readActiveOrders();
+  const o=orders.find(o=>o.id===orderId);
+  if(o&&o.status==='ready'){o.status='crafting';writeActiveOrders(orders);}
+  updateStats();
+  renderLog();
+  toast('ORDER DETACHED — ORDER REVERTED TO IN PROGRESS');
+}
+
+// ── TOAST ──
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;
+  el.classList.remove('hidden');
+  clearTimeout(toast._t);
+  toast._t=setTimeout(()=>el.classList.add('hidden'),2800);
+}
+
+init();
+</script>
+</body>
+</html>
