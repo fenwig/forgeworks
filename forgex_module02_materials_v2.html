@@ -112,6 +112,14 @@
   .loc-select-row{display:flex;gap:8px;}
   .loc-select-row .form-select{flex:0 0 130px;}
   .loc-select-row .form-input{flex:1;}
+
+  .editloc-row{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--tmi-border-dim);}
+  .editloc-name{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-primary);flex:1;}
+  .editloc-count{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--tmi-text-dim);white-space:nowrap;}
+  .editloc-remove{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:1px;color:var(--tmi-danger);background:none;border:1px solid rgba(204,51,51,0.3);padding:3px 10px;cursor:pointer;text-transform:uppercase;transition:background 0.15s;}
+  .editloc-remove:hover:not([disabled]){background:rgba(204,51,51,0.1);}
+  .editloc-remove[disabled]{color:var(--tmi-text-dim);border-color:var(--tmi-border-dim);cursor:not-allowed;opacity:0.5;}
+  .editloc-empty{padding:24px 16px;font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--tmi-text-dim);text-align:center;letter-spacing:1px;}
 </style>
 </head>
 <body>
@@ -334,6 +342,20 @@
   </div>
 </div>
 
+<!-- EDIT LOCATIONS overlay -->
+<div class="form-overlay" id="editloc-overlay">
+  <div class="form-panel">
+    <div class="form-header">
+      <span class="form-title">Manage Locations</span>
+      <button class="form-close" onclick="closeEditLocations()">✕</button>
+    </div>
+    <div id="editloc-body" style="max-height:320px;overflow-y:auto;"></div>
+    <div class="form-footer">
+      <button class="btn-cancel" onclick="closeEditLocations()">Done</button>
+    </div>
+  </div>
+</div>
+
 </div><!-- /page-wrap -->
 <script>
 const GEM_NAMES = new Set(['aphorite','beradom','carinite','dolvine','feynmaline','glacosite','hadanite','jaclium','janalite','sadaryx','saldynium']);
@@ -385,6 +407,7 @@ function buildLocOptions(selectId){
     const o=document.createElement('option');o.value=loc;o.textContent=loc;sel.appendChild(o);
   });
   const cust=document.createElement('option');cust.value='custom';cust.textContent='Custom...';sel.appendChild(cust);
+  const edit=document.createElement('option');edit.value='edit_list';edit.textContent='— Edit List —';sel.appendChild(edit);
   if(cur&&sel.querySelector(`option[value="${CSS.escape(cur)}"]`)) sel.value=cur;
 }
 
@@ -621,6 +644,7 @@ function setOreFilter(type,btn){
 
 function applyLocPreset(){
   const sel=document.getElementById('f-loc-preset').value;
+  if(sel==='edit_list'){openEditLocations('f-loc-preset','f-loc-custom');return;}
   const custom=document.getElementById('f-loc-custom');
   if(sel==='custom'){custom.style.display='block';custom.focus();}
   else custom.style.display='none';
@@ -761,6 +785,7 @@ function executeSplit(){
 
 function applyMoveLoc(){
   const sel=document.getElementById('move-loc-preset').value;
+  if(sel==='edit_list'){openEditLocations('move-loc-preset','move-loc-custom');return;}
   const custom=document.getElementById('move-loc-custom');
   if(sel==='custom'){custom.style.display='block';custom.focus();}
   else custom.style.display='none';
@@ -788,6 +813,55 @@ function executeMove(){
   persist();
   closeOverlay('move-overlay');
   renderTable();
+}
+
+// ── EDIT LOCATIONS ────────────────────────────────────────────────────────────
+
+let editLocReturnId=null;
+
+function getLocLotCounts(){
+  try{
+    const raw=localStorage.getItem('forgex-lots');
+    if(raw){const p=JSON.parse(raw);if(p&&Array.isArray(p.lots)){const c={};p.lots.forEach(l=>{const loc=l.location||DEFAULT_LOC;c[loc]=(c[loc]||0)+1;});return c;}}
+  }catch(e){}
+  return {};
+}
+
+function openEditLocations(returnSelectId,customInputId){
+  editLocReturnId=returnSelectId;
+  document.getElementById(returnSelectId).value=DEFAULT_LOC;
+  if(customInputId){const el=document.getElementById(customInputId);if(el) el.style.display='none';}
+  renderEditLocations();
+  document.getElementById('editloc-overlay').classList.add('open');
+}
+
+function renderEditLocations(){
+  const counts=getLocLotCounts();
+  const body=document.getElementById('editloc-body');
+  if(customLocations.length===0){
+    body.innerHTML='<div class="editloc-empty">NO CUSTOM LOCATIONS SAVED</div>';
+    return;
+  }
+  body.innerHTML=customLocations.map((loc,i)=>{
+    const count=counts[loc]||0;
+    const blocked=count>0;
+    return `<div class="editloc-row">
+      <span class="editloc-name">${loc}</span>
+      ${blocked?`<span class="editloc-count">${count} lot${count>1?'s':''}</span>`:''}
+      <button class="editloc-remove" onclick="removeLocation(${i})" ${blocked?'disabled':''}>Remove</button>
+    </div>`;
+  }).join('');
+}
+
+function removeLocation(idx){
+  customLocations.splice(idx,1);
+  persistLocations();
+  ['f-loc-preset','move-loc-preset'].forEach(id=>{if(document.getElementById(id)) buildLocOptions(id);});
+  renderEditLocations();
+}
+
+function closeEditLocations(){
+  document.getElementById('editloc-overlay').classList.remove('open');
 }
 
 renderTable();
