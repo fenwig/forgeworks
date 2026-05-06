@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600&display=swap');
+  :root {
+    --tmi-bg-deep:#0a0804;--tmi-bg-panel:#0f0d09;--tmi-bg-card:#141109;
+    --tmi-gold:#c8a84b;--tmi-gold-bright:#e8c96a;--tmi-gold-dim:#8a7030;
+    --tmi-text-primary:#ffffff;--tmi-text-secondary:#d0c4b0;--tmi-text-dim:#90806e;
+    --tmi-border:rgba(200,168,75,0.25);--tmi-border-dim:rgba(200,168,75,0.1);
+    --rpt-bg:#f2ede4;--rpt-card:#ffffff;
+    --rpt-text:#140f08;--rpt-text-sub:#3a2e18;--rpt-text-dim:#7a6840;
+    --rpt-gold:#b07e08;--rpt-gold-light:rgba(176,126,8,0.10);
+    --rpt-border:rgba(176,126,8,0.25);--rpt-border-strong:rgba(176,126,8,0.50);
+    --rpt-avail:#145214;--rpt-avail-bg:rgba(20,82,20,0.10);--rpt-avail-border:rgba(20,82,20,0.28);
+    --rpt-muted:#b0a888;
+    --rpt-700:#8a5e00;--rpt-800:#a07000;--rpt-900:#145214;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--tmi-bg-deep);font-family:'Exo 2',sans-serif;}
+  .page-wrap{max-width:1200px;}
+
+  /* ── App header ──────────────────────────────────────────────── */
+  .mod-header{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:10px 18px;display:flex;align-items:center;justify-content:space-between;}
+  .mod-header-left{display:flex;align-items:center;gap:14px;}
+  .mod-logo{height:36px;width:auto;}
+  .mod-eyebrow{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--tmi-gold-dim);text-transform:uppercase;margin-bottom:2px;}
+  .mod-title{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#ffffff;}
+  .header-actions{display:flex;gap:8px;}
+  .hdr-btn{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:1.5px;color:var(--tmi-text-secondary);background:transparent;border:1px solid var(--tmi-border-dim);padding:6px 14px;cursor:pointer;text-transform:uppercase;transition:all 0.15s;}
+  .hdr-btn:hover{border-color:var(--tmi-border);color:var(--tmi-text-primary);}
+  .hdr-btn.primary{background:var(--tmi-gold);color:var(--tmi-bg-deep);border-color:var(--tmi-gold);font-weight:700;}
+  .hdr-btn.primary:hover{background:var(--tmi-gold-bright);}
+
+  /* ── Tab bar ─────────────────────────────────────────────────── */
+  .tab-bar{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:0 18px;display:flex;gap:0;overflow-x:auto;}
+  .tab{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;letter-spacing:1.5px;color:var(--tmi-text-dim);background:transparent;border:none;border-bottom:2px solid transparent;padding:10px 20px;cursor:pointer;text-transform:uppercase;transition:all 0.15s;white-space:nowrap;}
+  .tab:hover{color:var(--tmi-text-secondary);}
+  .tab.active{color:var(--tmi-gold);border-bottom-color:var(--tmi-gold);}
+
+  /* ── Report shell ────────────────────────────────────────────── */
+  .report{display:none;background:var(--rpt-bg);min-height:500px;}
+  .report.active{display:block;}
+
+  /* ── Filter bar ──────────────────────────────────────────────── */
+  .filter-bar{background:#e8e2d6;border-bottom:1px solid var(--rpt-border);padding:8px 18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+  .filter-label{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1.5px;color:var(--rpt-text-dim);text-transform:uppercase;white-space:nowrap;}
+  .date-input{background:var(--rpt-card);border:1px solid var(--rpt-border);color:var(--rpt-text);font-family:'Share Tech Mono',monospace;font-size:12px;padding:4px 8px;outline:none;}
+  .date-input:focus{border-color:var(--rpt-gold);}
+  .filter-clear{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;color:var(--rpt-text-dim);background:transparent;border:1px solid var(--rpt-border);padding:4px 10px;cursor:pointer;text-transform:uppercase;}
+  .check-wrap{display:flex;gap:10px;}
+  .check-label{display:flex;align-items:center;gap:4px;font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--rpt-text-sub);cursor:pointer;letter-spacing:1px;}
+  .check-label input{accent-color:var(--rpt-gold);width:13px;height:13px;}
+
+  /* ── Report body ─────────────────────────────────────────────── */
+  .rpt-body{padding:16px 18px;}
+
+  /* branded report header strip */
+  .rpt-brand{display:flex;align-items:center;gap:14px;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid var(--rpt-border-strong);}
+  .rpt-brand-logo{height:44px;width:auto;opacity:0.85;}
+  .rpt-brand-text{}
+  .rpt-brand-org{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--rpt-gold);text-transform:uppercase;margin-bottom:2px;}
+  .rpt-brand-title{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--rpt-text);}
+  .rpt-brand-date{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--rpt-text-dim);margin-top:2px;letter-spacing:1px;}
+
+  /* two-column grid */
+  .rpt-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+
+  /* section card */
+  .rpt-card{background:var(--rpt-card);border:1px solid var(--rpt-border);}
+  .rpt-card-header{background:var(--tmi-bg-panel);padding:8px 14px;display:flex;align-items:center;justify-content:space-between;}
+  .rpt-card-title{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tmi-gold);}
+  .rpt-card-count{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--tmi-text-dim);}
+
+  /* compact table */
+  .rpt-table{width:100%;border-collapse:collapse;}
+  .rpt-table thead tr{background:#f5f0e6;border-bottom:1px solid var(--rpt-border);}
+  .rpt-table th{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--rpt-text-dim);text-transform:uppercase;padding:5px 12px;text-align:left;}
+  .rpt-table th.num{text-align:right;}
+  .rpt-table tbody tr{border-bottom:1px solid rgba(176,126,8,0.07);}
+  .rpt-table tbody tr:last-child{border-bottom:none;}
+  .rpt-table tbody tr:hover{background:#faf6ee;}
+  .rpt-table td{padding:5px 12px;vertical-align:middle;}
+  .rpt-table td.num{text-align:right;}
+
+  /* material names */
+  .mat-name{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;letter-spacing:1px;color:var(--rpt-text);text-transform:capitalize;}
+
+  /* quality band values */
+  .band-val{font-family:'Share Tech Mono',monospace;font-size:13px;font-weight:700;}
+  .band-700{color:var(--rpt-700);}
+  .band-800{color:var(--rpt-800);}
+  .band-900{color:var(--rpt-900);}
+  .band-nil{color:var(--rpt-muted);font-size:12px;}
+
+  /* availability badges */
+  .avail-badges{display:flex;gap:4px;flex-wrap:wrap;}
+  .avail-badge{font-family:'Share Tech Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1px;padding:2px 8px;border:1px solid;}
+  .avail-700{color:var(--rpt-700);border-color:rgba(138,94,0,0.35);background:rgba(138,94,0,0.08);}
+  .avail-800{color:var(--rpt-800);border-color:rgba(160,112,0,0.35);background:rgba(160,112,0,0.08);}
+  .avail-900{color:var(--rpt-900);border-color:var(--rpt-avail-border);background:var(--rpt-avail-bg);}
+
+  /* BP names */
+  .bp-name{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;letter-spacing:1px;color:var(--rpt-text);}
+  .bp-slots{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--rpt-text-dim);letter-spacing:1px;}
+
+  /* full-width table (orders / crafted) */
+  .rpt-full-table{width:100%;border-collapse:collapse;background:var(--rpt-card);border:1px solid var(--rpt-border);}
+  .rpt-full-table thead tr{background:var(--tmi-bg-panel);}
+  .rpt-full-table th{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--tmi-gold-dim);text-transform:uppercase;padding:8px 14px;text-align:left;border-bottom:1px solid var(--rpt-border-strong);}
+  .rpt-full-table tbody tr{border-bottom:1px solid rgba(176,126,8,0.07);}
+  .rpt-full-table tbody tr:hover{background:#faf6ee;}
+  .rpt-full-table td{padding:5px 14px;vertical-align:middle;}
+
+  .rpt-item-name{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:var(--rpt-text);}
+  .rpt-customer{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;color:var(--rpt-text);}
+  .rpt-date{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--rpt-text-sub);}
+  .rpt-tier{font-family:'Share Tech Mono',monospace;font-size:12px;font-weight:700;}
+  .rpt-tier-700{color:var(--rpt-700);}
+  .rpt-tier-800{color:var(--rpt-800);}
+  .rpt-tier-900{color:var(--rpt-900);}
+  .rpt-pending{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--rpt-muted);letter-spacing:0.5px;font-style:italic;}
+
+  .empty-state{padding:30px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--rpt-muted);letter-spacing:1px;}
+
+  /* ── Print ───────────────────────────────────────────────────── */
+  @media print {
+    body{background:#fff;}
+    .mod-header,.tab-bar,.filter-bar,.header-actions{display:none!important;}
+    .report{display:block!important;background:#fff;}
+    .rpt-card-header,.rpt-full-table thead tr{background:#0f0d09!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .page-wrap{max-width:100%;}
+    .rpt-brand-logo{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+<div class="mod-header">
+  <div class="mod-header-left">
+    <img src="small logo.png" class="mod-logo" alt="TMI">
+    <div>
+      <div class="mod-eyebrow">Troublemaker Incorporated — Custom Arms & Armor</div>
+      <div class="mod-title">Reports</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="hdr-btn" onclick="copyAsText()">Copy Text</button>
+    <button class="hdr-btn primary" onclick="window.print()">Print / Save PDF</button>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab active" onclick="showTab(1,this)">Materials</button>
+  <button class="tab" onclick="showTab(2,this)">Crafting Availability</button>
+  <button class="tab" onclick="showTab(3,this)">Owned Blueprints</button>
+  <button class="tab" onclick="showTab(4,this)">Orders Filled</button>
+  <button class="tab" onclick="showTab(5,this)">Crafted Items</button>
+</div>
+
+<!-- REPORT 1 -->
+<div class="report active" id="report-1">
+  <div class="filter-bar">
+    <span class="filter-label">Lots Added Between</span>
+    <input type="date" class="date-input" id="r1-from" onchange="buildReport1()">
+    <span class="filter-label">and</span>
+    <input type="date" class="date-input" id="r1-to" onchange="buildReport1()">
+    <button class="filter-clear" onclick="clearFilter('r1-from','r1-to');buildReport1()">Clear</button>
+  </div>
+  <div class="rpt-body" id="r1-content"></div>
+</div>
+
+<!-- REPORT 2 -->
+<div class="report" id="report-2">
+  <div class="filter-bar">
+    <span class="filter-label">Show Available At</span>
+    <div class="check-wrap">
+      <label class="check-label"><input type="checkbox" id="r2-700" checked onchange="buildReport2()"> 700+</label>
+      <label class="check-label"><input type="checkbox" id="r2-800" checked onchange="buildReport2()"> 800+</label>
+      <label class="check-label"><input type="checkbox" id="r2-900" checked onchange="buildReport2()"> 900+</label>
+    </div>
+  </div>
+  <div class="rpt-body" id="r2-content"></div>
+</div>
+
+<!-- REPORT 3 -->
+<div class="report" id="report-3">
+  <div class="rpt-body" id="r3-content"></div>
+</div>
+
+<!-- REPORT 4 -->
+<div class="report" id="report-4">
+  <div class="filter-bar">
+    <span class="filter-label">Order Created Between</span>
+    <input type="date" class="date-input" id="r4-from" onchange="buildReport4()">
+    <span class="filter-label">and</span>
+    <input type="date" class="date-input" id="r4-to" onchange="buildReport4()">
+    <button class="filter-clear" onclick="clearFilter('r4-from','r4-to');buildReport4()">Clear</button>
+  </div>
+  <div class="rpt-body" id="r4-content"></div>
+</div>
+
+<!-- REPORT 5 -->
+<div class="report" id="report-5">
+  <div class="filter-bar">
+    <span class="filter-label">Crafted Between</span>
+    <input type="date" class="date-input" id="r5-from" onchange="buildReport5()">
+    <span class="filter-label">and</span>
+    <input type="date" class="date-input" id="r5-to" onchange="buildReport5()">
+    <button class="filter-clear" onclick="clearFilter('r5-from','r5-to');buildReport5()">Clear</button>
+  </div>
+  <div class="rpt-body" id="r5-content"></div>
+</div>
+
+</div>
+<script>
+// ── Blueprint master list (no ammo) ───────────────────────────────────────────
+const BLUEPRINTS = [
+  {id:1,base:'Aztalan',slot:'Helmet',type:'Armor',weight:'Medium',finish:'Nightfall',weapon_type:null,ingredients:[{name:'aslarite',qty:6},{name:'lindinium',qty:4},{name:'taranite',qty:3}]},
+  {id:2,base:'Aztalan',slot:'Core',type:'Armor',weight:'Medium',finish:'Nightfall',weapon_type:null,ingredients:[{name:'aslarite',qty:12},{name:'lindinium',qty:8},{name:'taranite',qty:6}]},
+  {id:3,base:'Aztalan',slot:'Legs',type:'Armor',weight:'Medium',finish:'Nightfall',weapon_type:null,ingredients:[{name:'aslarite',qty:10},{name:'lindinium',qty:6},{name:'taranite',qty:5}]},
+  {id:4,base:'Aztalan',slot:'Arms',type:'Armor',weight:'Medium',finish:'Nightfall',weapon_type:null,ingredients:[{name:'aslarite',qty:8},{name:'lindinium',qty:5},{name:'taranite',qty:4}]},
+  {id:5,base:'Corbel',slot:'Helmet',type:'Armor',weight:'Heavy',finish:'Sanguine',weapon_type:null,ingredients:[{name:'laranite',qty:5},{name:'titanium',qty:6},{name:'aslarite',qty:4}]},
+  {id:6,base:'Corbel',slot:'Core',type:'Armor',weight:'Heavy',finish:'Sanguine',weapon_type:null,ingredients:[{name:'laranite',qty:10},{name:'titanium',qty:12},{name:'aslarite',qty:8}]},
+  {id:7,base:'Corbel',slot:'Legs',type:'Armor',weight:'Heavy',finish:'Sanguine',weapon_type:null,ingredients:[{name:'laranite',qty:8},{name:'titanium',qty:10},{name:'aslarite',qty:6}]},
+  {id:8,base:'Corbel',slot:'Arms',type:'Armor',weight:'Heavy',finish:'Sanguine',weapon_type:null,ingredients:[{name:'laranite',qty:6},{name:'titanium',qty:8},{name:'aslarite',qty:5}]},
+  {id:9,base:'Demeco',slot:null,type:'Weapon',weight:null,finish:'Ironside',weapon_type:'LMG',ingredients:[{name:'corundum',qty:14},{name:'copper',qty:10},{name:'hadanite',qty:5}]},
+  {id:11,base:'Corbel',slot:'Arms',type:'Armor',weight:'Heavy',finish:'Mire',weapon_type:null,ingredients:[{name:'laranite',qty:6},{name:'titanium',qty:8},{name:'aslarite',qty:5}]},
+];
+const SLOT_ORDER=['Helmet','Core','Arms','Legs'];
+const GEM_NAMES=new Set(['aphorite','beradom','carinite','dolvine','feynmaline','glacosite','hadanite','jaclium','janalite','sadaryx','saldynium']);
+
+// ── Data loaders ───────────────────────────────────────────────────────────────
+function loadLots(){try{const r=localStorage.getItem('forgex-lots');if(r){const p=JSON.parse(r);if(p&&Array.isArray(p.lots))return p.lots;}}catch(e){}return[];}
+function loadTracking(){try{const r=localStorage.getItem('forgex-tracking');if(r){const p=JSON.parse(r);if(p)return p;}}catch(e){}return{};}
+function loadOrders(){try{const r=localStorage.getItem('forgex-active-orders');if(r){const p=JSON.parse(r);if(Array.isArray(p))return p;}}catch(e){}return[];}
+function loadCraftingLog(){try{const r=localStorage.getItem('forgex-crafting-log');if(r){const p=JSON.parse(r);if(Array.isArray(p))return p;}}catch(e){}return[];}
+
+// ── Date helpers ───────────────────────────────────────────────────────────────
+function isRealDate(d){if(!d)return false;const y=parseInt(d.slice(0,4));return y>=2020&&y<=2100;}
+function inRange(d,from,to){if(!isRealDate(d))return false;if(from&&d<from)return false;if(to&&d>to)return false;return true;}
+function fmtDate(d){return isRealDate(d)?d:'—';}
+function clearFilter(a,b){document.getElementById(a).value='';document.getElementById(b).value='';}
+function genDate(){return new Date().toISOString().slice(0,10);}
+
+// ── BP helpers ─────────────────────────────────────────────────────────────────
+function getBpLabel(bp){
+  if(bp.type==='Armor') return [bp.base,bp.finish].filter(Boolean).join(' ')+' Armor';
+  return [bp.base,bp.finish,bp.weapon_type].filter(Boolean).join(' ');
+}
+function getBpById(id){return BLUEPRINTS.find(b=>b.id===id)||null;}
+function getOwnedBpIds(){
+  const t=loadTracking();
+  const ids=new Set();
+  Object.entries(t).forEach(([k,v])=>{if(v&&v.personal)ids.add(parseInt(k));});
+  return ids;
+}
+
+// ── Availability check ─────────────────────────────────────────────────────────
+function checkAvailability(bp,lots){
+  const inv={};
+  lots.forEach(l=>{if(!inv[l.ore])inv[l.ore]=[];inv[l.ore].push(l);});
+  const result={};
+  [700,800,900].forEach(band=>{
+    const lo=band,hi=band===900?1001:band+100;
+    result[band]=bp.ingredients.every(ing=>{
+      const stock=inv[ing.name]||[];
+      const total=stock.filter(l=>ing.name==='aslarite'?l.quality>=500:l.quality>=lo&&l.quality<hi).reduce((s,l)=>s+l.qty,0);
+      return total>=ing.qty;
+    });
+  });
+  return result;
+}
+
+// ── Band helpers ───────────────────────────────────────────────────────────────
+function bandQty(lots,band){const lo=band,hi=band===900?1001:band+100;return lots.filter(l=>l.quality>=lo&&l.quality<hi).reduce((s,l)=>s+l.qty,0);}
+function tierLabel(q){if(!q&&q!==0)return'—';if(q>=900)return'900+';if(q>=800)return'800+';if(q>=700)return'700+';return'<700';}
+function tierClass(q){if(q>=900)return'rpt-tier-900';if(q>=800)return'rpt-tier-800';return'rpt-tier-700';}
+
+// ── Report brand strip ─────────────────────────────────────────────────────────
+function brandHTML(title,dateNote){
+  return `<div class="rpt-brand">
+    <img src="large logo.png" class="rpt-brand-logo" alt="TMI">
+    <div class="rpt-brand-text">
+      <div class="rpt-brand-org">Troublemaker Incorporated — Custom Arms &amp; Armor</div>
+      <div class="rpt-brand-title">${title}</div>
+      <div class="rpt-brand-date">Generated ${genDate()}${dateNote?' &nbsp;·&nbsp; '+dateNote:''}</div>
+    </div>
+  </div>`;
+}
+
+// ── Tab switching ──────────────────────────────────────────────────────────────
+let activeTab=1;
+function showTab(n,btn){
+  document.querySelectorAll('.report').forEach(r=>r.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('report-'+n).classList.add('active');
+  btn.classList.add('active');
+  activeTab=n;
+  ({1:buildReport1,2:buildReport2,3:buildReport3,4:buildReport4,5:buildReport5})[n]();
+}
+
+// ── REPORT 1 — Materials ───────────────────────────────────────────────────────
+function buildReport1(){
+  const from=document.getElementById('r1-from').value,to=document.getElementById('r1-to').value;
+  const hasFilter=from||to;
+  const allLots=loadLots();
+  const lots=hasFilter?allLots.filter(l=>inRange(l.date,from,to)):allLots;
+  const byOre={};
+  lots.forEach(l=>{if(!byOre[l.ore])byOre[l.ore]={hand_mined:l.hand_mined,lots:[]};byOre[l.ore].lots.push(l);});
+  const ores=[],gems=[];
+  Object.entries(byOre).sort(([a],[b])=>a.localeCompare(b)).forEach(([ore,d])=>{
+    if(!d.lots.some(l=>l.quality>=700))return;
+    (d.hand_mined?gems:ores).push({ore,lots:d.lots});
+  });
+  const dateNote=hasFilter?`filtered ${from||'…'} → ${to||'…'}`:'';
+  function tbl(items){
+    if(!items.length)return'<div class="empty-state">No qualifying materials</div>';
+    return`<table class="rpt-table"><thead><tr>
+      <th>Material</th><th class="num">700+</th><th class="num">800+</th><th class="num">900+</th>
+    </tr></thead><tbody>`+items.map(({ore,lots})=>{
+      const t7=bandQty(lots,700),t8=bandQty(lots,800),t9=bandQty(lots,900);
+      return`<tr><td><span class="mat-name">${ore}</span></td>
+        <td class="num"><span class="${t7>0?'band-val band-700':'band-nil'}">${t7>0?t7.toLocaleString():'—'}</span></td>
+        <td class="num"><span class="${t8>0?'band-val band-800':'band-nil'}">${t8>0?t8.toLocaleString():'—'}</span></td>
+        <td class="num"><span class="${t9>0?'band-val band-900':'band-nil'}">${t9>0?t9.toLocaleString():'—'}</span></td>
+      </tr>`;
+    }).join('')+'</tbody></table>';
+  }
+  document.getElementById('r1-content').innerHTML=brandHTML('Materials Available',dateNote)+`
+    <div class="rpt-cols">
+      <div class="rpt-card">
+        <div class="rpt-card-header"><span class="rpt-card-title">Mined Ore</span><span class="rpt-card-count">${ores.length} material${ores.length!==1?'s':''}</span></div>
+        ${tbl(ores)}
+      </div>
+      <div class="rpt-card">
+        <div class="rpt-card-header"><span class="rpt-card-title">Hand-Mined Gems</span><span class="rpt-card-count">${gems.length} material${gems.length!==1?'s':''}</span></div>
+        ${tbl(gems)}
+      </div>
+    </div>`;
+}
+
+// ── REPORT 2 — Crafting Availability ──────────────────────────────────────────
+function buildReport2(){
+  const show700=document.getElementById('r2-700').checked;
+  const show800=document.getElementById('r2-800').checked;
+  const show900=document.getElementById('r2-900').checked;
+  const lots=loadLots();
+  const ownedIds=getOwnedBpIds();
+  const owned=BLUEPRINTS.filter(bp=>ownedIds.has(bp.id));
+  function rows(bps){
+    const craftable=bps.map(bp=>({bp,avail:checkAvailability(bp,lots)}))
+      .filter(({avail})=>(show700&&avail[700])||(show800&&avail[800])||(show900&&avail[900]));
+    if(!craftable.length)return'<div class="empty-state">No blueprints ready to craft</div>';
+    return`<table class="rpt-table"><thead><tr><th>Blueprint</th><th>Ready At</th></tr></thead><tbody>`+
+      craftable.map(({bp,avail})=>`<tr>
+        <td><span class="bp-name">${getBpLabel(bp)}</span></td>
+        <td><div class="avail-badges">
+          ${show700&&avail[700]?'<span class="avail-badge avail-700">700+</span>':''}
+          ${show800&&avail[800]?'<span class="avail-badge avail-800">800+</span>':''}
+          ${show900&&avail[900]?'<span class="avail-badge avail-900">900+</span>':''}
+        </div></td>
+      </tr>`).join('')+'</tbody></table>';
+  }
+  const armor=owned.filter(bp=>bp.type==='Armor');
+  const weapons=owned.filter(bp=>bp.type==='Weapon');
+  document.getElementById('r2-content').innerHTML=brandHTML('Crafting Availability','')+`
+    <div class="rpt-cols">
+      <div class="rpt-card">
+        <div class="rpt-card-header"><span class="rpt-card-title">Armor</span></div>${rows(armor)}
+      </div>
+      <div class="rpt-card">
+        <div class="rpt-card-header"><span class="rpt-card-title">Weapons</span></div>${rows(weapons)}
+      </div>
+    </div>`;
+}
+
+// ── REPORT 3 — Owned Blueprints ────────────────────────────────────────────────
+function buildReport3(){
+  const ownedIds=getOwnedBpIds();
+  const owned=BLUEPRINTS.filter(bp=>ownedIds.has(bp.id));
+  // Group armor by base+finish
+  const armorGroups={};
+  owned.filter(bp=>bp.type==='Armor').forEach(bp=>{
+    const key=bp.base+'|'+(bp.finish||'');
+    if(!armorGroups[key])armorGroups[key]={base:bp.base,finish:bp.finish,slots:[]};
+    if(bp.slot)armorGroups[key].slots.push(bp.slot);
+  });
+  Object.values(armorGroups).forEach(g=>g.slots.sort((a,b)=>SLOT_ORDER.indexOf(a)-SLOT_ORDER.indexOf(b)));
+  const armorList=Object.values(armorGroups).sort((a,b)=>a.base.localeCompare(b.base));
+  // Weapons — each unique base+weapon_type+finish
+  const weaponGroups={};
+  owned.filter(bp=>bp.type==='Weapon').forEach(bp=>{
+    const key=bp.base+'|'+(bp.weapon_type||'')+'|'+(bp.finish||'');
+    weaponGroups[key]={base:bp.base,finish:bp.finish,weapon_type:bp.weapon_type};
+  });
+  const weaponList=Object.values(weaponGroups).sort((a,b)=>a.base.localeCompare(b.base));
+
+  function armorTbl(){
+    if(!armorList.length)return'<div class="empty-state">No armor blueprints owned</div>';
+    return`<table class="rpt-table"><tbody>`+armorList.map(g=>{
+      const label=[g.base,g.finish,'Armor'].filter(Boolean).join(' ');
+      return`<tr>
+        <td><span class="bp-name">${label}</span></td>
+        <td><span class="bp-slots">${g.slots.join(' &nbsp; ')}</span></td>
+      </tr>`;
+    }).join('')+'</tbody></table>';
+  }
+  function weaponTbl(){
+    if(!weaponList.length)return'<div class="empty-state">No weapon blueprints owned</div>';
+    return`<table class="rpt-table"><tbody>`+weaponList.map(g=>{
+      const label=[g.base,g.finish,g.weapon_type].filter(Boolean).join(' ');
+      return`<tr><td colspan="2"><span class="bp-name">${label}</span></td></tr>`;
+    }).join('')+'</tbody></table>';
+  }
+  document.getElementById('r3-content').innerHTML=brandHTML('Owned Blueprints','')+`
+    <div class="rpt-cols">
+      <div class="rpt-card">
+        <div class="rpt-card-header"><span class="rpt-card-title">Armor</span><span class="rpt-card-count">${armorList.length} blueprint${armorList.length!==1?'s':''}</span></div>
+        ${armorTbl()}
+      </div>
+      <div class="rpt-card">
+        <div class="rpt-card-header"><span class="rpt-card-title">Weapons</span><span class="rpt-card-count">${weaponList.length} blueprint${weaponList.length!==1?'s':''}</span></div>
+        ${weaponTbl()}
+      </div>
+    </div>`;
+}
+
+// ── REPORT 4 — Orders Filled ───────────────────────────────────────────────────
+function buildReport4(){
+  const from=document.getElementById('r4-from').value,to=document.getElementById('r4-to').value;
+  const hasFilter=from||to;
+  const delivered=loadOrders().filter(o=>{
+    if(o.status!=='delivered')return false;
+    const bp=getBpById(o.bpId);if(!bp)return false;
+    if(hasFilter)return inRange(o.created,from,to);
+    return isRealDate(o.created)||!hasFilter;
+  }).sort((a,b)=>(b.created||'').localeCompare(a.created||''));
+  const dateNote=hasFilter?`filtered ${from||'…'} → ${to||'…'}`:'';
+  if(!delivered.length){
+    document.getElementById('r4-content').innerHTML=brandHTML('Orders Filled',dateNote)+'<div class="empty-state">No delivered orders found</div>';
+    return;
+  }
+  const rows=delivered.map(o=>{
+    const bp=getBpById(o.bpId);
+    const tl=tierLabel(o.quality),tc=tierClass(o.quality);
+    return`<tr>
+      <td><span class="rpt-customer">${o.customer||'—'}</span></td>
+      <td><span class="rpt-item-name">${bp?getBpLabel(bp):'Unknown'}</span></td>
+      <td><span class="rpt-tier ${tc}">${tl}</span></td>
+      <td><span class="rpt-date">${fmtDate(o.created)}</span></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('r4-content').innerHTML=brandHTML('Orders Filled',dateNote)+`
+    <table class="rpt-full-table">
+      <thead><tr><th>Customer</th><th>Item</th><th>Quality</th><th>Order Date</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+// ── REPORT 5 — Crafted Items ───────────────────────────────────────────────────
+function buildReport5(){
+  const from=document.getElementById('r5-from').value,to=document.getElementById('r5-to').value;
+  const hasFilter=from||to;
+  const entries=loadCraftingLog().filter(e=>{
+    if(hasFilter)return inRange(e.date,from,to);
+    return true;
+  }).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  const dateNote=hasFilter?`filtered ${from||'…'} → ${to||'…'}`:'';
+  if(!entries.length){
+    document.getElementById('r5-content').innerHTML=brandHTML('Crafted Items',dateNote)+'<div class="empty-state">No crafted items found</div>';
+    return;
+  }
+  const rows=entries.map(e=>{
+    const bp=getBpById(e.bpId);
+    const label=bp?getBpLabel(bp):(e.bpName||'Unknown');
+    const tl=tierLabel(e.tier),tc=tierClass(e.tier||0);
+    return`<tr>
+      <td><span class="rpt-item-name">${label}</span></td>
+      <td><span class="rpt-tier ${tc}">${tl}</span></td>
+      <td><span class="rpt-pending">— pending game data —</span></td>
+      <td><span class="rpt-date">${fmtDate(e.date)}</span></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('r5-content').innerHTML=brandHTML('Crafted Items',dateNote)+`
+    <table class="rpt-full-table">
+      <thead><tr><th>Item</th><th>Quality</th><th>Crafted Impact</th><th>Date</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+// ── Copy as Text ───────────────────────────────────────────────────────────────
+function copyAsText(){
+  const L=[];const hr=n=>'─'.repeat(n);const pad=(s,n)=>String(s).padEnd(n);
+  const titles=['MATERIALS','CRAFTING AVAILABILITY','OWNED BLUEPRINTS','ORDERS FILLED','CRAFTED ITEMS'];
+  L.push('TMI FORGEWORKS — '+titles[activeTab-1]+' REPORT');
+  L.push('Generated: '+genDate());L.push('');
+  if(activeTab===1){
+    const from=document.getElementById('r1-from').value,to=document.getElementById('r1-to').value,hf=from||to;
+    const lots=hf?loadLots().filter(l=>inRange(l.date,from,to)):loadLots();
+    const byOre={};lots.forEach(l=>{if(!byOre[l.ore])byOre[l.ore]={hm:l.hand_mined,lots:[]};byOre[l.ore].lots.push(l);});
+    ['Mined Ore','Hand-Mined Gems'].forEach(sec=>{
+      const isGem=sec==='Hand-Mined Gems';
+      L.push('=== '+sec.toUpperCase()+' ===');
+      L.push(pad('Material',22)+pad('700+',10)+pad('800+',10)+'900+');L.push(hr(52));
+      const items=Object.entries(byOre).filter(([,d])=>d.hm===isGem&&d.lots.some(l=>l.quality>=700)).sort(([a],[b])=>a.localeCompare(b));
+      if(!items.length)L.push('  (none)');else items.forEach(([ore,d])=>L.push(pad(ore,22)+pad(bandQty(d.lots,700)||'—',10)+pad(bandQty(d.lots,800)||'—',10)+(bandQty(d.lots,900)||'—')));
+      L.push('');
+    });
+  } else if(activeTab===3){
+    const ownedIds=getOwnedBpIds(),owned=BLUEPRINTS.filter(bp=>ownedIds.has(bp.id));
+    ['Armor','Weapon'].forEach(type=>{
+      L.push('=== '+type.toUpperCase()+' ===');
+      if(type==='Armor'){
+        const groups={};owned.filter(b=>b.type==='Armor').forEach(bp=>{const k=bp.base+'|'+(bp.finish||'');if(!groups[k])groups[k]={base:bp.base,finish:bp.finish,slots:[]};if(bp.slot)groups[k].slots.push(bp.slot);});
+        const list=Object.values(groups);if(!list.length)L.push('  (none)');else list.forEach(g=>L.push('  '+[g.base,g.finish,'Armor'].filter(Boolean).join(' ')+'    '+g.slots.join('  ')));
+      } else {
+        const wps=owned.filter(b=>b.type==='Weapon');if(!wps.length)L.push('  (none)');else wps.forEach(bp=>L.push('  '+[bp.base,bp.finish,bp.weapon_type].filter(Boolean).join(' ')));
+      }
+      L.push('');
+    });
+  } else if(activeTab===4){
+    const from=document.getElementById('r4-from').value,to=document.getElementById('r4-to').value,hf=from||to;
+    const list=loadOrders().filter(o=>o.status==='delivered'&&(!hf||inRange(o.created,from,to)));
+    L.push(pad('Customer',20)+pad('Item',32)+pad('Quality',10)+'Date');L.push(hr(72));
+    if(!list.length)L.push('  (none)');else list.forEach(o=>{const bp=getBpById(o.bpId);L.push(pad(o.customer||'—',20)+pad(bp?getBpLabel(bp):'Unknown',32)+pad(tierLabel(o.quality),10)+fmtDate(o.created));});
+  } else if(activeTab===5){
+    const from=document.getElementById('r5-from').value,to=document.getElementById('r5-to').value,hf=from||to;
+    const list=loadCraftingLog().filter(e=>!hf||inRange(e.date,from,to));
+    L.push(pad('Item',32)+pad('Quality',10)+'Date');L.push(hr(52));
+    if(!list.length)L.push('  (none)');else list.forEach(e=>{const bp=getBpById(e.bpId);L.push(pad(bp?getBpLabel(bp):(e.bpName||'Unknown'),32)+pad(tierLabel(e.tier),10)+fmtDate(e.date));});
+  } else {L.push('(Copy text not available for this report)');}
+  navigator.clipboard.writeText(L.join('\n')).then(()=>{
+    const b=document.querySelector('.hdr-btn:not(.primary)'),t=b.textContent;
+    b.textContent='Copied!';setTimeout(()=>b.textContent=t,2000);
+  }).catch(()=>alert('Copy failed — select and copy manually.'));
+}
+
+buildReport1();
+</script>
+</body>
+</html>
