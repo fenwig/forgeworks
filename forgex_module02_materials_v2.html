@@ -120,6 +120,11 @@
   .editloc-remove:hover:not([disabled]){background:rgba(204,51,51,0.1);}
   .editloc-remove[disabled]{color:var(--tmi-text-dim);border-color:var(--tmi-border-dim);cursor:not-allowed;opacity:0.5;}
   .editloc-empty{padding:24px 16px;font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--tmi-text-dim);text-align:center;letter-spacing:1px;}
+  .action-row{display:flex;align-items:center;gap:8px;padding:10px 18px;background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);}
+  .action-btn-primary{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:1.5px;color:var(--tmi-bg-deep);background:var(--tmi-gold);border:none;padding:7px 18px;cursor:pointer;text-transform:uppercase;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);transition:background 0.15s;white-space:nowrap;}
+  .action-btn-primary:hover{background:var(--tmi-gold-bright);}
+  .action-btn-secondary{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;letter-spacing:1.5px;color:var(--tmi-text-secondary);background:transparent;border:1px solid var(--tmi-border-dim);padding:6px 18px;cursor:pointer;text-transform:uppercase;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);transition:all 0.15s;white-space:nowrap;}
+  .action-btn-secondary:hover{border-color:var(--tmi-border);color:var(--tmi-text-primary);}
 </style>
 </head>
 <body>
@@ -127,7 +132,7 @@
 
 <div class="mod-header">
   <div>
-    <div class="mod-eyebrow">Troublemaker Incorporated — Custom Arms & Armor</div>
+    <div class="mod-eyebrow">Troublemaker Incorporated &mdash; Custom Arms &amp; Armor</div>
     <div class="mod-title">Material Database</div>
   </div>
   <div class="mod-stats">
@@ -136,6 +141,12 @@
     <div class="stat"><div class="stat-val" id="stat-gems">0</div><div class="stat-lab">Gem cSCU</div></div>
     <div class="stat"><div class="stat-val" id="stat-ore">0</div><div class="stat-lab">Ore cSCU</div></div>
   </div>
+</div>
+
+<div class="action-row">
+  <button class="action-btn-primary" onclick="openAddForm()">+ Add Lot</button>
+  <button class="action-btn-secondary" onclick="navToModule('forgex_module08_ocr.html')">OCR Input</button>
+  <button class="action-btn-secondary" onclick="navToModule('forgex_module03_acquisition.html')">Add Bulk Material</button>
 </div>
 
 <div class="filter-bar">
@@ -161,7 +172,6 @@
   <button class="op-btn" id="btn-combine" onclick="openCombine()" disabled>Combine</button>
   <button class="op-btn" id="btn-split" onclick="openSplit()" disabled>Split</button>
   <button class="op-btn" id="btn-move" onclick="openMove()" disabled>Move</button>
-  <button class="add-btn" onclick="openAddForm()">+ Add Lot</button>
 </div>
 
 <div class="table-wrap">
@@ -415,7 +425,7 @@ const _d=loadData();
 let lots=_d.lots;
 let nextId=_d.nextId||9;
 let customLocations=loadLocations();
-let sortCol='date',sortDir=-1;
+let sortCol='ore',sortDir=1;
 let filters={type:'all',qual:'all'};
 let editingQtyId=null;
 let selectedIds=new Set();
@@ -648,6 +658,14 @@ function applyLocPreset(){
   const custom=document.getElementById('f-loc-custom');
   if(sel==='custom'){custom.style.display='block';custom.focus();}
   else custom.style.display='none';
+}
+
+function navToModule(src){
+  if(window.parent!==window){
+    window.parent.postMessage({type:'forgex-navigate',src:src},'*');
+  }else{
+    window.location.href=src;
+  }
 }
 
 function openAddForm(){
