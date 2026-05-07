@@ -1,13 +1,11 @@
 # SESSION STATE — TI Forgeworks
-Last updated: 2026-05-07
+Last updated: 2026-05-08
 
 ---
 
 ## Where to Resume
 
-**Next session — two items in order:**
-1. **Verify Module 08 OCR behavior** — confirm imports append correctly to existing lots; investigate whether Module 02 seed data persistence is causing unexpected results (see Known Bug #2 below).
-2. **Module 01 — Dashboard iframe conversion** — clean up the dashboard and convert it to a persistent iframe shell. Sidebar stays fixed; modules 02–09 load in a content `<iframe>`. Modules require no changes to work inside the iframe.
+**Next session:** Testing pass across all modules. No known outstanding build tasks. User will direct based on test findings.
 
 ---
 
@@ -22,6 +20,25 @@ Last updated: 2026-05-07
 ---
 
 ## Completed This Session
+
+### Module 05 — Orders ✓ UPDATED
+- Qty field removed (one item per order)
+- aUEC Agreed replaced with free-text Trade Agreed field
+- checkReady() hardcoded to qty=1
+
+### Module 01 — Dashboard ✓ REBUILT AS IFRAME SHELL
+- Persistent header + sidebar; all modules load in `<iframe>` content area
+- Sidebar: Dashboard / Materials / Blueprints / The Forge / Orders / Reports / Codex (coming soon)
+- Module cards updated to correct files and names
+- TI FORGEWORKS text under hero logo; base64 images replaced with external PNGs
+- Last Sync + Last Export date stamps in header
+- Import/Export modal: full backup/restore of all forgex-* keys to JSON
+- postMessage listener for cross-frame navigation from child modules
+
+### Module 02 — Materials Database ✓ UPDATED
+- Action row: Add Lot / OCR Input / Add Bulk Material (postMessage navigation)
+- Default sort: A→Z by ore name
+- Eyebrow encoding fixed
 
 ### Module 08 — OCR Import ✓ COMPLETE
 - Live screen capture via `getDisplayMedia()` — Chrome only (file:// origin)
@@ -103,9 +120,9 @@ Last updated: 2026-05-07
 
 ### NOTED — Project-wide
 2. **Game dates in seed data** — Modules 02 and 05 seed data uses `2954-XX-XX` game dates. Invisible in date-filtered report views. Needs cleanup.
-3. **Module 05 — qty field on orders** — `qty` field to be removed (one crafted item per order). Deferred.
+3. ~~Module 05 — qty field~~ ✓ RESOLVED — qty removed; price replaced with free-text Trade Agreed field.
 4. **Energy weapon crafting properties** — `forgex_crafting_properties.js` covers ballistic weapons only. Laser/plasma/electron weapon materials not yet extracted from game files.
-5. **Module 04 toggleOwned() persistence** — Reported fixed by user; tabled for now. Verify if reports show owned state correctly.
+5. ~~Module 04 toggleOwned() persistence~~ ✓ RESOLVED — confirmed good by user. Module 04 requires no further changes.
 
 ### RESOLVED THIS SESSION
 - ~~forgex-lots format mismatch~~ ✓ — Module 02 stores `{lots, nextId}` object; Modules 03/04/06/07 all expected flat array. All four fixed to handle both formats; writes now use Module 02's format.
