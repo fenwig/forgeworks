@@ -153,6 +153,12 @@
       <div class="result-note" id="resultsNote"></div>
     </div>
 
+    <!-- SYNC LOG -->
+    <div class="about-card" id="syncLogPanel" style="display:none">
+      <div class="about-label">Sync History</div>
+      <div id="syncLogBody"></div>
+    </div>
+
     <!-- ABOUT -->
     <div class="about-card">
       <div class="about-label">About Data Sync</div>
@@ -274,6 +280,7 @@ function mapBlueprint(record, newId) {
     ammo_type:   null,
     capacity:    null,
     has_mission: !is_available_by_default || (unlocking_missions_count > 0),
+    meta:        {},
     ingredients: (ingredients || []).map(ing => ({
       name: ing.name.toLowerCase(),
       qty:  Math.round(ing.quantity_scu * 100)   // SCU → cSCU
@@ -340,9 +347,10 @@ async function startSync() {
   el('progressLog').innerHTML = '';
   setProgress(0, 'Connecting...');
 
-  const blueprints = [];
-  let skipped      = 0;
-  let gameVersion  = '—';
+  const blueprints   = [];
+  const skippedTypes = {};
+  let skipped        = 0;
+  let gameVersion    = '—';
 
   try {
     // Page 1 — get totals
@@ -361,7 +369,7 @@ async function startSync() {
       if (rec.game_version) gameVersion = rec.game_version;
       const mapped = mapBlueprint(rec, blueprints.length + 1);
       if (mapped) blueprints.push(mapped);
-      else skipped++;
+      else { skipped++; const t=rec.output?.type||'unknown'; skippedTypes[t]=(skippedTypes[t]||0)+1; }
     }
     setProgress(Math.round(100 / totalPages), `Page 1 / ${totalPages} — ${blueprints.length} imported`);
 
@@ -433,6 +441,18 @@ async function startSync() {
 
     showResults(blueprints, skipped, preserved, gameVersion);
 
+    // Persist sync log entry
+    const armor  = blueprints.filter(b => b.type === 'Armor').length;
+    const weapon = blueprints.filter(b => b.type === 'Weapon').length;
+    const ammo   = blueprints.filter(b => b.type === 'Ammunition').length;
+    const logEntry = { date: meta.date, count: blueprints.length, skipped, gameVersion,
+      breakdown: { Armor: armor, Weapon: weapon, Ammunition: ammo }, skippedTypes };
+    const syncLog = JSON.parse(localStorage.getItem('forgex-sync-log') || '[]');
+    syncLog.unshift(logEntry);
+    if (syncLog.length > 20) syncLog.length = 20;
+    localStorage.setItem('forgex-sync-log', JSON.stringify(syncLog));
+    renderSyncLog();
+
   } catch (e) {
     log('Sync failed: ' + e.message, 'err');
     setProgress(0, 'Sync failed — see log above.');
@@ -491,6 +511,34 @@ function showResults(blueprints, skipped, preserved, gameVersion) {
   el('resultsPanel').classList.add('visible');
 }
 
+// ── Sync log ───────────────────────────────────────────────────────────────
+
+function renderSyncLog() {
+  const log = JSON.parse(localStorage.getItem('forgex-sync-log') || '[]');
+  const panel = el('syncLogPanel');
+  const body  = el('syncLogBody');
+  if (!log.length) { panel.style.display = 'none'; return; }
+  panel.style.display = 'block';
+
+  body.innerHTML = log.map((entry, i) => {
+    const skippedRows = Object.entries(entry.skippedTypes || {})
+      .sort((a,b) => b[1]-a[1])
+      .map(([type, count]) => `<span style="color:var(--tmi-text-dim);font-family:'Share Tech Mono',monospace;font-size:12px;margin-right:14px">${type} <span style="color:var(--tmi-text-secondary)">${count}</span></span>`)
+      .join('');
+    const bd = entry.breakdown || {};
+    return `<div style="padding:10px 0;border-bottom:1px solid var(--tmi-border-dim);${i===log.length-1?'border-bottom:none':''}">
+      <div style="display:flex;gap:24px;align-items:baseline;flex-wrap:wrap;margin-bottom:6px">
+        <span style="font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--tmi-text-primary)">${entry.date}</span>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-success)">${entry.count} imported</span>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-dim)">${entry.skipped} skipped</span>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-dim)">v${entry.gameVersion}</span>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-dim)">Armor&nbsp;<span style="color:var(--tmi-text-secondary)">${bd.Armor||0}</span>&nbsp;&nbsp;Weapon&nbsp;<span style="color:var(--tmi-text-secondary)">${bd.Weapon||0}</span>&nbsp;&nbsp;Ammo&nbsp;<span style="color:var(--tmi-text-secondary)">${bd.Ammunition||0}</span></span>
+      </div>
+      ${skippedRows ? `<div style="margin-top:4px"><span style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--tmi-text-dim);text-transform:uppercase;margin-right:10px">Skipped:</span>${skippedRows}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
 // ── Helpers ────────────────────────────────────────────────────────────────
 
 function el(id) { return document.getElementById(id); }
@@ -498,6 +546,7 @@ function el(id) { return document.getElementById(id); }
 // ── Init ───────────────────────────────────────────────────────────────────
 
 loadStatus();
+renderSyncLog();
 </script>
 </body>
 </html>

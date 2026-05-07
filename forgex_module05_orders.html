@@ -274,35 +274,24 @@ const LS_TRACKING='forgex-tracking';
 const LS_ORDERS='forgex-active-orders';
 function writeActiveOrders(){localStorage.setItem(LS_ORDERS,JSON.stringify(orders.filter(o=>o.status!=='delivered')));}
 
-const blueprints=[
-  {id:1,base:'Aztalan',slot:'Helmet',type:'Armor',weight:'Medium',finish:'Nightfall',weapon_type:null,ammo_type:null,ingredients:[{name:'aslarite',qty:6},{name:'lindinium',qty:4},{name:'taranite',qty:3}]},
-  {id:2,base:'Aztalan',slot:'Core',type:'Armor',weight:'Medium',finish:'Nightfall',weapon_type:null,ammo_type:null,ingredients:[{name:'aslarite',qty:12},{name:'lindinium',qty:8},{name:'taranite',qty:6}]},
-  {id:3,base:'Aztalan',slot:'Legs',type:'Armor',weight:'Medium',finish:'Nightfall',weapon_type:null,ammo_type:null,ingredients:[{name:'aslarite',qty:10},{name:'lindinium',qty:6},{name:'taranite',qty:5}]},
-  {id:4,base:'Aztalan',slot:'Arms',type:'Armor',weight:'Medium',finish:'Nightfall',weapon_type:null,ammo_type:null,ingredients:[{name:'aslarite',qty:8},{name:'lindinium',qty:5},{name:'taranite',qty:4}]},
-  {id:5,base:'Corbel',slot:'Helmet',type:'Armor',weight:'Heavy',finish:'Sanguine',weapon_type:null,ammo_type:null,ingredients:[{name:'laranite',qty:5},{name:'titanium',qty:6},{name:'aslarite',qty:4}]},
-  {id:6,base:'Corbel',slot:'Core',type:'Armor',weight:'Heavy',finish:'Sanguine',weapon_type:null,ammo_type:null,ingredients:[{name:'laranite',qty:10},{name:'titanium',qty:12},{name:'aslarite',qty:8}]},
-  {id:7,base:'Corbel',slot:'Legs',type:'Armor',weight:'Heavy',finish:'Sanguine',weapon_type:null,ammo_type:null,ingredients:[{name:'laranite',qty:8},{name:'titanium',qty:10},{name:'aslarite',qty:6}]},
-  {id:8,base:'Corbel',slot:'Arms',type:'Armor',weight:'Heavy',finish:'Sanguine',weapon_type:null,ammo_type:null,ingredients:[{name:'laranite',qty:6},{name:'titanium',qty:8},{name:'aslarite',qty:5}]},
-  {id:9,base:'Demeco',slot:null,type:'Weapon',weight:null,finish:'Ironside',weapon_type:'LMG',ammo_type:null,ingredients:[{name:'corundum',qty:14},{name:'copper',qty:10},{name:'hadanite',qty:5}]},
-  {id:10,base:'Demeco',slot:null,type:'Ammunition',weight:null,finish:null,weapon_type:'LMG',ammo_type:'Battery',ingredients:[{name:'copper',qty:6},{name:'corundum',qty:4}]},
-];
+function loadBlueprints(){
+  try{const s=JSON.parse(localStorage.getItem('forgex-blueprints')||'null');if(s&&Array.isArray(s)&&s.length)return s;}catch(e){}
+  return [];
+}
+const blueprints=loadBlueprints();
 
-const inventory=[
-  {ore:'aslarite',quality:534,qty:200},{ore:'aslarite',quality:580,qty:80},
-  {ore:'laranite',quality:743,qty:45},{ore:'laranite',quality:812,qty:18},
-  {ore:'taranite',quality:756,qty:30},{ore:'taranite',quality:880,qty:12},
-  {ore:'lindinium',quality:720,qty:22},{ore:'titanium',quality:690,qty:15},
-  {ore:'corundum',quality:760,qty:40},{ore:'copper',quality:700,qty:25},
-  {ore:'hadanite',quality:920,qty:7},
-];
+function loadInventory(){
+  try{const s=JSON.parse(localStorage.getItem('forgex-lots')||'null');if(s&&Array.isArray(s.lots))return s.lots;if(Array.isArray(s))return s;}catch(e){}
+  return [];
+}
+let inventory=loadInventory();
 
-let orders=[
-  {id:1,customer:'Kira Voss',bpId:6,qty:1,quality:800,status:'inprogress',created:'2954-04-18',deadline:'2954-04-25',price:48000,notes:'Full Corbel set incoming — core first.'},
-  {id:2,customer:'Kira Voss',bpId:7,qty:1,quality:800,status:'inprogress',created:'2954-04-18',deadline:'2954-04-25',price:38000,notes:''},
-  {id:3,customer:'Mace Torin',bpId:9,qty:2,quality:900,status:'ready',created:'2954-04-15',deadline:'',price:120000,notes:'Paid up front. Pickup at Levsky.'},
-  {id:4,customer:'R. Dallow',bpId:2,qty:1,quality:700,status:'delivered',created:'2954-04-10',deadline:'',price:22000,notes:''},
-];
-let nextId=5;
+function loadOrders(){
+  try{const s=JSON.parse(localStorage.getItem(LS_ORDERS)||'null');if(s&&Array.isArray(s))return s;}catch(e){}
+  return [];
+}
+let orders=loadOrders();
+let nextId=orders.length?Math.max(...orders.map(o=>o.id))+1:1;
 let statusFilter='all';
 let selectedQuality=700;
 let expanded=new Set();
@@ -352,10 +341,8 @@ function init(){
     opt.textContent=getBpLabel(bp);
     sel.appendChild(opt);
   });
-  // Sync tracking state for sample orders on load
   const activeBpIds=new Set(orders.filter(o=>o.status!=='delivered').map(o=>o.bpId));
   activeBpIds.forEach(id=>setOrderTracked(id));
-  writeActiveOrders();
   renderOrders();
 }
 

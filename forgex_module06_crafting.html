@@ -185,10 +185,6 @@
   .log-order-picker{background:var(--tmi-bg-card);border:1px solid var(--tmi-border);margin-top:8px;display:none;}
   .log-order-picker.open{display:block;}
 
-  /* DEV NOTICE */
-  .dev-notice{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);border-left:3px solid var(--tmi-warning);padding:7px 18px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--tmi-warning);letter-spacing:0.5px;line-height:1.5;}
-  .dev-notice strong{color:var(--tmi-text-secondary);}
-
   /* TOAST */
   .toast{position:fixed;bottom:20px;right:20px;background:var(--tmi-bg-panel);border:1px solid var(--tmi-gold-dark);color:var(--tmi-text-primary);font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:1px;padding:10px 18px;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);transition:opacity 0.3s;z-index:999;}
   .toast.hidden{opacity:0;pointer-events:none;}
@@ -209,8 +205,6 @@
   <div class="stat-div"></div>
   <div class="stat-block"><span class="stat-val" id="stat-orders">0</span><span class="stat-lbl">Orders Filled</span></div>
 </div>
-
-<div class="dev-notice">⚠ <strong>Module 04 → 06:</strong> The owned blueprint list is a hardcoded Set and does not read from forgex-tracking. Marking a blueprint as owned in Blueprint Database has no effect on what The Forge considers craftable.</div>
 
 <div class="tab-bar">
   <div class="tab active" onclick="switchTab('browser')">Blueprint Browser <span class="tab-count" id="tc-browser">0</span></div>
