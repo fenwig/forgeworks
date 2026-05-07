@@ -99,7 +99,7 @@ Last updated: 2026-05-07
 ## Known Bugs / Open Items
 
 ### VERIFY NEXT SESSION
-1. **Module 08 — seed data displacement** — After first OCR import, Module 02 showed only the 5 newly imported lots. Expected cause: Module 02's hardcoded seed lots are in-memory only and never written to `forgex-lots` unless the user makes a change via the UI. OCR import correctly appended to whatever was already in localStorage (nothing). Verify this is the full explanation and no real data was lost. If seed data persistence is desired, Module 02 should write seed data to localStorage on first load when the key is absent.
+~~1. Module 08 seed data displacement~~ ✓ RESOLVED — Confirmed not a bug. Module 03 import populated forgex-lots, subsequent OCR import appended correctly. First-run behavior was simply empty localStorage.
 
 ### NOTED — Project-wide
 2. **Game dates in seed data** — Modules 02 and 05 seed data uses `2954-XX-XX` game dates. Invisible in date-filtered report views. Needs cleanup.

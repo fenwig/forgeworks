@@ -253,6 +253,7 @@ Planned use: One-click refresh on patch day via Data Sync module. Will auto-popu
 - [ ] **Module 01 — iframe shell conversion** — persistent header + sidebar; modules 02–09 load in `<iframe>` content area; apply canonical text colors
 
 ### Deferred
+- [ ] **Full app backup/restore** — single button exports all `forgex-*` localStorage keys to one JSON file; restore button writes them all back. Covers lots, crafting log, orders, tracking flags, blueprints, locations.
 - [ ] **Remove `qty` from Order form in Module 05** — one crafted item per order
 - [ ] **Energy weapon crafting properties** — extract laser/plasma/electron materials from game files (p4k), add to `forgex_crafting_properties.js`
 - [ ] **Game dates in seed data** — Modules 02 and 05 use `2954-XX-XX` dates; invisible in date-filtered report views
