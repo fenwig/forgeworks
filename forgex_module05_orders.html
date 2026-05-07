@@ -231,10 +231,6 @@
         </select>
       </div>
       <div class="form-group">
-        <label class="form-label">Quantity</label>
-        <input class="form-input" id="f-qty" type="number" min="1" max="20" value="1">
-      </div>
-      <div class="form-group">
         <label class="form-label">Quality Tier</label>
         <div class="qual-select-row">
           <button class="qual-opt q700 sel" id="qt-700" onclick="selectQuality(700)">700</button>
@@ -247,8 +243,8 @@
         <input class="form-input" id="f-deadline" type="date">
       </div>
       <div class="form-group">
-        <label class="form-label">aUEC Agreed</label>
-        <input class="form-input" id="f-price" type="number" min="0" placeholder="0">
+        <label class="form-label">Trade Agreed</label>
+        <input class="form-input" id="f-trade" type="text" placeholder="aUEC, items, or other terms...">
       </div>
       <div class="form-group wide">
         <label class="form-label">Notes</label>
@@ -434,7 +430,7 @@ function renderOrders(){
 function orderRowHtml(order,showActions){
   const bp=blueprints.find(b=>b.id===order.bpId);
   const isExp=expanded.has(order.id);
-  const matReady=bp?checkReady(bp,order.qty,order.quality):false;
+  const matReady=bp?checkReady(bp,1,order.quality):false;
   const nextStatus=STATUS_NEXT[order.status];
   const dlClass=deadlineClass(order.deadline,order.status);
 
@@ -442,7 +438,7 @@ function orderRowHtml(order,showActions){
     <div class="order-header" onclick="toggleExpand(${order.id})">
       <span class="order-id">#${String(order.id).padStart(3,'0')}</span>
       <span class="order-customer">${order.customer}</span>
-      <span class="order-item">${bp?getBpLabel(bp):'Unknown'} ×${order.qty}</span>
+      <span class="order-item">${bp?getBpLabel(bp):'Unknown'}</span>
       <span class="qual-badge qual-${order.quality}">${order.quality}+</span>
       <span class="status-pill status-${order.status}">${STATUS_LABELS[order.status]}</span>
       ${matReady&&order.status!=='delivered'?'<span class="mat-ready">MAT ✓</span>':''}
@@ -456,10 +452,10 @@ function orderRowHtml(order,showActions){
 }
 
 function renderDetail(order,bp){
-  const price=order.price>0?order.price.toLocaleString()+' aUEC':'—';
+  const trade=order.trade||'—';
   let matHtml='';
   if(bp){
-    const qty=order.qty;
+    const qty=1;
     const ings=bp.ingredients.map(ing=>{
       const isAsl=ing.name==='aslarite';
       const need=ing.qty*qty;
@@ -488,7 +484,7 @@ function renderDetail(order,bp){
     const q=order.quality;
     const qReady=checkReady(bp,qty,q);
     const qClass=q===700?'r700':q===800?'r800':'r900';
-    matHtml=`<div class="detail-mats-title">Material Requirements (×${qty})</div>${ings}
+    matHtml=`<div class="detail-mats-title">Material Requirements</div>${ings}
     <div class="readiness-row">
       <span class="readiness-lbl">Readiness at ${q}</span>
       <span class="rb ${qClass}${qReady?' on':''}">${q}${qReady?' ✓':' — insufficient materials'}</span>
@@ -509,7 +505,7 @@ function renderDetail(order,bp){
   </div>`;
   return`<div class="detail-grid">
     <div class="detail-field"><span class="detail-lbl">Order ID</span><span class="detail-val">#${String(order.id).padStart(3,'0')}</span></div>
-    <div class="detail-field"><span class="detail-lbl">Price Agreed</span><span class="detail-val">${price}</span></div>
+    <div class="detail-field"><span class="detail-lbl">Trade Agreed</span><span class="detail-val">${trade}</span></div>
     <div class="detail-field"><span class="detail-lbl">Created</span><span class="detail-val">${order.created}</span></div>
     <div class="detail-field"><span class="detail-lbl">Deadline</span><span class="detail-val">${order.deadline||'—'}</span></div>
     ${notesHtml}
@@ -561,8 +557,7 @@ function selectQuality(q){
 function submitOrder(){
   const customer=document.getElementById('f-customer').value.trim();
   const bpId=parseInt(document.getElementById('f-blueprint').value);
-  const qty=Math.max(1,parseInt(document.getElementById('f-qty').value)||1);
-  const price=parseInt(document.getElementById('f-price').value)||0;
+  const trade=document.getElementById('f-trade').value.trim();
   const deadline=document.getElementById('f-deadline').value;
   const notes=document.getElementById('f-notes').value.trim();
 
@@ -570,14 +565,13 @@ function submitOrder(){
   if(!bpId){toast('SELECT A BLUEPRINT');return;}
 
   const today=new Date().toISOString().split('T')[0];
-  orders.push({id:nextId++,customer,bpId,qty,quality:selectedQuality,status:'inprogress',created:today,deadline,price,notes});
+  orders.push({id:nextId++,customer,bpId,quality:selectedQuality,status:'inprogress',created:today,deadline,trade,notes});
   setOrderTracked(bpId);
   writeActiveOrders();
 
   document.getElementById('f-customer').value='';
   document.getElementById('f-blueprint').value='';
-  document.getElementById('f-qty').value='1';
-  document.getElementById('f-price').value='';
+  document.getElementById('f-trade').value='';
   document.getElementById('f-deadline').value='';
   document.getElementById('f-notes').value='';
   selectQuality(700);
