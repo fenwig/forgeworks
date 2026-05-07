@@ -328,7 +328,7 @@ let inventory=loadInventory();
 
 // tracking state read from localStorage (written by Module 05 for orders, here for personal)
 let tracking=readTracking();
-let ownedIds=new Set([1,2,3,4,9]);
+let ownedIds=new Set(Object.entries(readTracking()).filter(([,v])=>v&&v.personal).map(([k])=>Number(k)));
 let expandedBrowser=new Set();
 let expandedTracker=new Set();
 let showOwnedOnly=false;
@@ -490,7 +490,19 @@ function renderBrowser(){
 }
 
 function toggleExpBrowser(id){expandedBrowser.has(id)?expandedBrowser.delete(id):expandedBrowser.add(id);renderBrowser();}
-function toggleOwned(id){ownedIds.has(id)?ownedIds.delete(id):ownedIds.add(id);renderBrowser();}
+function toggleOwned(id){
+  if(ownedIds.has(id)){
+    ownedIds.delete(id);
+    if(tracking[id]){tracking[id].personal=false;if(!tracking[id].order)delete tracking[id];writeTracking(tracking);}
+  } else {
+    ownedIds.add(id);
+    if(!tracking[id]) tracking[id]={personal:true,order:false,tiers:[700,800,900]};
+    else{tracking[id].personal=true;if(!tracking[id].tiers)tracking[id].tiers=[700,800,900];}
+    writeTracking(tracking);
+  }
+  updateTrackerCount();
+  renderBrowser();
+}
 
 function togglePersonal(id){
   if(!tracking[id]) tracking[id]={personal:false,order:false,tiers:[700,800,900]};
