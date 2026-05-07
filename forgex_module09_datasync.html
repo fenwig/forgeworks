@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Data Sync — TI Forgeworks</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600&display=swap');
+  :root {
+    --tmi-bg-deep:#0a0804;--tmi-bg-panel:#0f0d09;--tmi-bg-card:#141109;--tmi-bg-hover:#1a1610;
+    --tmi-gold:#c8a84b;--tmi-gold-bright:#e8c96a;--tmi-gold-dim:#8a7030;--tmi-gold-dark:#5a4a20;
+    --tmi-gold-glow:rgba(200,168,75,0.12);
+    --tmi-text-primary:#ffffff;--tmi-text-secondary:#d0c4b0;--tmi-text-dim:#90806e;
+    --tmi-border:rgba(200,168,75,0.25);--tmi-border-dim:rgba(200,168,75,0.1);
+    --tmi-success:#5a9955;--tmi-warning:#cc8800;--tmi-danger:#cc3333;--tmi-steel:#8a9aaa;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--tmi-bg-deep);color:var(--tmi-text-primary);font-family:'Exo 2',sans-serif;}
+  .page-wrap{max-width:1200px;}
+
+  /* ── HEADER ── */
+  .mod-header{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:10px 18px;display:flex;align-items:center;justify-content:space-between;}
+  .mod-header-left{display:flex;align-items:center;gap:14px;}
+  .mod-logo{height:36px;width:auto;}
+  .mod-eyebrow{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--tmi-gold-dim);text-transform:uppercase;margin-bottom:2px;}
+  .mod-title{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#ffffff;}
+  .header-actions{display:flex;gap:8px;align-items:center;}
+  .hdr-btn{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:1.5px;color:var(--tmi-text-secondary);background:transparent;border:1px solid var(--tmi-border-dim);padding:6px 14px;cursor:pointer;text-transform:uppercase;transition:all 0.15s;text-decoration:none;display:inline-block;}
+  .hdr-btn:hover{border-color:var(--tmi-border);color:var(--tmi-text-primary);}
+
+  /* ── CONTENT ── */
+  .content{padding:20px 18px;display:flex;flex-direction:column;gap:16px;}
+
+  /* ── STATUS CARD ── */
+  .status-card{background:var(--tmi-bg-panel);border:1px solid var(--tmi-border-dim);border-left:3px solid var(--tmi-gold-dark);padding:14px 20px;display:flex;gap:40px;align-items:center;flex-wrap:wrap;}
+  .status-field{display:flex;flex-direction:column;gap:3px;}
+  .status-label{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;}
+  .status-value{font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--tmi-text-secondary);}
+  .status-value.ok{color:var(--tmi-success);}
+  .status-value.dim{color:var(--tmi-text-dim);}
+  .status-value.online{color:var(--tmi-success);}
+  .status-value.checking{color:var(--tmi-warning);}
+  .status-value.error{color:var(--tmi-danger);}
+
+  /* ── SYNC PANEL ── */
+  .sync-panel{background:var(--tmi-bg-panel);border:1px solid var(--tmi-border-dim);padding:20px;}
+  .sync-desc{font-family:'Exo 2',sans-serif;font-size:14px;color:var(--tmi-text-secondary);line-height:1.6;margin-bottom:16px;}
+  .sync-desc strong{color:var(--tmi-text-primary);}
+  .sync-controls{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .btn-sync{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:11px 32px;background:var(--tmi-gold-glow);border:1px solid var(--tmi-gold);color:var(--tmi-gold);cursor:pointer;clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);transition:all 0.15s;}
+  .btn-sync:hover:not(:disabled){background:rgba(200,168,75,0.22);color:var(--tmi-gold-bright);border-color:var(--tmi-gold-bright);}
+  .btn-sync:disabled{opacity:0.38;cursor:not-allowed;}
+  .sync-hint{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-dim);letter-spacing:0.5px;}
+
+  /* ── PROGRESS ── */
+  .progress-panel{display:none;margin-top:18px;display:none;flex-direction:column;gap:10px;}
+  .progress-panel.visible{display:flex;}
+  .progress-track{height:2px;background:var(--tmi-border-dim);width:100%;}
+  .progress-fill{height:100%;background:var(--tmi-gold);width:0%;transition:width 0.4s ease;}
+  .progress-status{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--tmi-text-secondary);letter-spacing:0.5px;}
+  .progress-log{background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);padding:10px 14px;max-height:180px;overflow-y:auto;display:flex;flex-direction:column;gap:5px;}
+  .log-line{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-dim);}
+  .log-line.ok{color:var(--tmi-success);}
+  .log-line.warn{color:var(--tmi-warning);}
+  .log-line.err{color:var(--tmi-danger);}
+
+  /* ── RESULTS ── */
+  .results-panel{display:none;background:var(--tmi-bg-panel);border:1px solid var(--tmi-border-dim);padding:18px 20px;}
+  .results-panel.visible{display:block;}
+  .results-title{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tmi-gold);margin-bottom:14px;}
+  .results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:14px;}
+  .result-stat{background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);padding:10px 14px;}
+  .result-stat-label{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;margin-bottom:5px;}
+  .result-stat-value{font-family:'Share Tech Mono',monospace;font-size:24px;color:var(--tmi-text-primary);}
+  .result-stat-value.ok{color:var(--tmi-success);}
+  .result-stat-value.sm{font-size:14px;margin-top:4px;}
+  .result-note{font-family:'Exo 2',sans-serif;font-size:13px;color:var(--tmi-text-dim);line-height:1.6;}
+  .result-note strong{color:var(--tmi-text-secondary);}
+
+  /* ── ABOUT ── */
+  .about-card{background:var(--tmi-bg-panel);border:1px solid var(--tmi-border-dim);padding:16px 20px;}
+  .about-label{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;margin-bottom:10px;}
+  .about-text{font-family:'Exo 2',sans-serif;font-size:14px;color:var(--tmi-text-secondary);line-height:1.6;}
+  .about-text ul{margin:8px 0 0 18px;}
+  .about-text li{margin-bottom:5px;}
+  .about-text strong{color:var(--tmi-text-primary);}
+  .about-text code{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-gold-dim);background:var(--tmi-bg-card);padding:1px 5px;border:1px solid var(--tmi-border-dim);}
+
+  /* ── WARN BADGE ── */
+  .warn-badge{display:inline-block;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--tmi-warning);border:1px solid rgba(204,136,0,0.3);background:rgba(204,136,0,0.07);padding:2px 7px;margin-left:6px;}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- HEADER -->
+  <header class="mod-header">
+    <div class="mod-header-left">
+      <img src="small logo.png" alt="" class="mod-logo">
+      <div>
+        <div class="mod-eyebrow">Troublemaker Incorporated — Custom Arms &amp; Armor</div>
+        <div class="mod-title">Data Sync</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <a href="forgex_module01_dashboard_v4.html" class="hdr-btn">← Dashboard</a>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- STATUS -->
+    <div class="status-card">
+      <div class="status-field">
+        <div class="status-label">Last Sync</div>
+        <div class="status-value dim" id="statusDate">Never</div>
+      </div>
+      <div class="status-field">
+        <div class="status-label">Game Version</div>
+        <div class="status-value dim" id="statusVersion">—</div>
+      </div>
+      <div class="status-field">
+        <div class="status-label">Blueprints Loaded</div>
+        <div class="status-value dim" id="statusCount">—</div>
+      </div>
+      <div class="status-field">
+        <div class="status-label">Wiki API</div>
+        <div class="status-value checking" id="statusApi">Checking...</div>
+      </div>
+    </div>
+
+    <!-- SYNC -->
+    <div class="sync-panel">
+      <div class="sync-desc">
+        Pull the latest blueprint data from the <strong>Star Citizen Wiki API</strong>.
+        Run this once per patch to refresh craftable items, ingredient lists, and mission unlock requirements.
+        Owned and tracked flags set in Blueprint Database are preserved across syncs.
+      </div>
+      <div class="sync-controls">
+        <button class="btn-sync" id="syncBtn" onclick="startSync()">SYNC BLUEPRINTS</button>
+        <div class="sync-hint" id="syncHint">~1,044 blueprints · ~11 API requests</div>
+      </div>
+      <div class="progress-panel" id="progressPanel">
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-status" id="progressStatus">Initializing...</div>
+        <div class="progress-log" id="progressLog"></div>
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="results-panel" id="resultsPanel">
+      <div class="results-title">Sync Complete</div>
+      <div class="results-grid" id="resultsGrid"></div>
+      <div class="result-note" id="resultsNote"></div>
+    </div>
+
+    <!-- ABOUT -->
+    <div class="about-card">
+      <div class="about-label">About Data Sync</div>
+      <div class="about-text">
+        Blueprint data is sourced from the <strong>Star Citizen Wiki</strong> community API at <code>api.star-citizen.wiki</code>.
+        <ul>
+          <li><strong>Armor, weapon, and ammunition</strong> blueprints are imported. Weapon attachments, ship components, liveries, and other non-craftable types are excluded.</li>
+          <li>Ingredient quantities are converted from SCU to <strong>cSCU</strong> (0.01 SCU) to match the app's internal format.</li>
+          <li><strong>Armor category</strong> (Combat, Cosmonaut, Engineer, etc.) is not available from the API — set it manually in Blueprint Database after syncing.</li>
+          <li>After a sync, open <strong>Blueprint Database</strong> to review imported blueprints and mark items as owned.</li>
+          <li>Owned and tracked flags are preserved across re-syncs. Each blueprint is matched by its stable Wiki UUID, so a patch-day refresh will not lose your ownership data. Only blueprints removed entirely from the game will lose their flags.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /page-wrap -->
+
+<script>
+const API_BASE = 'https://api.star-citizen.wiki/api/v2/blueprints';
+const PER_PAGE = 100;
+
+// ── Type / slot / weight maps ──────────────────────────────────────────────
+
+const ARMOR_SLOT_MAP = {
+  'Char_Armor_Legs':     'Legs',
+  'Char_Armor_Torso':    'Core',
+  'Char_Armor_Head':     'Helmet',
+  'Char_Armor_Arms':     'Arms',
+  'Char_Armor_Backpack': 'Backpack',
+  'Char_Armor_Undersuit': null,
+};
+
+// Longest first so multi-word types match before short prefixes
+const WEAPON_TYPES = [
+  'Laser Sniper Rifle','Laser Shotgun','Energy Assault Rifle',
+  'Energy LMG','Energy SMG','Twin Shotgun','Frag Pistol',
+  'Sniper Rifle','Shotgun','Pistol','SMG','LMG','Rifle'
+];
+
+function resolveType(apiType) {
+  if (!apiType) return null;
+  if (apiType in ARMOR_SLOT_MAP) return 'Armor';
+  if (apiType === 'WeaponPersonal') return 'Weapon';
+  if (apiType.toLowerCase().includes('ammo')) return 'Ammunition';
+  return null;
+}
+
+function resolveSlot(apiType) {
+  return (ARMOR_SLOT_MAP[apiType] !== undefined) ? ARMOR_SLOT_MAP[apiType] : null;
+}
+
+function resolveWeight(subType) {
+  if (!subType) return null;
+  const s = subType.toLowerCase();
+  if (s === 'heavy')  return 'Heavy';
+  if (s === 'medium') return 'Medium';
+  if (s === 'light')  return 'Light';
+  return null;
+}
+
+// ── Name parser ────────────────────────────────────────────────────────────
+
+function parseName(rawName, slot, type) {
+  let name = rawName.trim();
+  let base = name, finish = null, weapon_type = null;
+
+  if (type === 'Armor' && slot) {
+    // "ADP Legs Orange" → base:"ADP" slot:"Legs" finish:"Orange"
+    // Slot word is in the output_name; split on first occurrence
+    const idx = name.indexOf(slot);
+    if (idx > 0) {
+      base   = name.slice(0, idx).trim();
+      finish = name.slice(idx + slot.length).trim() || null;
+    }
+  } else if (type === 'Weapon') {
+    // Extract quoted finish first: FS-9 "Blacklist" LMG
+    const quoteMatch = name.match(/"([^"]+)"/);
+    if (quoteMatch) {
+      finish = quoteMatch[1];
+      name = name.replace(`"${quoteMatch[1]}"`, '').replace(/\s+/g, ' ').trim();
+    }
+    // Match known weapon types from end (case-insensitive)
+    for (const wt of WEAPON_TYPES) {
+      if (name.toLowerCase().endsWith(wt.toLowerCase())) {
+        weapon_type = wt;
+        base = name.slice(0, name.length - wt.length).trim();
+        break;
+      }
+    }
+    if (!weapon_type) base = name;
+  }
+
+  return { base: base || rawName, finish, weapon_type };
+}
+
+// ── Blueprint mapper ───────────────────────────────────────────────────────
+
+function mapBlueprint(record, newId) {
+  const { uuid, output_name, output, is_available_by_default, unlocking_missions_count, ingredients } = record;
+  const apiType  = output?.type || '';
+  const type     = resolveType(apiType);
+  if (!type) return null;
+
+  const slot    = resolveSlot(apiType);
+  const weight  = (type === 'Armor') ? resolveWeight(output?.sub_type) : null;
+  const { base, finish, weapon_type } = parseName(output_name, slot, type);
+
+  return {
+    id:          newId,
+    uuid,                             // preserved for future tracking re-mapping
+    base:        base || output_name,
+    slot,
+    type,
+    category:    null,                // not available from API — set manually in Module 04
+    weight,
+    finish:      finish || null,
+    weapon_type: weapon_type || null,
+    ammo_type:   null,
+    capacity:    null,
+    has_mission: !is_available_by_default || (unlocking_missions_count > 0),
+    ingredients: (ingredients || []).map(ing => ({
+      name: ing.name.toLowerCase(),
+      qty:  Math.round(ing.quantity_scu * 100)   // SCU → cSCU
+    }))
+  };
+}
+
+// ── Status on load ─────────────────────────────────────────────────────────
+
+function loadStatus() {
+  const meta = JSON.parse(localStorage.getItem('forgex-sync-meta') || 'null');
+  if (meta) {
+    el('statusDate').textContent  = meta.date || '—';
+    el('statusDate').className    = 'status-value ok';
+    el('statusVersion').textContent = meta.gameVersion || '—';
+    el('statusVersion').className   = 'status-value';
+    el('statusCount').textContent = meta.count ?? '—';
+    el('statusCount').className   = 'status-value ok';
+  }
+  checkApiStatus();
+}
+
+async function checkApiStatus() {
+  const apiEl = el('statusApi');
+  apiEl.textContent = 'Checking...';
+  apiEl.className   = 'status-value checking';
+  try {
+    const r = await fetch(`${API_BASE}?limit=1`);
+    if (r.ok) {
+      apiEl.textContent = 'Online';
+      apiEl.className   = 'status-value online';
+    } else {
+      apiEl.textContent = `Error ${r.status}`;
+      apiEl.className   = 'status-value error';
+    }
+  } catch (e) {
+    apiEl.textContent = 'Unreachable';
+    apiEl.className   = 'status-value error';
+    el('syncHint').innerHTML = '<span style="color:var(--tmi-danger)">API unreachable — check network or CORS settings</span>';
+  }
+}
+
+// ── Sync ───────────────────────────────────────────────────────────────────
+
+function log(msg, cls) {
+  const logEl = el('progressLog');
+  const line  = document.createElement('div');
+  line.className = 'log-line' + (cls ? ' ' + cls : '');
+  line.textContent = msg;
+  logEl.appendChild(line);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+function setProgress(pct, statusMsg) {
+  el('progressFill').style.width    = Math.min(pct, 100) + '%';
+  el('progressStatus').textContent  = statusMsg;
+}
+
+async function startSync() {
+  const btn = el('syncBtn');
+  btn.disabled = true;
+  el('progressPanel').classList.add('visible');
+  el('resultsPanel').classList.remove('visible');
+  el('progressLog').innerHTML = '';
+  setProgress(0, 'Connecting...');
+
+  const blueprints = [];
+  let skipped      = 0;
+  let gameVersion  = '—';
+
+  try {
+    // Page 1 — get totals
+    log('Connecting to Star Citizen Wiki API...');
+    const firstResp = await fetch(`${API_BASE}?limit=${PER_PAGE}&page=1`);
+    if (!firstResp.ok) throw new Error(`API returned HTTP ${firstResp.status}`);
+    const firstData = await firstResp.json();
+
+    const totalPages   = firstData.meta.last_page;
+    const totalRecords = firstData.meta.total;
+    log(`API online — ${totalRecords} blueprints found across ${totalPages} pages.`, 'ok');
+    el('syncHint').textContent = `${totalRecords} blueprints · ${totalPages} pages`;
+
+    // Process page 1
+    for (const rec of firstData.data) {
+      if (rec.game_version) gameVersion = rec.game_version;
+      const mapped = mapBlueprint(rec, blueprints.length + 1);
+      if (mapped) blueprints.push(mapped);
+      else skipped++;
+    }
+    setProgress(Math.round(100 / totalPages), `Page 1 / ${totalPages} — ${blueprints.length} imported`);
+
+    // Pages 2 … N
+    for (let page = 2; page <= totalPages; page++) {
+      const resp = await fetch(`${API_BASE}?limit=${PER_PAGE}&page=${page}`);
+      if (!resp.ok) throw new Error(`Page ${page} returned HTTP ${resp.status}`);
+      const data = await resp.json();
+
+      for (const rec of data.data) {
+        if (rec.game_version) gameVersion = rec.game_version;
+        const mapped = mapBlueprint(rec, blueprints.length + 1);
+        if (mapped) blueprints.push(mapped);
+        else skipped++;
+      }
+
+      const pct = Math.round(page / totalPages * 100);
+      setProgress(pct, `Page ${page} / ${totalPages} — ${blueprints.length} imported, ${skipped} skipped`);
+
+      // Log every 2 pages so the user can see progress
+      if (page % 2 === 0 || page === totalPages) {
+        log(`Page ${page}/${totalPages} — ${blueprints.length} blueprints mapped, ${skipped} skipped`);
+      }
+    }
+
+    // Preserve tracking flags across re-syncs using stable API uuid as bridge.
+    // Old tracking is keyed by numeric id; new ids differ after a patch update.
+    // We carry flags forward by matching each blueprint's uuid to its new id.
+    const oldBlueprints  = JSON.parse(localStorage.getItem('forgex-blueprints') || '[]');
+    const oldTracking    = JSON.parse(localStorage.getItem('forgex-tracking')   || '{}');
+    const oldActiveOrders = localStorage.getItem('forgex-active-orders'); // preserve as-is (keyed by order id, not bp id)
+    const oldCraftingLog  = localStorage.getItem('forgex-crafting-log');  // preserve as-is
+
+    const uuidToFlags = {};
+    for (const bp of oldBlueprints) {
+      if (bp.uuid && oldTracking[bp.id] !== undefined) {
+        uuidToFlags[bp.uuid] = oldTracking[bp.id];
+      }
+    }
+
+    const newTracking = {};
+    let preserved = 0;
+    for (const bp of blueprints) {
+      if (bp.uuid && uuidToFlags[bp.uuid] !== undefined) {
+        newTracking[bp.id] = uuidToFlags[bp.uuid];
+        preserved++;
+      }
+    }
+
+    // Save everything
+    localStorage.setItem('forgex-blueprints', JSON.stringify(blueprints));
+    localStorage.setItem('forgex-tracking', JSON.stringify(newTracking));
+    if (oldActiveOrders) localStorage.setItem('forgex-active-orders', oldActiveOrders);
+    if (oldCraftingLog)  localStorage.setItem('forgex-crafting-log',  oldCraftingLog);
+
+    const meta = { date: new Date().toISOString().slice(0, 10), gameVersion, count: blueprints.length };
+    localStorage.setItem('forgex-sync-meta', JSON.stringify(meta));
+
+    setProgress(100, 'Sync complete.');
+    log(`Done — ${blueprints.length} blueprints saved. ${preserved} owned/tracked flags preserved.`, 'ok');
+
+    // Update status bar
+    el('statusDate').textContent    = meta.date;
+    el('statusDate').className      = 'status-value ok';
+    el('statusVersion').textContent = meta.gameVersion;
+    el('statusVersion').className   = 'status-value';
+    el('statusCount').textContent   = meta.count;
+    el('statusCount').className     = 'status-value ok';
+
+    showResults(blueprints, skipped, preserved, gameVersion);
+
+  } catch (e) {
+    log('Sync failed: ' + e.message, 'err');
+    setProgress(0, 'Sync failed — see log above.');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// ── Results summary ────────────────────────────────────────────────────────
+
+function showResults(blueprints, skipped, preserved, gameVersion) {
+  const armor  = blueprints.filter(b => b.type === 'Armor').length;
+  const weapon = blueprints.filter(b => b.type === 'Weapon').length;
+  const ammo   = blueprints.filter(b => b.type === 'Ammunition').length;
+
+  el('resultsGrid').innerHTML = `
+    <div class="result-stat">
+      <div class="result-stat-label">Total Imported</div>
+      <div class="result-stat-value ok">${blueprints.length}</div>
+    </div>
+    <div class="result-stat">
+      <div class="result-stat-label">Armor</div>
+      <div class="result-stat-value">${armor}</div>
+    </div>
+    <div class="result-stat">
+      <div class="result-stat-label">Weapons</div>
+      <div class="result-stat-value">${weapon}</div>
+    </div>
+    <div class="result-stat">
+      <div class="result-stat-label">Ammunition</div>
+      <div class="result-stat-value">${ammo}</div>
+    </div>
+    <div class="result-stat">
+      <div class="result-stat-label">Flags Preserved</div>
+      <div class="result-stat-value${preserved > 0 ? ' ok' : ''}">${preserved}</div>
+    </div>
+    <div class="result-stat">
+      <div class="result-stat-label">Skipped</div>
+      <div class="result-stat-value" style="color:var(--tmi-text-dim)">${skipped}</div>
+    </div>
+    <div class="result-stat">
+      <div class="result-stat-label">Game Version</div>
+      <div class="result-stat-value sm">${gameVersion}</div>
+    </div>
+  `;
+
+  const flagNote = preserved > 0
+    ? `<strong>${preserved}</strong> owned/tracked flags carried forward from previous sync.`
+    : `No previous flags found — open <strong>Blueprint Database</strong> to mark owned items.`;
+
+  el('resultsNote').innerHTML = `
+    ${flagNote}<br>
+    <strong>${skipped}</strong> records excluded (weapon attachments, ship components, liveries, and other non-craftable types).
+  `;
+
+  el('resultsPanel').classList.add('visible');
+}
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+
+function el(id) { return document.getElementById(id); }
+
+// ── Init ───────────────────────────────────────────────────────────────────
+
+loadStatus();
+</script>
+</body>
+</html>

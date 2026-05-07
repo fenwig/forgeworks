@@ -13,7 +13,7 @@
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{background:var(--tmi-bg-deep);color:var(--tmi-text-primary);font-family:'Exo 2',sans-serif;font-size:14px;}
-  .page-wrap{max-width:960px;}
+  .page-wrap{max-width:1200px;}
 
   /* HEADER */
   .mod-header{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:12px 18px;}
@@ -83,7 +83,7 @@
   .ing-title{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;padding:7px 0 5px;}
   .ing-row{display:flex;align-items:center;gap:10px;padding:2px 0;}
   .ing-name{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;letter-spacing:1px;text-transform:capitalize;min-width:110px;color:var(--tmi-text-primary);}
-  .ing-qty{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-secondary);}
+  .ing-qty{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-secondary);}
   .ing-gem{font-family:'Share Tech Mono',monospace;font-size:7px;color:var(--tmi-success);border:1px solid rgba(90,153,85,0.3);padding:1px 4px;margin-left:3px;}
   .ing-asl{font-family:'Share Tech Mono',monospace;font-size:7px;color:var(--tmi-warning);border:1px solid rgba(204,136,0,0.3);padding:1px 4px;margin-left:3px;}
   .no-results{padding:30px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);letter-spacing:1px;}
@@ -140,7 +140,7 @@
   .lot-row:hover{background:var(--tmi-bg-hover);}
   .lot-qual{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-gold);min-width:42px;}
   .lot-qty{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-secondary);min-width:70px;}
-  .lot-loc{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-dim);flex:1;}
+  .lot-loc{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);flex:1;}
   .lot-none{padding:10px 14px;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);}
 
   .wb-tier-row{padding:10px 14px;background:var(--tmi-bg-panel);border:1px solid var(--tmi-border-dim);display:flex;align-items:center;gap:12px;}
@@ -170,7 +170,7 @@
   .log-date{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--tmi-text-dim);min-width:80px;}
   .log-item{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tmi-text-primary);flex:1;}
   .log-mats{display:flex;gap:6px;align-items:center;}
-  .log-mat-chip{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-secondary);}
+  .log-mat-chip{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-secondary);}
   .log-mat-chip span{color:var(--tmi-gold);}
   .log-detail{display:none;background:var(--tmi-bg-panel);border-top:1px solid var(--tmi-border-dim);padding:12px 14px;}
   .log-detail.open{display:block;}
@@ -180,10 +180,14 @@
   .log-detail-mat-table td{padding:7px 10px;border-bottom:1px solid var(--tmi-border-dim);font-size:14px;}
   .log-detail-mat-table tr:last-child td{border-bottom:none;}
   .log-detail-actions{display:flex;gap:8px;align-items:center;margin-top:4px;}
-  .log-detail-order-label{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-dim);}
+  .log-detail-order-label{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);}
   .log-empty{padding:30px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);letter-spacing:1px;}
   .log-order-picker{background:var(--tmi-bg-card);border:1px solid var(--tmi-border);margin-top:8px;display:none;}
   .log-order-picker.open{display:block;}
+
+  /* DEV NOTICE */
+  .dev-notice{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);border-left:3px solid var(--tmi-warning);padding:7px 18px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--tmi-warning);letter-spacing:0.5px;line-height:1.5;}
+  .dev-notice strong{color:var(--tmi-text-secondary);}
 
   /* TOAST */
   .toast{position:fixed;bottom:20px;right:20px;background:var(--tmi-bg-panel);border:1px solid var(--tmi-gold-dark);color:var(--tmi-text-primary);font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:1px;padding:10px 18px;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);transition:opacity 0.3s;z-index:999;}
@@ -205,6 +209,8 @@
   <div class="stat-div"></div>
   <div class="stat-block"><span class="stat-val" id="stat-orders">0</span><span class="stat-lbl">Orders Filled</span></div>
 </div>
+
+<div class="dev-notice">⚠ <strong>Module 04 → 06:</strong> The owned blueprint list is a hardcoded Set and does not read from forgex-tracking. Marking a blueprint as owned in Blueprint Database has no effect on what The Forge considers craftable.</div>
 
 <div class="tab-bar">
   <div class="tab active" onclick="switchTab('browser')">Blueprint Browser <span class="tab-count" id="tc-browser">0</span></div>
@@ -268,7 +274,7 @@
       <div class="wb-tier-row">
         <span class="wb-tier-label">Projected Quality Tier</span>
         <span id="wb-tier-val">—</span>
-        <span class="wb-tier-mismatch" id="wb-tier-mismatch">⚠ TIER DOES NOT MATCH ORDER REQUIREMENT</span>
+        <span class="wb-tier-mismatch" id="wb-tier-mismatch">⚠ PROJECTED TIER IS BELOW ORDER REQUIREMENT</span>
         <div style="flex:1"></div>
         <button class="btn btn-gold" id="btn-make" onclick="makeItem()" disabled>Make Item</button>
       </div>
@@ -309,6 +315,7 @@
 </div><!-- /page-wrap -->
 <div class="toast hidden" id="toast"></div>
 
+<script src="forgex_crafting_properties.js"></script>
 <script>
 const GEM_NAMES=new Set(['hadanite','janalite','dolvine','aphorite','sadaryx','carinite','beradom','jaclium','saldynium','feynmaline','glacosite']);
 const LS_TRACKING='forgex-tracking';
@@ -316,7 +323,7 @@ const LS_ORDERS='forgex-active-orders';
 const LS_LOG='forgex-crafting-log';
 
 // ── DATA ──
-const blueprints=[
+const HARDCODED_BLUEPRINTS=[
   {id:1,base:'Aztalan',slot:'Helmet',type:'Armor',category:'Combat',weapon_type:null,finish:null,ingredients:[{name:'aslarite',qty:6},{name:'lindinium',qty:4},{name:'taranite',qty:3}]},
   {id:2,base:'Aztalan',slot:'Core',type:'Armor',category:'Combat',weapon_type:null,finish:null,ingredients:[{name:'aslarite',qty:12},{name:'lindinium',qty:8},{name:'taranite',qty:6}]},
   {id:3,base:'Aztalan',slot:'Legs',type:'Armor',category:'Combat',weapon_type:null,finish:null,ingredients:[{name:'aslarite',qty:10},{name:'lindinium',qty:6},{name:'taranite',qty:5}]},
@@ -329,27 +336,28 @@ const blueprints=[
   {id:10,base:'Demeco',slot:null,type:'Ammunition',category:null,weapon_type:'LMG',finish:null,ingredients:[{name:'copper',qty:6},{name:'corundum',qty:4}]},
   {id:11,base:'Corbel',slot:'Arms',type:'Armor',category:'Combat',weapon_type:null,finish:'Mire',ingredients:[{name:'laranite',qty:6},{name:'titanium',qty:8},{name:'aslarite',qty:5}]},
 ];
+function loadBlueprints(){
+  try{const s=JSON.parse(localStorage.getItem('forgex-blueprints')||'null');if(s&&s.length)return s;}catch(e){}
+  return HARDCODED_BLUEPRINTS;
+}
+let blueprints=loadBlueprints();
 
-// Owned blueprint ids — mirrors Module 04 ownedIds (persist to localStorage in future)
-const ownedIds=new Set([1,2,3,4,9,11]);
+// Owned ids — reads from forgex-tracking (set in Module 04 Blueprint Database)
+function loadOwnedIds(){
+  const t=readTracking();
+  return new Set(Object.entries(t).filter(([,v])=>v&&v.personal).map(([k])=>Number(k)));
+}
+let ownedIds=loadOwnedIds();
 
-// SWAP POINT: Replace with JSON.parse(localStorage.getItem('forgex-lots')||'[]')
-// once Module 02 localStorage persistence is implemented.
-let lots=[
-  {id:1,ore:'aslarite',quality:534,qty:200,location:'Levsky'},
-  {id:2,ore:'aslarite',quality:580,qty:80,location:'Levsky'},
-  {id:3,ore:'laranite',quality:743,qty:45,location:'Hurston'},
-  {id:4,ore:'laranite',quality:812,qty:18,location:'Microtech'},
-  {id:5,ore:'taranite',quality:756,qty:30,location:'ArcCorp'},
-  {id:6,ore:'taranite',quality:880,qty:12,location:'Microtech'},
-  {id:7,ore:'lindinium',quality:720,qty:22,location:'Levsky'},
-  {id:8,ore:'titanium',quality:690,qty:15,location:'Hurston'},
-  {id:9,ore:'corundum',quality:760,qty:40,location:'ArcCorp'},
-  {id:10,ore:'corundum',quality:820,qty:14,location:'Microtech'},
-  {id:11,ore:'copper',quality:700,qty:25,location:'Levsky'},
-  {id:12,ore:'copper',quality:850,qty:9,location:'Hurston'},
-  {id:13,ore:'hadanite',quality:920,qty:7,location:'Microtech'},
-];
+// Material lots — reads from forgex-lots (written by Module 02 Material Database)
+function parseLots(raw){try{const r=JSON.parse(raw||'null');if(!r)return[];if(Array.isArray(r))return r;if(r.lots&&Array.isArray(r.lots))return r.lots;}catch(e){}return[];}
+let lots=parseLots(localStorage.getItem('forgex-lots'));
+function writeLots(){
+  // Preserve Module 02's {lots, nextId} format so IDs stay consistent
+  let parsed=null;try{parsed=JSON.parse(localStorage.getItem('forgex-lots')||'null');}catch(e){}
+  const nextId=(parsed&&!Array.isArray(parsed)&&parsed.nextId)||(lots.reduce((m,l)=>Math.max(m,l.id||0),0)+1);
+  localStorage.setItem('forgex-lots',JSON.stringify({lots,nextId}));
+}
 
 // ── STATE ──
 let browserFilter='all';
@@ -388,6 +396,21 @@ function getBpTag(bp){
 }
 function qualTierClass(tier){return tier===700?'qual-700':tier===800?'qual-800':'qual-900';}
 
+// ── CRAFTING PROPERTY HELPERS ──
+function fmtEffect(effects){
+  if(!effects||!effects.length) return{char:'—',eff:'pending game data',color:'var(--tmi-text-dim)',italic:true};
+  const char=effects.map(e=>e.property).join(' / ');
+  const uniquePcts=[...new Set(effects.map(e=>e.effectPct))];
+  const better=effects[0].better;
+  function sign(p){return(p>=0?'+':'')+p+'%';}
+  function goodColor(p,b){return(b==='high'&&p>0)||(b==='low'&&p<0)?'var(--tmi-success)':'var(--tmi-text-dim)';}
+  if(uniquePcts.length===1){
+    return{char,eff:sign(uniquePcts[0]),color:goodColor(uniquePcts[0],better),italic:false};
+  }
+  const eff=effects.map(e=>sign(e.effectPct)).join(' / ');
+  return{char,eff,color:'var(--tmi-gold)',italic:false};
+}
+
 function getSlotFilled(si){return slotSelections[si].reduce((s,e)=>s+e.qty_taken,0);}
 function getSlotAvgQuality(si){
   const sel=slotSelections[si];
@@ -424,6 +447,13 @@ function init(){
   updateStats();
   renderBrowser();
   renderLog();
+  // Handle FORGE preselect from Blueprint Database tracker
+  const preselectId=parseInt(localStorage.getItem('forgex-forge-preselect')||'0');
+  if(preselectId){
+    localStorage.removeItem('forgex-forge-preselect');
+    const bp=blueprints.find(b=>b.id===preselectId);
+    if(bp) craftThis(preselectId);
+  }
 }
 
 // ── TABS ──
@@ -431,6 +461,7 @@ const TABS=['browser','workbench','log'];
 function switchTab(tab){
   TABS.forEach(v=>document.getElementById('view-'+v).classList.toggle('active',v===tab));
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',TABS[i]===tab));
+  if(tab==='browser'){ownedIds=loadOwnedIds();blueprints=loadBlueprints();renderBrowser();}
   if(tab==='log') renderLog();
 }
 
@@ -687,7 +718,7 @@ function renderTierRow(){
   let blocked=false;
   if(filled&&attachedOrderId){
     const o=readActiveOrders().find(o=>o.id===attachedOrderId);
-    if(o&&tier!==o.quality) blocked=true;
+    if(o&&tier!==null&&tier<o.quality) blocked=true;
   }
   mismatch.style.display=blocked?'':'none';
   btnMake.disabled=!filled||blocked;
@@ -706,15 +737,25 @@ function makeItem(){
     });
   });
   lots=lots.filter(l=>l.qty>0);
+  writeLots();
 
-  const materials=bp.ingredients.map((ing,si)=>({
-    name:ing.name,
-    reqQty:ing.qty,
-    avgQuality:getSlotAvgQuality(si)||0,
-    characteristic:'—',
-    effectPct:null,
-    lotsUsed:slotSelections[si].map(e=>({lotId:e.lotId,qty_taken:e.qty_taken,quality:e.quality}))
-  }));
+  const materials=bp.ingredients.map((ing,si)=>{
+    const avgQ=getSlotAvgQuality(si)||0;
+    let effects=null;
+    if(typeof getMaterialEffects==='function'){
+      const effs=getMaterialEffects(ing.name,avgQ,bp.weapon_type||null);
+      if(effs&&effs.length) effects=effs;
+    }
+    return{
+      name:ing.name,
+      reqQty:ing.qty,
+      avgQuality:avgQ,
+      characteristic:effects?effects.map(e=>e.property).join(' / '):'—',
+      effectPct:effects&&effects.length===1?effects[0].effectPct:null,
+      effects,
+      lotsUsed:slotSelections[si].map(e=>({lotId:e.lotId,qty_taken:e.qty_taken,quality:e.quality}))
+    };
+  });
 
   const today=new Date().toISOString().split('T')[0];
   const job={id:nextJobId++,bpId:bp.id,bpLabel:getBpLabel(bp),orderId:attachedOrderId,crafted:today,qualityTier:tier,materials};
@@ -748,12 +789,15 @@ function showResult(job){
   const on=document.getElementById('result-order-note');
   on.style.display=job.orderId?'':'none';
   if(job.orderId) on.textContent='ORDER MARKED READY';
-  document.getElementById('result-mat-body').innerHTML=job.materials.map(m=>`<tr>
-    <td class="result-mat-name">${m.name}${m.name==='aslarite'?'<span class="asl-note">500+</span>':''}</td>
-    <td class="result-qual">${m.avgQuality||'—'}</td>
-    <td class="result-char">${m.characteristic}</td>
-    <td class="result-eff">${m.effectPct!==null?'+'+m.effectPct+'%':'pending game data'}</td>
-  </tr>`).join('');
+  document.getElementById('result-mat-body').innerHTML=job.materials.map(m=>{
+    const fmt=fmtEffect(m.effects);
+    return`<tr>
+      <td class="result-mat-name">${m.name}${m.name==='aslarite'?'<span class="asl-note">500+</span>':''}</td>
+      <td class="result-qual">${m.avgQuality||'—'}</td>
+      <td class="result-char">${fmt.char}</td>
+      <td class="result-eff" style="color:${fmt.color};font-style:${fmt.italic?'italic':'normal'}">${fmt.eff}</td>
+    </tr>`;
+  }).join('');
 }
 
 // ── STATS ──
@@ -791,12 +835,15 @@ function renderLogRow(job){
   const matsHtml=job.materials.map(m=>`<span class="log-mat-chip">${m.name.charAt(0).toUpperCase()+m.name.slice(1)} <span>${m.avgQuality||'—'}</span></span>`).join('<span style="color:var(--tmi-border-dim);margin:0 3px">·</span>');
   const orderBadge=job.orderId?`<span class="order-badge">ORDER #${String(job.orderId).padStart(3,'0')}</span>`:'';
 
-  const detailMatRows=job.materials.map(m=>`<tr>
-    <td style="font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;text-transform:capitalize;color:var(--tmi-text-primary)">${m.name}${m.name==='aslarite'?'<span class="asl-note">500+</span>':''}</td>
-    <td style="font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-gold)">${m.avgQuality||'—'}</td>
-    <td style="font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-secondary)">${m.characteristic}</td>
-    <td style="font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);font-style:italic">${m.effectPct!==null?'+'+m.effectPct+'%':'pending game data'}</td>
-  </tr>`).join('');
+  const detailMatRows=job.materials.map(m=>{
+    const fmt=fmtEffect(m.effects);
+    return`<tr>
+      <td style="font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;text-transform:capitalize;color:var(--tmi-text-primary)">${m.name}${m.name==='aslarite'?'<span class="asl-note">500+</span>':''}</td>
+      <td style="font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-gold)">${m.avgQuality||'—'}</td>
+      <td style="font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-secondary)">${fmt.char}</td>
+      <td style="font-family:'Share Tech Mono',monospace;font-size:14px;color:${fmt.color};font-style:${fmt.italic?'italic':'normal'}">${fmt.eff}</td>
+    </tr>`;
+  }).join('');
 
   let logPickerHtml='';
   if(pickerOpen){

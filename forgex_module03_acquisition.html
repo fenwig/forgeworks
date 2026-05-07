@@ -418,8 +418,31 @@ function updateFooter(){
 
 function commitAll(){
   if(queue.length === 0) return;
+
+  // Load existing inventory (handle both flat array and Module 02's {lots,nextId} format)
+  let parsed=null;try{parsed=JSON.parse(localStorage.getItem('forgex-lots')||'null');}catch(e){}
+  let lots=Array.isArray(parsed)?parsed:(parsed&&Array.isArray(parsed.lots)?parsed.lots:[]);
+  const storedNextId=parsed&&!Array.isArray(parsed)&&parsed.nextId||0;
+  const maxId=Math.max(storedNextId-1,lots.reduce((m,l)=>Math.max(m,l.id||0),0));
+  let idCounter=maxId+1;
+  const today = new Date().toISOString().slice(0,10);
+
+  queue.forEach(item => {
+    lots.push({
+      id:         idCounter++,
+      ore:        item.ore,
+      quality:    item.quality,
+      qty:        item.qty,
+      location:   item.location,
+      hand_mined: item.hand_mined,
+      date:       today
+    });
+  });
+
+  localStorage.setItem('forgex-lots', JSON.stringify({lots, nextId:idCounter}));
+
   const count = queue.length;
-  const cscu = queue.reduce((s,q)=>s+q.qty,0);
+  const cscu = queue.reduce((s,q) => s+q.qty, 0);
   queue = [];
   nextId = 1;
   renderQueue();
@@ -444,7 +467,7 @@ function showToast(msg){
 function getLocLotCounts(){
   try{
     const raw=localStorage.getItem('forgex-lots');
-    if(raw){const p=JSON.parse(raw);if(p&&Array.isArray(p.lots)){const c={};p.lots.forEach(l=>{const loc=l.location||DEFAULT_LOC;c[loc]=(c[loc]||0)+1;});return c;}}
+    if(raw){const p=JSON.parse(raw);const arr=Array.isArray(p)?p:(p&&Array.isArray(p.lots)?p.lots:[]);const c={};arr.forEach(l=>{const loc=l.location||DEFAULT_LOC;c[loc]=(c[loc]||0)+1;});return c;}
   }catch(e){}
   return {};
 }

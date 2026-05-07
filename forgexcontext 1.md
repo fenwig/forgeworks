@@ -257,40 +257,20 @@ Planned use: One-click refresh on patch day via Data Sync module. Will auto-popu
 
 ## Outstanding TODOs
 
-### Immediate — next session
-- [ ] **Apply canonical text colors to Modules 01, 02, 03, 04** — update `:root` vars to `#ffffff / #d0c4b0 / #90806e` on next edit of each module
+### Next session
+- [ ] **Module 04 — remaining user changes** (queued) — includes fixing `toggleOwned()` to persist to `forgex-tracking`
+- [ ] **Build Module 08 — OCR Import** (`forgex_module08_ocr.html`) — feeds lots into `forgex-lots` in `{lots, nextId}` format
+- [ ] Wire up **iframe shell** in Module 01 (persistent header + sidebar)
+- [ ] **Module 01** — apply canonical text colors
 
-### Near-term
-- [ ] Build **Module 07 — Reports** (`forgex_module07_reports.html`)
-- [ ] Build **Module 08 — OCR Import** (`forgex_module08_ocr.html`)
-- [ ] Build **Module 09 — Data Sync** (`forgex_module09_datasync.html`)
-- [ ] Wire up **iframe shell** in Module 01 (persistent header + sidebar, modules load in content pane)
-- [ ] **Remove `qty` from Order form in Module 05** — one crafted item per order (deferred)
-- [ ] Persist `ownedIds` to localStorage so Module 06 stays in sync with Module 04 owned state
-- [ ] Wire up real game formula data when SC Wiki API available (characteristic + effect % per material)
-
-### Data & Persistence ⚠️ ALL MODULE DATA MUST PERSIST
-- [ ] **Build Module 06 — Crafting Tracker** — user indicated this is the next big module
-
-### Near-term
-- [ ] Build **Module 07 — The Forge** (craft queue and production planning)
-- [ ] Build **Module 08 — Reports** (activity log, revenue, analytics)
-- [ ] Wire up **iframe shell** in Module 01 (persistent header + sidebar, modules load in content pane)
-
-### Data & Persistence
-- [ ] Persist material lots to localStorage (Module 02 data resets on refresh)
-- [ ] Persist orders across sessions (Module 05)
-- [ ] Persist blueprint owned/tracking state (Module 04)
-- [ ] **Lot combination** — merge two lots: sum qty, average quality
-- [ ] Implement SC Wiki API import for blueprints (Data Sync module)
+### Deferred
+- [ ] **Remove `qty` from Order form in Module 05** — one crafted item per order
+- [ ] **Energy weapon crafting properties** — extract laser/plasma/electron materials from game files (p4k), add to `forgex_crafting_properties.js`
+- [ ] **Game dates in seed data** — Modules 02 and 05 use `2954-XX-XX` dates; invisible in date-filtered report views
 
 ### Future Expansion
-- [ ] **Ship components** in blueprint list:
-  - Type: Shield, Powerplant, Radar, Quantum Drive, Cooler, Weapons, Mining Head, Salvage Head
-  - Class: Civilian, Industrial, Stealth, Military
-  - Tier: A, B, C, D, Entry
-  - Size: 1, 2, 3
-- [ ] OCR-based ore import (Module 03 currently manual entry only)
+- [ ] **Ship components** in blueprint list (Shield, Powerplant, Radar, Quantum Drive, etc.)
+- [ ] SC Wiki API — pull characteristic/effect data if exposed in future API version
 
 ---
 
@@ -298,13 +278,11 @@ Planned use: One-click refresh on patch day via Data Sync module. Will auto-popu
 
 | File | What changed |
 |---|---|
-| `forgex_module06_crafting.html` | Built Module 06 — The Forge. Three-tab layout: Blueprint Browser (search, type filters, Tracked/Orders filters, owned-only), Craft Workbench (ingredient slots with lot picker, order fulfillment, quality tier calc, inline post-craft result), Crafting Log (persistent localStorage, attach/detach orders). 14px font floor, canonical colors throughout. Corbel Arms Mire sample blueprint added. |
-| `forgex_module05_orders.html` | White text scheme (#ffffff); 14px floor everywhere; pipeline → In Progress/Ready/Delivered; blueprint schema matches Mod 04; getBpLabel() for dropdown; readiness shows only ordered quality tier; Delete Order with confirmation; Revert button; Quality Tier label; 1200px width |
-| `forgex_module04_v2_full.html` | Crafting Tracker redesigned to match browser cards (tracked-badge, order pills, readiness bands); card labels fixed (weapon type in bold name, finish→category tags); 1200px width; multi-row filter bar; weight+finish in blueprint schema |
-| `forgex_module03_acquisition.html` | 960px compact; 14px fonts; org name eyebrow; old text color scheme |
-| `forgex_module02_materials_v2.html` | 960px compact; Notes removed; 14px fonts; org name eyebrow; title → Material Database; old text color scheme |
-| `forgex_module01_dashboard_v4.html` | New PNG logos; TI Forgeworks title; rebuilt 6-card grid; old text color scheme |
-| `forgexcontext 1.md` | Canonical text colors documented; 14px rule; order status pipeline updated; TODOs refreshed |
-| `SESSION_STATE.md` | Full session summary; unresolved issues; preferences table |
-| `large logo.png` | Hero logo (transparent PNG) |
-| `small logo.png` | Header corner logo (transparent PNG) |
+| `forgex_module09_datasync.html` | NEW — Data Sync module. Fetches ~1,044 blueprints from SC Wiki API; maps to schema; UUID-based tracking preservation across re-syncs; writes forgex-blueprints + forgex-sync-meta. |
+| `forgex_crafting_properties.js` | NEW — Static crafting property lookup extracted from game files (p4k v4.7.2). Maps 8 materials to gameplay properties with linear quality formulas. Used by Module 06. |
+| `forgex_module04_v2_full.html` | Major update: canonical colors; finish in name label; ammo hidden by default; Target Tier label; 700+/800+/900+ throughout; Crafting Tracker fully rewritten (clickable tier badges, FORGE button, order tier auto-include, per-ingredient tier columns); inventory live from forgex-lots; X button fixed; Material Needs respects selected tiers. |
+| `forgex_module06_crafting.html` | FORGE preselect on init; blueprints from forgex-blueprints; ownedIds from forgex-tracking; lots in Module 02 format; crafting properties live; quality tier logic fixed (higher OK for lower order). |
+| `forgex_module07_reports.html` | loadLots() fixed for Module 02's {lots,nextId} format (was always returning empty). |
+| `forgex_module03_acquisition.html` | commitAll() now actually writes to forgex-lots in {lots,nextId} format; getLocLotCounts() format fix. |
+| `forgex_module05_orders.html` | White text scheme; 14px floor; pipeline → In Progress/Ready/Delivered; 1200px width. |
+| `forgex_module02_materials_v2.html` | Fully updated — localStorage persistence, locations, combine/split/move, 1200px, canonical colors. Stores forgex-lots as {lots,nextId} object. |

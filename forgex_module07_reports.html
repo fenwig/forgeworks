@@ -232,7 +232,7 @@ const SLOT_ORDER=['Helmet','Core','Arms','Legs'];
 const GEM_NAMES=new Set(['aphorite','beradom','carinite','dolvine','feynmaline','glacosite','hadanite','jaclium','janalite','sadaryx','saldynium']);
 
 // ── Data loaders ───────────────────────────────────────────────────────────────
-function loadLots(){try{const r=localStorage.getItem('forgex-lots');if(r){const p=JSON.parse(r);if(p&&Array.isArray(p.lots))return p.lots;}}catch(e){}return[];}
+function loadLots(){try{const r=JSON.parse(localStorage.getItem('forgex-lots')||'null');if(!r)return[];if(Array.isArray(r))return r;if(r.lots&&Array.isArray(r.lots))return r.lots;}catch(e){}return[];}
 function loadTracking(){try{const r=localStorage.getItem('forgex-tracking');if(r){const p=JSON.parse(r);if(p)return p;}}catch(e){}return{};}
 function loadOrders(){try{const r=localStorage.getItem('forgex-active-orders');if(r){const p=JSON.parse(r);if(Array.isArray(p))return p;}}catch(e){}return[];}
 function loadCraftingLog(){try{const r=localStorage.getItem('forgex-crafting-log');if(r){const p=JSON.parse(r);if(Array.isArray(p))return p;}}catch(e){}return[];}
