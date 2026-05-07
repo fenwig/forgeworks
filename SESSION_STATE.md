@@ -1,11 +1,13 @@
 # SESSION STATE — TI Forgeworks
-Last updated: 2026-05-06
+Last updated: 2026-05-07
 
 ---
 
 ## Where to Resume
 
-**Next session:** User has additional Module 04 changes queued. After those, **Module 08 — OCR Import** (`forgex_module08_ocr.html`). OCR input form that feeds material lots into Module 02's `forgex-lots` localStorage key (`{lots, nextId}` format).
+**Next session — two items in order:**
+1. **Verify Module 08 OCR behavior** — confirm imports append correctly to existing lots; investigate whether Module 02 seed data persistence is causing unexpected results (see Known Bug #2 below).
+2. **Module 01 — Dashboard iframe conversion** — clean up the dashboard and convert it to a persistent iframe shell. Sidebar stays fixed; modules 02–09 load in a content `<iframe>`. Modules require no changes to work inside the iframe.
 
 ---
 
@@ -20,6 +22,16 @@ Last updated: 2026-05-06
 ---
 
 ## Completed This Session
+
+### Module 08 — OCR Import ✓ COMPLETE
+- Live screen capture via `getDisplayMedia()` — Chrome only (file:// origin)
+- User drags to select the refinery report region on first run; region saved to `forgex-ocr-region` and auto-applied on subsequent runs; Redefine Region button clears it
+- Preprocesses crop: 2× upscale + invert (white-on-dark → black-on-light) for better Tesseract accuracy
+- Tesseract.js v4 via CDN — uses `Tesseract.recognize()` simple API (worker API with `setParameters` crashes from file:// due to null WASM reference)
+- Parses OCR output: regex matches NAME + two numbers per line; skips header/footer/known keywords
+- Results shown in editable table — all fields correctable before import
+- Location system mirrors Module 02/03: Levsky default, custom entries, Custom… input, — Edit List — modal, shared `forgex-locations` key
+- Accept writes to `forgex-lots` in `{lots, nextId}` format; appends to existing lots
 
 ### Module 09 — Data Sync ✓ COMPLETE
 - Fetches all ~1,044 blueprints from `api.star-citizen.wiki/api/v2/blueprints` (100/page, ~11 requests)
@@ -86,13 +98,14 @@ Last updated: 2026-05-06
 
 ## Known Bugs / Open Items
 
-### HIGH — Fix next opportunity
-1. **Module 04 toggleOwned() not persisting** — The "OWNED" button in the Blueprint Browser updates the in-memory `ownedIds` Set but never writes to `forgex-tracking`. Owned state is lost on page refresh and never reaches Module 07 Reports 2 & 3. User has additional Module 04 changes queued — fix this in that pass.
+### VERIFY NEXT SESSION
+~~1. Module 08 seed data displacement~~ ✓ RESOLVED — Confirmed not a bug. Module 03 import populated forgex-lots, subsequent OCR import appended correctly. First-run behavior was simply empty localStorage.
 
 ### NOTED — Project-wide
 2. **Game dates in seed data** — Modules 02 and 05 seed data uses `2954-XX-XX` game dates. Invisible in date-filtered report views. Needs cleanup.
 3. **Module 05 — qty field on orders** — `qty` field to be removed (one crafted item per order). Deferred.
 4. **Energy weapon crafting properties** — `forgex_crafting_properties.js` covers ballistic weapons only. Laser/plasma/electron weapon materials not yet extracted from game files.
+5. **Module 04 toggleOwned() persistence** — Reported fixed by user; tabled for now. Verify if reports show owned state correctly.
 
 ### RESOLVED THIS SESSION
 - ~~forgex-lots format mismatch~~ ✓ — Module 02 stores `{lots, nextId}` object; Modules 03/04/06/07 all expected flat array. All four fixed to handle both formats; writes now use Module 02's format.
@@ -115,7 +128,7 @@ Last updated: 2026-05-06
 | `forgex_module06_crafting.html` | ✓ Done — fully wired, FORGE preselect, crafting properties |
 | `forgex_crafting_properties.js` | ✓ Done — static material→property→formula (v4.7.2) |
 | `forgex_module07_reports.html` | ✓ Done — loadLots format fixed |
-| `forgex_module08_ocr.html` | ⬜ Not started |
+| `forgex_module08_ocr.html` | ✓ Done — OCR import, location system, editable results table |
 | `forgex_module09_datasync.html` | ✓ Done — first build |
 | `forgexcontext 1.md` | ✓ Updated this session |
 | `SESSION_STATE.md` | ✓ This file |
