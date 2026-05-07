@@ -259,6 +259,25 @@
       background: var(--tmi-bg-card);
     }
     .results-table td.del-col { width: 44px; text-align: center; }
+    .ore-cell { display: flex; align-items: center; gap: 6px; }
+    .ocr-flag {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      padding: 2px 6px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      cursor: default;
+    }
+    .ocr-flag.corrected {
+      color: var(--tmi-gold-dim);
+      background: rgba(200,168,75,0.08);
+      border: 1px solid rgba(200,168,75,0.2);
+    }
+    .ocr-flag.uncertain {
+      color: var(--tmi-warning);
+      background: rgba(204,136,0,0.08);
+      border: 1px solid rgba(204,136,0,0.25);
+    }
     .del-btn {
       background: none;
       border: none;
@@ -840,6 +859,49 @@ async function runOCR() {
   }
 }
 
+// ── Known ore list ────────────────────────────────────────────────────────
+const KNOWN_ORES = [
+  // Refined ores
+  'agricium','aluminum','aslarite','beryl','bexalite','borase','copper',
+  'corundum','dolivine','gold','hephaestanite','inertite','iron','laranite',
+  'lindinium','ouratite','quantainium','savrilium','silicon','stileron',
+  'taranite','tin','titanium','tungsten',
+  // Hand-mined gems
+  'aphorite','beradom','carinite','dolvine','feynmaline','glacosite',
+  'hadanite','jaclium','janalite','saldynium','sadaryx',
+];
+
+function levenshtein(a, b) {
+  const m = a.length, n = b.length;
+  const dp = Array.from({length: m + 1}, (_, i) =>
+    Array.from({length: n + 1}, (_, j) => i === 0 ? j : j === 0 ? i : 0));
+  for (let i = 1; i <= m; i++)
+    for (let j = 1; j <= n; j++)
+      dp[i][j] = a[i-1] === b[j-1]
+        ? dp[i-1][j-1]
+        : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+  return dp[m][n];
+}
+
+function matchOreName(raw) {
+  // Strip leading junk token (1-2 chars + space — icon artifact e.g. "p tungsten")
+  let cleaned = raw.toLowerCase().trim().replace(/^[a-z]{1,2}\s+/, '');
+
+  // Exact match
+  if (KNOWN_ORES.includes(cleaned)) return { name: cleaned, status: 'ok' };
+
+  // Fuzzy match — find closest ore within edit distance 2
+  let bestDist = Infinity, bestMatch = null;
+  for (const ore of KNOWN_ORES) {
+    const d = levenshtein(cleaned, ore);
+    if (d < bestDist) { bestDist = d; bestMatch = ore; }
+  }
+  if (bestDist <= 2) return { name: bestMatch, status: 'corrected', original: cleaned };
+
+  // No match — return cleaned value, flag for review
+  return { name: cleaned, status: 'uncertain' };
+}
+
 // ── Parse OCR text ─────────────────────────────────────────────────────────
 const SKIP = new Set([
   'MATERIALS','YIELDED','QUALITY','YIELD','WORK','ORDER','DETAILS',
@@ -862,10 +924,13 @@ function parseOCRText(raw) {
     if (words.some(w => SKIP.has(w))) continue;
     if (name.length < 2) continue;
 
+    const match = matchOreName(name);
     rows.push({
-      ore:     name.toLowerCase(),
-      quality: parseInt(m[2], 10),
-      qty:     parseInt(m[3], 10),
+      ore:         match.name,
+      quality:     parseInt(m[2], 10),
+      qty:         parseInt(m[3], 10),
+      ocrStatus:   match.status,
+      ocrOriginal: match.original || name.toLowerCase(),
     });
   }
   return rows;
@@ -895,10 +960,18 @@ function rebuildTable() {
 }
 
 function makeRow(row, i) {
+  const flag = row.ocrStatus === 'corrected'
+    ? `<span class="ocr-flag corrected" title="OCR read: ${esc(row.ocrOriginal)}">~</span>`
+    : row.ocrStatus === 'uncertain'
+    ? `<span class="ocr-flag uncertain" title="No match found — please verify">?</span>`
+    : '';
   const tr = document.createElement('tr');
   tr.innerHTML = `
-    <td><input type="text" value="${esc(row.ore)}"
-         oninput="tableRows[${i}].ore=this.value;updateCount()"></td>
+    <td><div class="ore-cell">
+      <input type="text" value="${esc(row.ore)}"
+             oninput="tableRows[${i}].ore=this.value;updateCount()">
+      ${flag}
+    </div></td>
     <td><input type="number" value="${row.quality}" min="1" max="1000"
          oninput="tableRows[${i}].quality=+this.value" style="width:90px"></td>
     <td><input type="number" value="${row.qty}" min="1"
