@@ -30,16 +30,7 @@
 
 | Future file | Title | Notes |
 |---|---|---|
-| `forgex_module07_reports.html` | Reports | Activity logs, revenue summaries, analytics |
-| `forgex_module08_ocr.html` | OCR Import | Import material lots via OCR scan from in-game screenshots |
-| `forgex_module09_datasync.html` | Data Sync | Pull blueprint data from SC Wiki API on patch day |
-| (dashboard shell) | iframe Architecture | Module 01 becomes persistent shell; modules 02–09 load in content area |
-| `forgex_module06_crafting.html` | Crafting Tracker | Record completed crafts, manage output by quality tier |
-| `forgex_module07_forge.html` | The Forge | Craft queue management and production planning |
-| `forgex_module08_reports.html` | Reports | Activity logs, revenue summaries, analytics |
-| (dashboard shell) | iframe Architecture | Module 01 becomes persistent shell; modules 02–08 load in content area |
-| (integrated) | Data Sync | Pull blueprint data from SC Wiki API on patch day — button in dashboard top right |
-| (integrated) | OCR Import | Import ore lots via OCR scan — accessible from "Import OCR" button on dashboard |
+| (dashboard shell) | iframe Architecture | Module 01 becomes persistent shell; modules 02–09 load in content `<iframe>`. Next major task. |
 
 ---
 
@@ -258,10 +249,8 @@ Planned use: One-click refresh on patch day via Data Sync module. Will auto-popu
 ## Outstanding TODOs
 
 ### Next session
-- [ ] **Module 04 — remaining user changes** (queued) — includes fixing `toggleOwned()` to persist to `forgex-tracking`
-- [ ] **Build Module 08 — OCR Import** (`forgex_module08_ocr.html`) — feeds lots into `forgex-lots` in `{lots, nextId}` format
-- [ ] Wire up **iframe shell** in Module 01 (persistent header + sidebar)
-- [ ] **Module 01** — apply canonical text colors
+- [ ] **Verify Module 08 OCR behavior** — confirm imports append to existing lots; check Module 02 seed data persistence (see SESSION_STATE Known Bug #1)
+- [ ] **Module 01 — iframe shell conversion** — persistent header + sidebar; modules 02–09 load in `<iframe>` content area; apply canonical text colors
 
 ### Deferred
 - [ ] **Remove `qty` from Order form in Module 05** — one crafted item per order
@@ -278,11 +267,11 @@ Planned use: One-click refresh on patch day via Data Sync module. Will auto-popu
 
 | File | What changed |
 |---|---|
+| `forgex_module08_ocr.html` | NEW — OCR Import module. Live screen capture via getDisplayMedia(); drag-to-select region (saved to forgex-ocr-region); Tesseract.js v4 via CDN; 2× upscale + invert preprocessing; editable results table; location system mirrors Module 02/03; writes to forgex-lots in {lots,nextId} format. |
 | `forgex_module09_datasync.html` | NEW — Data Sync module. Fetches ~1,044 blueprints from SC Wiki API; maps to schema; UUID-based tracking preservation across re-syncs; writes forgex-blueprints + forgex-sync-meta. |
 | `forgex_crafting_properties.js` | NEW — Static crafting property lookup extracted from game files (p4k v4.7.2). Maps 8 materials to gameplay properties with linear quality formulas. Used by Module 06. |
 | `forgex_module04_v2_full.html` | Major update: canonical colors; finish in name label; ammo hidden by default; Target Tier label; 700+/800+/900+ throughout; Crafting Tracker fully rewritten (clickable tier badges, FORGE button, order tier auto-include, per-ingredient tier columns); inventory live from forgex-lots; X button fixed; Material Needs respects selected tiers. |
 | `forgex_module06_crafting.html` | FORGE preselect on init; blueprints from forgex-blueprints; ownedIds from forgex-tracking; lots in Module 02 format; crafting properties live; quality tier logic fixed (higher OK for lower order). |
 | `forgex_module07_reports.html` | loadLots() fixed for Module 02's {lots,nextId} format (was always returning empty). |
 | `forgex_module03_acquisition.html` | commitAll() now actually writes to forgex-lots in {lots,nextId} format; getLocLotCounts() format fix. |
-| `forgex_module05_orders.html` | White text scheme; 14px floor; pipeline → In Progress/Ready/Delivered; 1200px width. |
 | `forgex_module02_materials_v2.html` | Fully updated — localStorage persistence, locations, combine/split/move, 1200px, canonical colors. Stores forgex-lots as {lots,nextId} object. |

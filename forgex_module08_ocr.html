@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OCR Import — TI Forgeworks</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/tesseract.js@4/dist/tesseract.min.js"></script>
+  <style>
+    :root {
+      --tmi-bg-deep:      #0a0804;
+      --tmi-bg-panel:     #0f0d09;
+      --tmi-bg-card:      #141109;
+      --tmi-bg-hover:     #1a1610;
+      --tmi-gold:         #c8a84b;
+      --tmi-gold-bright:  #e8c96a;
+      --tmi-gold-dim:     #8a7030;
+      --tmi-text-primary: #ffffff;
+      --tmi-text-secondary: #d0c4b0;
+      --tmi-text-dim:     #90806e;
+      --tmi-success:      #5a9955;
+      --tmi-warning:      #cc8800;
+      --tmi-danger:       #cc3333;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--tmi-bg-deep);
+      color: var(--tmi-text-primary);
+      font-family: 'Exo 2', sans-serif;
+      font-size: 14px;
+      min-height: 100vh;
+    }
+
+    .page-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 24px 80px;
+    }
+
+    /* ── Header ── */
+    .mod-header {
+      padding: 20px 0 24px;
+      border-bottom: 1px solid #2a2418;
+      margin-bottom: 28px;
+    }
+    .eyebrow {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      color: var(--tmi-gold-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 4px;
+    }
+    .mod-header h1 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--tmi-text-primary);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Setup bar ── */
+    .setup-bar {
+      display: flex;
+      align-items: flex-end;
+      gap: 20px;
+      flex-wrap: wrap;
+      background: var(--tmi-bg-panel);
+      border: 1px solid #2a2418;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+    }
+    .setup-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .field-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      color: var(--tmi-gold-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    select, input[type="date"] {
+      background: var(--tmi-bg-card);
+      border: 1px solid #3a3020;
+      color: var(--tmi-text-primary);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 14px;
+      padding: 8px 12px;
+      outline: none;
+      cursor: pointer;
+      min-width: 180px;
+    }
+    select:focus, input[type="date"]:focus { border-color: var(--tmi-gold); }
+    select option { background: var(--tmi-bg-card); }
+
+    /* ── Buttons ── */
+    .btn {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      padding: 10px 24px;
+      clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+    .btn-primary   { background: var(--tmi-gold); color: #0a0804; }
+    .btn-primary:hover { background: var(--tmi-gold-bright); }
+    .btn-primary:disabled { background: #3a3020; color: var(--tmi-text-dim); cursor: not-allowed; }
+    .btn-secondary { background: #2a2418; color: var(--tmi-text-secondary); border: 1px solid #3a3020; }
+    .btn-secondary:hover { background: var(--tmi-bg-hover); }
+    .btn-success   { background: var(--tmi-success); color: #fff; font-size: 16px; padding: 12px 36px; }
+    .btn-success:hover { background: #6ab965; }
+    .btn-success:disabled { background: #2a3a28; color: var(--tmi-text-dim); cursor: not-allowed; }
+
+    /* ── OCR action row ── */
+    .ocr-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    /* ── Region saved badge ── */
+    .region-badge {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 12px;
+      color: var(--tmi-success);
+      margin-bottom: 16px;
+    }
+    .region-badge.visible { display: flex; }
+    .region-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--tmi-success); }
+
+    /* ── Canvas section ── */
+    .canvas-section {
+      display: none;
+      margin-bottom: 24px;
+    }
+    .canvas-section.visible { display: block; }
+    .canvas-section-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      color: var(--tmi-gold-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+    .canvas-wrap {
+      position: relative;
+      display: inline-block;
+      border: 1px solid #3a3020;
+      cursor: crosshair;
+      max-width: 100%;
+      overflow: hidden;
+    }
+    #captureCanvas { display: block; max-width: 100%; }
+
+    #regionOverlay {
+      position: absolute;
+      border: 2px solid var(--tmi-gold);
+      background: rgba(200,168,75,0.12);
+      pointer-events: none;
+      display: none;
+    }
+
+    .canvas-hint {
+      font-size: 14px;
+      color: var(--tmi-text-secondary);
+      margin-top: 10px;
+    }
+    .canvas-hint.is-error { color: var(--tmi-danger); }
+
+    /* ── OCR status ── */
+    .ocr-status {
+      display: none;
+      background: var(--tmi-bg-panel);
+      border: 1px solid #2a2418;
+      border-left: 3px solid var(--tmi-gold);
+      padding: 12px 16px;
+      margin-bottom: 20px;
+    }
+    .ocr-status.visible { display: block; }
+    .status-text {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 13px;
+      color: var(--tmi-text-secondary);
+      margin-bottom: 8px;
+    }
+    .progress-track { background: #2a2418; height: 4px; border-radius: 2px; }
+    .progress-fill  { height: 100%; background: var(--tmi-gold); width: 0%; border-radius: 2px; transition: width 0.2s; }
+
+    /* ── Results ── */
+    .results-section { display: none; }
+    .results-section.visible { display: block; }
+
+    .results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .results-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--tmi-text-primary);
+      letter-spacing: 0.04em;
+    }
+    .results-count {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 12px;
+      color: var(--tmi-text-dim);
+    }
+
+    table.results-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 4px;
+    }
+    .results-table th {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      color: var(--tmi-gold-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      text-align: left;
+      padding: 8px 12px;
+      border-bottom: 1px solid #2a2418;
+    }
+    .results-table td {
+      padding: 5px 8px;
+      border-bottom: 1px solid #1e1a12;
+    }
+    .results-table tr:hover td { background: var(--tmi-bg-hover); }
+    .results-table input {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--tmi-text-primary);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 14px;
+      padding: 5px 8px;
+      width: 100%;
+      outline: none;
+    }
+    .results-table input:focus {
+      border-color: var(--tmi-gold);
+      background: var(--tmi-bg-card);
+    }
+    .results-table td.del-col { width: 44px; text-align: center; }
+    .del-btn {
+      background: none;
+      border: none;
+      color: var(--tmi-danger);
+      cursor: pointer;
+      font-size: 15px;
+      padding: 3px 8px;
+      opacity: 0.55;
+      line-height: 1;
+    }
+    .del-btn:hover { opacity: 1; }
+
+    .table-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .accept-group { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .accept-hint {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 12px;
+      color: var(--tmi-text-dim);
+    }
+
+    /* ── Location custom input ── */
+    #locationCustom {
+      display: none;
+      background: var(--tmi-bg-card);
+      border: 1px solid #3a3020;
+      color: var(--tmi-text-primary);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 14px;
+      padding: 8px 12px;
+      outline: none;
+      min-width: 180px;
+    }
+    #locationCustom:focus { border-color: var(--tmi-gold); }
+    #locationCustom::placeholder { color: var(--tmi-text-dim); }
+
+    /* ── Edit locations modal ── */
+    .loc-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .loc-overlay.open { display: flex; }
+    .loc-panel {
+      background: var(--tmi-bg-panel);
+      border: 1px solid #3a3020;
+      min-width: 340px;
+      max-width: 480px;
+      width: 100%;
+    }
+    .loc-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-bottom: 1px solid #2a2418;
+    }
+    .loc-panel-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--tmi-text-primary);
+      letter-spacing: 0.04em;
+    }
+    .loc-panel-close {
+      background: none;
+      border: none;
+      color: var(--tmi-text-dim);
+      font-size: 18px;
+      cursor: pointer;
+      padding: 0 4px;
+      line-height: 1;
+    }
+    .loc-panel-close:hover { color: var(--tmi-text-primary); }
+    .loc-panel-body { max-height: 320px; overflow-y: auto; }
+    .loc-panel-footer { padding: 12px 18px; border-top: 1px solid #2a2418; text-align: right; }
+    .editloc-row { display:flex; align-items:center; gap:10px; padding:10px 16px; border-bottom:1px solid #1e1a12; }
+    .editloc-name { font-family:'Share Tech Mono',monospace; font-size:14px; color:var(--tmi-text-primary); flex:1; }
+    .editloc-count { font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--tmi-text-dim); white-space:nowrap; }
+    .editloc-remove { font-family:'Share Tech Mono',monospace; font-size:12px; color:var(--tmi-danger); background:none; border:1px solid rgba(204,51,51,0.3); padding:3px 10px; cursor:pointer; text-transform:uppercase; }
+    .editloc-remove:hover { background:rgba(204,51,51,0.1); }
+    .editloc-remove:disabled { opacity:0.35; cursor:not-allowed; }
+    .editloc-empty { padding:20px 16px; font-family:'Share Tech Mono',monospace; font-size:12px; color:var(--tmi-text-dim); text-align:center; text-transform:uppercase; }
+
+    /* ── Toast ── */
+    .toast {
+      display: none;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 12px 20px;
+      margin-top: 16px;
+      color: #fff;
+    }
+    .toast.visible { display: block; }
+    .toast.ok    { background: var(--tmi-success); }
+    .toast.error { background: var(--tmi-danger); }
+  </style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- Header -->
+  <header class="mod-header">
+    <div class="eyebrow">Troublemaker Incorporated — Custom Arms &amp; Armor</div>
+    <h1>OCR Import</h1>
+  </header>
+
+  <!-- Setup bar -->
+  <div class="setup-bar">
+    <div class="setup-field">
+      <div class="field-label">Location <span style="color:var(--tmi-text-dim);font-size:9px">(defaults to Levsky)</span></div>
+      <select id="locationSelect" onchange="applyLocPreset()">
+        <option value="Levsky">Levsky</option>
+      </select>
+      <input type="text" id="locationCustom" placeholder="Enter location name…" onblur="commitCustomLoc()" onkeydown="if(event.key==='Enter')commitCustomLoc()">
+    </div>
+    <div class="setup-field">
+      <div class="field-label">Date</div>
+      <input type="date" id="dateInput">
+    </div>
+  </div>
+
+  <!-- Action row -->
+  <div class="ocr-actions">
+    <button class="btn btn-primary" id="btnStartOCR">&#9654; Start OCR</button>
+    <button class="btn btn-secondary" id="btnRedefine" style="display:none">Redefine Region</button>
+  </div>
+
+  <!-- Region saved indicator -->
+  <div class="region-badge" id="regionBadge">
+    <div class="region-dot"></div>
+    <span>Region saved — will auto-crop on next capture</span>
+  </div>
+
+  <!-- Captured frame canvas -->
+  <div class="canvas-section" id="canvasSection">
+    <div class="canvas-section-label" id="canvasLabel">Captured Frame — Drag to select the refinery report area</div>
+    <div class="canvas-wrap" id="canvasWrap">
+      <canvas id="captureCanvas"></canvas>
+      <div id="regionOverlay"></div>
+    </div>
+    <div class="canvas-hint" id="canvasHint">Click and drag to draw a box over the Materials Yielded table.</div>
+  </div>
+
+  <!-- OCR progress -->
+  <div class="ocr-status" id="ocrStatus">
+    <div class="status-text" id="statusText">Initializing OCR engine...</div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+
+  <!-- Results table -->
+  <div class="results-section" id="resultsSection">
+    <div class="results-header">
+      <div class="results-title">Parsed Results</div>
+      <div class="results-count" id="rowCount"></div>
+    </div>
+    <table class="results-table">
+      <thead>
+        <tr>
+          <th style="width:40%">Material</th>
+          <th style="width:20%">Quality</th>
+          <th style="width:25%">Yield (cSCU)</th>
+          <th style="width:15%"></th>
+        </tr>
+      </thead>
+      <tbody id="resultsBody"></tbody>
+    </table>
+    <div class="table-footer">
+      <button class="btn btn-secondary" onclick="addRow()">+ Add Row</button>
+      <div class="accept-group">
+        <span class="accept-hint" id="acceptHint"></span>
+        <button class="btn btn-success" id="btnAccept" onclick="acceptLots()">&#10003; Accept &amp; Import</button>
+      </div>
+    </div>
+    <div class="toast" id="toast"></div>
+  </div>
+
+</div>
+
+<!-- Edit Locations modal -->
+<div class="loc-overlay" id="editlocOverlay">
+  <div class="loc-panel">
+    <div class="loc-panel-header">
+      <span class="loc-panel-title">Manage Locations</span>
+      <button class="loc-panel-close" onclick="closeEditLocations()">&#10005;</button>
+    </div>
+    <div class="loc-panel-body" id="editlocBody"></div>
+    <div class="loc-panel-footer">
+      <button class="btn btn-secondary" style="font-size:13px;padding:8px 20px" onclick="closeEditLocations()">Done</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────────────────────────────
+let capturedCanvas = null;  // full-resolution offscreen canvas
+let savedRegion    = null;  // {x, y, w, h} in original pixels
+let displayScale   = 1;
+let isDragging     = false;
+let dragStart      = { x: 0, y: 0 };
+let dragCurrent    = { x: 0, y: 0 };
+let tableRows      = [];
+
+// ── Location system (mirrors Module 02/03) ─────────────────────────────────
+const LOC_KEY    = 'forgex-locations';
+const DEFAULT_LOC = 'Levsky';
+let customLocations = [];
+
+function loadLocationsData() {
+  try {
+    const raw = localStorage.getItem(LOC_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch(e) { return []; }
+}
+
+function persistLocations() {
+  try { localStorage.setItem(LOC_KEY, JSON.stringify(customLocations)); } catch(e) {}
+}
+
+function addCustomLocation(loc) {
+  if (!loc || loc === DEFAULT_LOC || customLocations.includes(loc)) return;
+  customLocations.push(loc);
+  customLocations.sort();
+  persistLocations();
+}
+
+function buildLocOptions() {
+  const sel = document.getElementById('locationSelect');
+  const cur = sel.value;
+  sel.innerHTML = `<option value="${DEFAULT_LOC}">${DEFAULT_LOC}</option>`;
+  customLocations.forEach(loc => {
+    const o = document.createElement('option');
+    o.value = o.textContent = loc;
+    sel.appendChild(o);
+  });
+  const cust = document.createElement('option');
+  cust.value = 'custom'; cust.textContent = 'Custom...';
+  sel.appendChild(cust);
+  const edit = document.createElement('option');
+  edit.value = 'edit_list'; edit.textContent = '— Edit List —';
+  sel.appendChild(edit);
+  // Restore previous selection if still present
+  if (cur && sel.querySelector(`option[value="${cur}"]`)) sel.value = cur;
+  else sel.value = DEFAULT_LOC;
+}
+
+function applyLocPreset() {
+  const sel    = document.getElementById('locationSelect');
+  const custom = document.getElementById('locationCustom');
+  if (sel.value === 'edit_list') {
+    openEditLocations();
+    return;
+  }
+  if (sel.value === 'custom') {
+    custom.style.display = 'block';
+    custom.value = '';
+    custom.focus();
+  } else {
+    custom.style.display = 'none';
+  }
+}
+
+function commitCustomLoc() {
+  const custom = document.getElementById('locationCustom');
+  const val = custom.value.trim();
+  if (!val) {
+    custom.style.display = 'none';
+    document.getElementById('locationSelect').value = DEFAULT_LOC;
+    return;
+  }
+  addCustomLocation(val);
+  buildLocOptions();
+  document.getElementById('locationSelect').value = val;
+  custom.style.display = 'none';
+}
+
+function getSelectedLocation() {
+  const sel = document.getElementById('locationSelect');
+  if (sel.value === 'custom') {
+    return document.getElementById('locationCustom').value.trim() || DEFAULT_LOC;
+  }
+  return sel.value || DEFAULT_LOC;
+}
+
+function openEditLocations() {
+  document.getElementById('locationSelect').value = DEFAULT_LOC;
+  document.getElementById('locationCustom').style.display = 'none';
+  renderEditLocations();
+  document.getElementById('editlocOverlay').classList.add('open');
+}
+
+function renderEditLocations() {
+  const body = document.getElementById('editlocBody');
+  if (customLocations.length === 0) {
+    body.innerHTML = '<div class="editloc-empty">No custom locations saved</div>';
+    return;
+  }
+  body.innerHTML = customLocations.map((loc, i) => `
+    <div class="editloc-row">
+      <span class="editloc-name">${esc(loc)}</span>
+      <button class="editloc-remove" onclick="removeLocation(${i})">Remove</button>
+    </div>`).join('');
+}
+
+function removeLocation(idx) {
+  customLocations.splice(idx, 1);
+  persistLocations();
+  buildLocOptions();
+  renderEditLocations();
+}
+
+function closeEditLocations() {
+  document.getElementById('editlocOverlay').classList.remove('open');
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
+
+  customLocations = loadLocationsData();
+  buildLocOptions();
+
+  const raw = localStorage.getItem('forgex-ocr-region');
+  if (raw) {
+    try { savedRegion = JSON.parse(raw); } catch(e) {}
+    if (savedRegion) {
+      document.getElementById('regionBadge').classList.add('visible');
+      document.getElementById('btnRedefine').style.display = 'inline-block';
+      document.getElementById('canvasLabel').textContent = 'Captured Frame — Saved region will auto-apply';
+    }
+  }
+});
+
+// ── Screen Capture ─────────────────────────────────────────────────────────
+document.getElementById('btnStartOCR').addEventListener('click', async () => {
+  if (!navigator.mediaDevices?.getDisplayMedia) {
+    setHintError('Screen capture is not supported in this browser. Use Chrome.');
+    return;
+  }
+
+  const btn = document.getElementById('btnStartOCR');
+  btn.disabled = true;
+  btn.textContent = 'Capturing...';
+
+  let stream;
+  try {
+    stream = await navigator.mediaDevices.getDisplayMedia({ video: { cursor: 'never' } });
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = '▶ Start OCR';
+    if (e.name !== 'AbortError') setHintError('Screen capture was cancelled or denied.');
+    return;
+  }
+
+  const video = document.createElement('video');
+  video.srcObject = stream;
+  video.muted = true;
+  await video.play();
+  await new Promise(r => requestAnimationFrame(r));
+
+  capturedCanvas = document.createElement('canvas');
+  capturedCanvas.width  = video.videoWidth;
+  capturedCanvas.height = video.videoHeight;
+  capturedCanvas.getContext('2d').drawImage(video, 0, 0);
+
+  stream.getTracks().forEach(t => t.stop());
+  video.remove();
+
+  btn.disabled = false;
+  btn.textContent = '▶ Start OCR';
+
+  renderDisplayCanvas();
+
+  if (savedRegion) {
+    drawSavedRegionOverlay();
+    runOCR();
+  } else {
+    setupDrag();
+  }
+});
+
+// ── Display Canvas ──────────────────────────────────────────────────────────
+function renderDisplayCanvas() {
+  const section = document.getElementById('canvasSection');
+  section.classList.add('visible');
+
+  const displayCanvas = document.getElementById('captureCanvas');
+  const maxW = section.clientWidth || 1100;
+  displayScale = Math.min(1, maxW / capturedCanvas.width);
+
+  displayCanvas.width  = Math.round(capturedCanvas.width  * displayScale);
+  displayCanvas.height = Math.round(capturedCanvas.height * displayScale);
+  displayCanvas.getContext('2d').drawImage(capturedCanvas, 0, 0, displayCanvas.width, displayCanvas.height);
+}
+
+// ── Drag-to-select region ───────────────────────────────────────────────────
+function setupDrag() {
+  document.getElementById('canvasHint').textContent = 'Click and drag to draw a box over the Materials Yielded table.';
+  document.getElementById('canvasHint').classList.remove('is-error');
+
+  const c = document.getElementById('captureCanvas');
+  c.style.cursor = 'crosshair';
+  c.addEventListener('mousedown', onDown);
+  c.addEventListener('mousemove', onMove);
+  c.addEventListener('mouseup',   onUp);
+}
+
+function teardownDrag() {
+  const c = document.getElementById('captureCanvas');
+  c.style.cursor = 'default';
+  c.removeEventListener('mousedown', onDown);
+  c.removeEventListener('mousemove', onMove);
+  c.removeEventListener('mouseup',   onUp);
+}
+
+function canvasPos(e) {
+  const rect = document.getElementById('captureCanvas').getBoundingClientRect();
+  return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+}
+
+function onDown(e) {
+  isDragging  = true;
+  dragStart   = canvasPos(e);
+  dragCurrent = dragStart;
+  document.getElementById('regionOverlay').style.display = 'block';
+}
+
+function onMove(e) {
+  if (!isDragging) return;
+  dragCurrent = canvasPos(e);
+  positionOverlay(normalizeRect(dragStart, dragCurrent));
+}
+
+function onUp(e) {
+  if (!isDragging) return;
+  isDragging  = false;
+  dragCurrent = canvasPos(e);
+
+  const displayRect = normalizeRect(dragStart, dragCurrent);
+  if (displayRect.w < 20 || displayRect.h < 20) return;
+
+  savedRegion = {
+    x: Math.round(displayRect.x / displayScale),
+    y: Math.round(displayRect.y / displayScale),
+    w: Math.round(displayRect.w / displayScale),
+    h: Math.round(displayRect.h / displayScale),
+  };
+  localStorage.setItem('forgex-ocr-region', JSON.stringify(savedRegion));
+
+  document.getElementById('regionBadge').classList.add('visible');
+  document.getElementById('btnRedefine').style.display = 'inline-block';
+  document.getElementById('canvasHint').textContent = 'Region saved. Running OCR...';
+
+  teardownDrag();
+  runOCR();
+}
+
+function normalizeRect(a, b) {
+  return {
+    x: Math.min(a.x, b.x),
+    y: Math.min(a.y, b.y),
+    w: Math.abs(b.x - a.x),
+    h: Math.abs(b.y - a.y),
+  };
+}
+
+function positionOverlay(r) {
+  const overlay = document.getElementById('regionOverlay');
+  overlay.style.left   = r.x + 'px';
+  overlay.style.top    = r.y + 'px';
+  overlay.style.width  = r.w + 'px';
+  overlay.style.height = r.h + 'px';
+}
+
+function drawSavedRegionOverlay() {
+  positionOverlay({
+    x: savedRegion.x * displayScale,
+    y: savedRegion.y * displayScale,
+    w: savedRegion.w * displayScale,
+    h: savedRegion.h * displayScale,
+  });
+  document.getElementById('regionOverlay').style.display = 'block';
+}
+
+// ── Redefine region ─────────────────────────────────────────────────────────
+document.getElementById('btnRedefine').addEventListener('click', () => {
+  savedRegion = null;
+  localStorage.removeItem('forgex-ocr-region');
+
+  document.getElementById('regionBadge').classList.remove('visible');
+  document.getElementById('regionOverlay').style.display = 'none';
+  document.getElementById('btnRedefine').style.display = 'none';
+  document.getElementById('canvasLabel').textContent = 'Captured Frame — Drag to select the refinery report area';
+  document.getElementById('resultsSection').classList.remove('visible');
+
+  if (capturedCanvas) {
+    renderDisplayCanvas();
+    setupDrag();
+  } else {
+    document.getElementById('canvasSection').classList.remove('visible');
+  }
+});
+
+// ── OCR ────────────────────────────────────────────────────────────────────
+async function runOCR() {
+  if (!capturedCanvas || !savedRegion) return;
+
+  // Crop full-res canvas to saved region
+  const crop = document.createElement('canvas');
+  crop.width  = savedRegion.w;
+  crop.height = savedRegion.h;
+  crop.getContext('2d').drawImage(
+    capturedCanvas,
+    savedRegion.x, savedRegion.y, savedRegion.w, savedRegion.h,
+    0, 0, savedRegion.w, savedRegion.h
+  );
+
+  // Preprocess: 2× upscale + invert (white-on-dark → black-on-light)
+  const proc = document.createElement('canvas');
+  proc.width  = crop.width  * 2;
+  proc.height = crop.height * 2;
+  const pctx = proc.getContext('2d');
+  pctx.drawImage(crop, 0, 0, proc.width, proc.height);
+
+  const img = pctx.getImageData(0, 0, proc.width, proc.height);
+  for (let i = 0; i < img.data.length; i += 4) {
+    img.data[i]   = 255 - img.data[i];
+    img.data[i+1] = 255 - img.data[i+1];
+    img.data[i+2] = 255 - img.data[i+2];
+  }
+  pctx.putImageData(img, 0, 0);
+
+  // Show progress
+  const statusEl    = document.getElementById('ocrStatus');
+  const statusText  = document.getElementById('statusText');
+  const progressFill = document.getElementById('progressFill');
+  statusEl.classList.add('visible');
+  document.getElementById('resultsSection').classList.remove('visible');
+
+  try {
+    const imageData = proc.toDataURL('image/png');
+
+    const { data: { text } } = await Tesseract.recognize(
+      imageData,
+      'eng',
+      {
+        logger: m => {
+          if (m.status === 'recognizing text') {
+            const pct = Math.round(m.progress * 100);
+            progressFill.style.width = pct + '%';
+            statusText.textContent   = `Reading text... ${pct}%`;
+          } else if (m.status) {
+            statusText.textContent = m.status;
+          }
+        }
+      }
+    );
+
+    statusEl.classList.remove('visible');
+    parseAndShow(text);
+
+  } catch(err) {
+    statusEl.classList.remove('visible');
+    const msg = err?.message || String(err) || 'Unknown error';
+    setHintError('OCR failed: ' + msg);
+    console.error('OCR error:', err);
+  }
+}
+
+// ── Parse OCR text ─────────────────────────────────────────────────────────
+const SKIP = new Set([
+  'MATERIALS','YIELDED','QUALITY','YIELD','WORK','ORDER','DETAILS',
+  'COMPLETED','CSCU','SCU'
+]);
+
+function parseOCRText(raw) {
+  const rows = [];
+  const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+
+  for (const line of lines) {
+    // Match: optional leading junk, then NAME (all-caps words), then TWO numbers
+    const m = line.match(/([A-Z][A-Z ]{2,}?)\s+(\d+)\s+(\d+)\s*$/);
+    if (!m) continue;
+
+    const name  = m[1].trim();
+    const words = name.split(/\s+/);
+
+    // Skip header/footer lines
+    if (words.some(w => SKIP.has(w))) continue;
+    if (name.length < 2) continue;
+
+    rows.push({
+      ore:     name.toLowerCase(),
+      quality: parseInt(m[2], 10),
+      qty:     parseInt(m[3], 10),
+    });
+  }
+  return rows;
+}
+
+function parseAndShow(raw) {
+  const rows = parseOCRText(raw);
+  if (rows.length === 0) {
+    setHintError('No material rows found. Try redefining the region to include only the data table.');
+    return;
+  }
+  renderTable(rows);
+}
+
+// ── Results table ──────────────────────────────────────────────────────────
+function renderTable(rows) {
+  tableRows = rows.map(r => ({ ...r }));
+  rebuildTable();
+  document.getElementById('resultsSection').classList.add('visible');
+}
+
+function rebuildTable() {
+  const tbody = document.getElementById('resultsBody');
+  tbody.innerHTML = '';
+  tableRows.forEach((row, i) => tbody.appendChild(makeRow(row, i)));
+  updateCount();
+}
+
+function makeRow(row, i) {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><input type="text" value="${esc(row.ore)}"
+         oninput="tableRows[${i}].ore=this.value;updateCount()"></td>
+    <td><input type="number" value="${row.quality}" min="1" max="1000"
+         oninput="tableRows[${i}].quality=+this.value" style="width:90px"></td>
+    <td><input type="number" value="${row.qty}" min="1"
+         oninput="tableRows[${i}].qty=+this.value" style="width:110px"></td>
+    <td class="del-col">
+      <button class="del-btn" onclick="deleteRow(${i})" title="Remove row">&#10005;</button>
+    </td>`;
+  return tr;
+}
+
+function deleteRow(i) {
+  tableRows.splice(i, 1);
+  rebuildTable();
+}
+
+function addRow() {
+  tableRows.push({ ore: '', quality: 500, qty: 0 });
+  rebuildTable();
+  // Focus new row's ore input
+  const rows = document.getElementById('resultsBody').querySelectorAll('tr');
+  if (rows.length) rows[rows.length - 1].querySelector('input').focus();
+}
+
+function updateCount() {
+  const n = tableRows.length;
+  document.getElementById('rowCount').textContent    = `${n} row${n !== 1 ? 's' : ''}`;
+  document.getElementById('acceptHint').textContent  = `${n} lot${n !== 1 ? 's' : ''} ready to import`;
+}
+
+// ── Accept & import ────────────────────────────────────────────────────────
+function acceptLots() {
+  const location = getSelectedLocation();
+  const date     = document.getElementById('dateInput').value || new Date().toISOString().split('T')[0];
+
+  if (!location) { toast('Select a location before importing.', true); return; }
+  if (tableRows.length === 0) { toast('No rows to import.', true); return; }
+
+  const bad = tableRows.find(r => !r.ore.trim() || !r.quality || !r.qty);
+  if (bad) { toast('All rows must have a material name, quality, and yield.', true); return; }
+
+  // Read existing lots store
+  let store = { lots: [], nextId: 1 };
+  try {
+    const raw = localStorage.getItem('forgex-lots');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        const maxId = parsed.length ? Math.max(...parsed.map(l => l.id || 0)) : 0;
+        store = { lots: parsed, nextId: maxId + 1 };
+      } else if (parsed?.lots) {
+        store = parsed;
+      }
+    }
+  } catch(e) {}
+
+  const newLots = tableRows.map(r => ({
+    id:         store.nextId++,
+    ore:        r.ore.trim().toLowerCase(),
+    quality:    r.quality,
+    qty:        r.qty,
+    location,
+    hand_mined: false,
+    date,
+  }));
+
+  store.lots.push(...newLots);
+  localStorage.setItem('forgex-lots', JSON.stringify(store));
+
+  toast(`${newLots.length} lot${newLots.length !== 1 ? 's' : ''} imported to Materials Database.`);
+
+  // Reset for next import
+  tableRows = [];
+  document.getElementById('resultsBody').innerHTML = '';
+  updateCount();
+  setTimeout(() => document.getElementById('resultsSection').classList.remove('visible'), 2000);
+}
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+function setHintError(msg) {
+  const h = document.getElementById('canvasHint');
+  h.textContent = msg;
+  h.classList.add('is-error');
+  document.getElementById('canvasSection').classList.add('visible');
+}
+
+function toast(msg, isError = false) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast visible ' + (isError ? 'error' : 'ok');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('visible'), 4000);
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
