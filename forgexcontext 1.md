@@ -28,6 +28,7 @@
 | `forgex_module07_reports.html` | Reports | ✓ Online |
 | `forgex_module08_ocr.html` | OCR Import | ✓ Online |
 | `forgex_module09_datasync.html` | Data Sync | ✓ Online |
+| `forgex_module10_codex.html` | Codex (In-App Documentation) | ✓ Online |
 | `forgex_crafting_properties.js` | Crafting Properties | ✓ Static lookup (ballistic only) |
 
 ---
@@ -181,6 +182,7 @@ TI Forgeworks — Custom Arms & Armor   ← eyebrow (small, gold-dim, Share Tech
 'forgex-sync-meta'     // { date, gameVersion, count }
 'forgex-sync-log'      // SyncEntry[] — up to 20 entries with skipped-type breakdown
 'forgex-locations'     // string[] — custom location names (shared across modules)
+'forgex-default-location' // string — global default location for Add Lot/Item (shared across Modules 02/03/08, defaults to 'Levsky')
 'forgex-forge-preselect' // string (bpId) — one-time flag, cleared by Module 06 on load
 'forgex-ocr-region'    // { x, y, w, h } — saved OCR crop region
 ```
@@ -197,7 +199,7 @@ None. Local single-user tool. No login, no server, no authentication planned.
 
 - **Quality bands:** 700–799, 800–899, 900–1000 for crafted armor/weapons
 - **Aslarite:** Universal armor ingredient — usable at quality 500+, not band-locked. Excluded from quality tier calculation.
-- **Hand-mined gems:** hadanite, janalite, dolvine, aphorite, sadaryx, carinite, beradom, jaclium, saldynium, feynmaline, glacosite
+- **Hand-mined gems:** hadanite, janalite, dolivine, aphorite, sadaryx, carinite, beradom, jaclium, saldynium, feynmaline, glacosite
 - **Crafting quality tier:** Determined by weighted avg quality of non-aslarite ingredients only
 - **Refinery box sizes:** 3200 / 1600 / 800 / 400 / 200 / 100 cSCU — filled largest to smallest. OCR import auto-splits yields into individual box lots.
 

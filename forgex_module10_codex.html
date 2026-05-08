@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600&display=swap');
+  :root {
+    --tmi-bg-deep:#0a0804;--tmi-bg-panel:#0f0d09;--tmi-bg-card:#141109;--tmi-bg-hover:#1a1610;
+    --tmi-gold:#c8a84b;--tmi-gold-bright:#e8c96a;--tmi-gold-dim:#8a7030;--tmi-gold-dark:#5a4a20;
+    --tmi-gold-glow:rgba(200,168,75,0.12);
+    --tmi-text-primary:#ffffff;--tmi-text-secondary:#d0c4b0;--tmi-text-dim:#90806e;
+    --tmi-border:rgba(200,168,75,0.25);--tmi-border-dim:rgba(200,168,75,0.1);
+    --tmi-success:#5a9955;--tmi-warning:#cc8800;--tmi-danger:#cc3333;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--tmi-bg-deep);color:var(--tmi-text-primary);font-family:'Exo 2',sans-serif;font-size:15px;}
+  .page-wrap{max-width:1200px;}
+
+  /* ── HEADER ── */
+  .mod-header{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:12px 18px;}
+  .mod-eyebrow{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--tmi-gold-dim);text-transform:uppercase;margin-bottom:2px;}
+  .mod-title{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#ffffff;}
+
+  /* ── ANCHOR NAV ── */
+  .anchor-nav{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:10px 18px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+  .anchor-label{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;margin-right:4px;white-space:nowrap;}
+  .anchor-link{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--tmi-text-dim);background:transparent;border:1px solid var(--tmi-border-dim);padding:3px 10px;cursor:pointer;text-transform:uppercase;text-decoration:none;transition:all 0.15s;clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);white-space:nowrap;}
+  .anchor-link:hover{border-color:var(--tmi-border);color:var(--tmi-gold);}
+
+  /* ── SECTIONS ── */
+  .sections{padding:12px 18px;display:flex;flex-direction:column;gap:8px;}
+
+  .section{background:var(--tmi-bg-panel);border:1px solid var(--tmi-border-dim);}
+  .section-toggle{width:100%;display:flex;align-items:center;gap:12px;padding:12px 16px;background:none;border:none;cursor:pointer;text-align:left;transition:background 0.15s;}
+  .section-toggle:hover{background:var(--tmi-bg-hover);}
+  .section-toggle.open{border-bottom:1px solid var(--tmi-border-dim);}
+  .section-num{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--tmi-gold-dim);min-width:24px;}
+  .section-title{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tmi-text-primary);flex:1;}
+  .section-arrow{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--tmi-text-dim);}
+
+  .section-body{display:none;padding:18px 20px;border-top:1px solid var(--tmi-border-dim);}
+  .section-body.open{display:block;}
+
+  /* ── CONTENT STYLES ── */
+  .section-intro{font-size:15px;color:var(--tmi-text-secondary);line-height:1.7;margin-bottom:18px;}
+  .section-intro strong{color:var(--tmi-text-primary);}
+
+  .sub-heading{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tmi-gold);margin:18px 0 8px;padding-bottom:5px;border-bottom:1px solid var(--tmi-border-dim);}
+  .sub-heading:first-child{margin-top:0;}
+
+  .doc-p{font-size:15px;color:var(--tmi-text-secondary);line-height:1.7;margin-bottom:10px;}
+  .doc-p strong{color:var(--tmi-text-primary);}
+  .doc-p em{color:var(--tmi-gold-dim);font-style:normal;}
+
+  .doc-list{margin:0 0 12px 0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:6px;}
+  .doc-list li{font-size:15px;color:var(--tmi-text-secondary);line-height:1.6;padding-left:16px;position:relative;}
+  .doc-list li::before{content:'›';position:absolute;left:0;color:var(--tmi-gold-dim);}
+  .doc-list li strong{color:var(--tmi-text-primary);}
+
+  .callout{background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);border-left:2px solid var(--tmi-gold-dim);padding:10px 14px;margin:10px 0 14px;}
+  .callout p{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--tmi-text-secondary);line-height:1.6;letter-spacing:0.3px;}
+  .callout p strong{color:var(--tmi-gold);}
+
+  .tip{background:rgba(90,153,85,0.06);border:1px solid rgba(90,153,85,0.2);border-left:2px solid var(--tmi-success);padding:10px 14px;margin:10px 0 14px;}
+  .tip p{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--tmi-text-secondary);line-height:1.6;letter-spacing:0.3px;}
+  .tip p strong{color:var(--tmi-success);}
+
+  .warn{background:rgba(204,136,0,0.06);border:1px solid rgba(204,136,0,0.2);border-left:2px solid var(--tmi-warning);padding:10px 14px;margin:10px 0 14px;}
+  .warn p{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--tmi-text-secondary);line-height:1.6;letter-spacing:0.3px;}
+  .warn p strong{color:var(--tmi-warning);}
+
+  .kv-table{width:100%;border-collapse:collapse;margin-bottom:14px;}
+  .kv-table thead tr{background:var(--tmi-bg-card);border-bottom:1px solid var(--tmi-border);}
+  .kv-table th{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;padding:7px 12px;text-align:left;}
+  .kv-table tbody tr{border-bottom:1px solid var(--tmi-border-dim);}
+  .kv-table tbody tr:last-child{border-bottom:none;}
+  .kv-table tbody tr:hover{background:var(--tmi-bg-hover);}
+  .kv-table td{padding:7px 12px;font-size:14px;vertical-align:top;}
+  .kv-table td:first-child{font-family:'Share Tech Mono',monospace;color:var(--tmi-gold-dim);white-space:nowrap;font-size:13px;}
+  .kv-table td:last-child{color:var(--tmi-text-secondary);line-height:1.6;}
+  .kv-table td strong{color:var(--tmi-text-primary);}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+<div class="mod-header">
+  <div class="mod-eyebrow">TI Forgeworks — Custom Arms &amp; Armor</div>
+  <div class="mod-title">Codex</div>
+</div>
+
+<div class="anchor-nav">
+  <span class="anchor-label">Jump to</span>
+  <a class="anchor-link" href="#" onclick="jumpTo('s01');return false;">Dashboard</a>
+  <a class="anchor-link" href="#" onclick="jumpTo('s02');return false;">Materials</a>
+  <a class="anchor-link" href="#" onclick="jumpTo('s03');return false;">Acquisition</a>
+  <a class="anchor-link" href="#" onclick="jumpTo('s04');return false;">Blueprints</a>
+  <a class="anchor-link" href="#" onclick="jumpTo('s05');return false;">The Forge</a>
+  <a class="anchor-link" href="#" onclick="jumpTo('s06');return false;">Orders</a>
+  <a class="anchor-link" href="#" onclick="jumpTo('s07');return false;">Reports</a>
+  <a class="anchor-link" href="#" onclick="jumpTo('s08');return false;">OCR Import</a>
+  <a class="anchor-link" href="#" onclick="jumpTo('s09');return false;">Data Sync</a>
+</div>
+
+<div class="sections">
+
+  <!-- ── 01 DASHBOARD ── -->
+  <div class="section" id="s01">
+    <button class="section-toggle" onclick="toggle(this)">
+      <span class="section-num">01</span>
+      <span class="section-title">Command Dashboard</span>
+      <span class="section-arrow">▼</span>
+    </button>
+    <div class="section-body">
+      <p class="section-intro">The Dashboard is the main navigation hub for TI Forgeworks. All other modules load inside it as embedded pages — your sidebar and header stay persistent across the entire app.</p>
+
+      <div class="sub-heading">Navigation</div>
+      <p class="doc-p">Click any entry in the left sidebar to load that module. The active module is highlighted in gold. You can also click the module cards on the home screen to launch any section directly.</p>
+      <p class="doc-p">The <strong>Sync Data</strong> button in the header bar is a shortcut that takes you directly to Data Sync, regardless of which module is currently open.</p>
+
+      <div class="sub-heading">Import / Export</div>
+      <p class="doc-p">The <strong>Import / Export</strong> button in the header opens a backup panel. Use this to save or restore your entire dataset — material lots, blueprints, tracking flags, orders, and crafting history.</p>
+      <ul class="doc-list">
+        <li><strong>Export</strong> — downloads a single JSON file containing all app data. Store it somewhere safe. The export date is shown next to the button.</li>
+        <li><strong>Import</strong> — paste or load a previously exported JSON file to restore your data. All current data is replaced.</li>
+      </ul>
+      <div class="tip"><p><strong>Tip:</strong> Export your data before running a Data Sync if you want a fallback, or any time you make significant changes to your inventory or orders.</p></div>
+
+      <div class="sub-heading">Status Indicator</div>
+      <p class="doc-p">The <em>SYSTEMS ONLINE</em> pill in the header center confirms that the app has loaded correctly. It has no interactive function.</p>
+    </div>
+  </div>
+
+  <!-- ── 02 MATERIAL DATABASE ── -->
+  <div class="section" id="s02">
+    <button class="section-toggle" onclick="toggle(this)">
+      <span class="section-num">02</span>
+      <span class="section-title">Material Database</span>
+      <span class="section-arrow">▼</span>
+    </button>
+    <div class="section-body">
+      <p class="section-intro">The Material Database is your central inventory ledger. Every ore and gem lot you own is recorded here with its quality, quantity, and storage location. All other modules read from this data to check crafting readiness.</p>
+
+      <div class="sub-heading">Adding a Lot</div>
+      <p class="doc-p">Click <strong>+ Add Lot</strong> to open the entry form. Select the ore or gem, enter a quality value (1–1000) and a quantity, then choose a storage location.</p>
+      <ul class="doc-list">
+        <li>Ore quantities are entered in <strong>cSCU</strong> (centri-SCU). One SCU = 100 cSCU.</li>
+        <li>Hand-mined gems (Hadanite, Janalite, Dolivine, etc.) are entered as individual <strong>gem counts</strong>, not cSCU. The form label updates automatically when a gem is selected.</li>
+        <li>The location defaults to <strong>Levsky</strong>. Type a custom location or select one you have saved previously.</li>
+      </ul>
+      <div class="tip"><p><strong>Shortcut:</strong> Use <strong>OCR Input</strong> to import refinery yields directly from a screenshot, or <strong>Add Bulk Material</strong> to enter many lots of the same ore in rapid sequence.</p></div>
+
+      <div class="sub-heading">Filters and Sorting</div>
+      <p class="doc-p">The filter bar lets you narrow the list by <strong>Type</strong> (All / Ore / Gems) and <strong>Quality</strong> band (All / 700s / 800s / 900s). Use the search box to filter by ore name or location. Click any column header to sort.</p>
+
+      <div class="sub-heading">Editing and Deleting</div>
+      <ul class="doc-list">
+        <li><strong>QTY</strong> — click to edit the quantity of a lot inline. Press OK to confirm or ✕ to cancel.</li>
+        <li><strong>DEL</strong> — immediately removes the lot. There is no undo.</li>
+      </ul>
+
+      <div class="sub-heading">Bulk Operations</div>
+      <p class="doc-p">Check the box on one or more rows to select them. Three operations become available:</p>
+      <ul class="doc-list">
+        <li><strong>Combine</strong> — merges two or more lots of the same ore at the same location into a single lot. The resulting quality is a weighted average by quantity. Requires all selected lots to share the same ore and location.</li>
+        <li><strong>Split</strong> — divides one selected lot into two. Enter how many cSCU to split off; the remainder stays as a second lot. Both halves keep the original quality.</li>
+        <li><strong>Move</strong> — reassigns all selected lots (at the same current location) to a new location.</li>
+      </ul>
+
+      <div class="sub-heading">Managing Locations</div>
+      <p class="doc-p">The location dropdown in both the Add Lot form and the Move dialog includes a <strong>Custom...</strong> option and an <strong>— Edit List —</strong> option. Custom locations you add are saved and shared across all modules. A location that still has lots assigned to it cannot be removed.</p>
+      <p class="doc-p">Open <strong>Edit List</strong> to set your default storage location. The current default is marked with a gold <strong>DEFAULT</strong> badge. Click <strong>Set Default</strong> on any location — including Levsky — to make it the new default. The change applies immediately across all modules. If the default location is removed, it resets to Levsky automatically.</p>
+
+      <div class="sub-heading">Statistics Footer</div>
+      <p class="doc-p">The header shows total lot count, total cSCU across all lots, and gem vs ore subtotals. The footer shows how many lots are currently visible vs total, the cSCU sum of visible lots, and the quantity of any selected rows.</p>
+    </div>
+  </div>
+
+  <!-- ── 03 RESOURCE ACQUISITION ── -->
+  <div class="section" id="s03">
+    <button class="section-toggle" onclick="toggle(this)">
+      <span class="section-num">03</span>
+      <span class="section-title">Resource Acquisition</span>
+      <span class="section-arrow">▼</span>
+    </button>
+    <div class="section-body">
+      <p class="section-intro">Resource Acquisition is designed for rapid data entry when you have a batch of lots from a single mining or refinery session. You pick one ore, enter multiple quality/quantity pairs in quick succession, then commit them all at once.</p>
+
+      <div class="sub-heading">Workflow</div>
+      <ol style="padding-left:18px;display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
+        <li style="font-size:15px;color:var(--tmi-text-secondary);line-height:1.6;"><strong style="color:var(--tmi-text-primary)">Select a material</strong> — use the All / Gems / Ore filter buttons to narrow the list, then pick from the dropdown. The selected ore locks in and is shown in the panel.</li>
+        <li style="font-size:15px;color:var(--tmi-text-secondary);line-height:1.6;"><strong style="color:var(--tmi-text-primary)">Set a location</strong> — choose from the dropdown or enter a custom location. All lots in this session will use this location.</li>
+        <li style="font-size:15px;color:var(--tmi-text-secondary);line-height:1.6;"><strong style="color:var(--tmi-text-primary)">Enter each lot</strong> — type <em>quality / quantity</em> in the entry field and press Enter (or click + ADD). Repeat for each lot.</li>
+        <li style="font-size:15px;color:var(--tmi-text-secondary);line-height:1.6;"><strong style="color:var(--tmi-text-primary)">Review the queue</strong> — each entry appears in the Session Queue below. Click ✕ on any row to remove it before committing.</li>
+        <li style="font-size:15px;color:var(--tmi-text-secondary);line-height:1.6;"><strong style="color:var(--tmi-text-primary)">Commit to Inventory</strong> — click the gold button to write all queued lots to the Material Database. The queue clears and a confirmation toast appears.</li>
+      </ol>
+
+      <div class="callout"><p><strong>Format:</strong> quality / quantity &nbsp;·&nbsp; Example: <strong>875 / 45</strong> = quality 875, 45 cSCU. For gems, quantity is a gem count, not cSCU.</p></div>
+
+      <div class="sub-heading">Notes</div>
+      <ul class="doc-list">
+        <li>You can switch between different ores mid-session by changing the material dropdown — each lot in the queue retains the ore it was entered with.</li>
+        <li><strong>Clear Queue</strong> discards all staged entries without saving. Committed lots cannot be un-committed from this screen — use Material Database to delete them if needed.</li>
+        <li>For refinery box yields specifically, use <strong>OCR Import</strong> instead — it auto-splits yields into individual box lots.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ── 04 BLUEPRINT DATABASE ── -->
+  <div class="section" id="s04">
+    <button class="section-toggle" onclick="toggle(this)">
+      <span class="section-num">04</span>
+      <span class="section-title">Blueprint Database</span>
+      <span class="section-arrow">▼</span>
+    </button>
+    <div class="section-body">
+      <p class="section-intro">The Blueprint Database is your full reference for every craftable item in the game. It has three tabs: a browser for exploring and tagging blueprints, a tracker for monitoring crafting readiness, and a material needs calculator.</p>
+
+      <div class="sub-heading">Blueprint Browser</div>
+      <p class="doc-p">Displays all blueprints loaded from Data Sync. Use the filter row to narrow by type, ownership, and search by name. Clicking a blueprint row expands it to show its ingredient list.</p>
+      <table class="kv-table">
+        <thead><tr><th>Control</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td>Type filter</td><td>Show All, Armor, Weapon, or Ammo. <strong>Ammo is hidden from the All view</strong> — it only appears when you explicitly select the Ammo filter.</td></tr>
+          <tr><td>All Blueprints / Owned Only</td><td>Toggle to show only blueprints you have marked as owned.</td></tr>
+          <tr><td>Mission Only</td><td>Filters to blueprints that require a mission unlock.</td></tr>
+          <tr><td>Armor filters</td><td>Visible when Armor type is active. Filter by Category, Slot (Helmet / Core / Legs / Arms / Backpack), and Weight (Light / Medium / Heavy).</td></tr>
+          <tr><td>Weapon filters</td><td>Visible when Weapon type is active. Filter by weapon type (Rifle, SMG, Pistol, etc.).</td></tr>
+          <tr><td>OWNED button</td><td>Marks a blueprint as physically in your possession. Owned blueprints appear in The Forge's browser and are highlighted with a green left border.</td></tr>
+          <tr><td>TRACK button</td><td>Adds a blueprint to the Crafting Tracker for readiness monitoring. Independent of ownership.</td></tr>
+        </tbody>
+      </table>
+      <div class="tip"><p><strong>Note:</strong> Armor Category (Combat, Cosmonaut, Engineer, etc.) is not available from the game API. Set it manually by opening a blueprint and editing its category field after syncing.</p></div>
+
+      <div class="sub-heading">Crafting Tracker</div>
+      <p class="doc-p">Shows all blueprints you have personally tracked, plus any that have an active order attached. Each row displays your selected quality tier badges and whether your current inventory can cover them.</p>
+      <ul class="doc-list">
+        <li><strong>Tier badges (700+ / 800+ / 900+)</strong> — click to toggle which tiers you are planning to craft. A ✓ appears when your inventory has sufficient materials at that quality band.</li>
+        <li><strong>Order pills</strong> — shown automatically for any blueprint with an active order. Turn green when materials are sufficient for the order's quality tier.</li>
+        <li><strong>FORGE →</strong> — appears when at least one tier is ready. Clicking it opens The Forge with that blueprint pre-selected on the workbench.</li>
+        <li><strong>Expand row</strong> — shows a per-ingredient breakdown: how much you need vs. how much you have in each quality band.</li>
+        <li><strong>✕ button</strong> — removes the blueprint from personal tracking. Order-linked blueprints remain until the order is delivered or deleted.</li>
+      </ul>
+      <div class="callout"><p><strong>Aslarite rule:</strong> Aslarite is a universal ingredient. Any aslarite at quality <strong>500 or above</strong> counts toward requirements — it is not band-locked like other materials.</p></div>
+
+      <div class="sub-heading">Material Needs</div>
+      <p class="doc-p">Aggregates ingredient requirements across all tracked blueprints and active orders. Shows what you need per quality band vs. what you currently have, color-coded green (sufficient) or red (shortage).</p>
+      <ul class="doc-list">
+        <li>Use the <strong>Target Tier</strong> filter (All / 700+ / 800+ / 900+) to focus on a single band and reduce table clutter.</li>
+        <li>Personal tracking contributes to whichever tiers you have selected on that blueprint in the Tracker tab.</li>
+        <li>Orders contribute only to their specific quality band.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ── 05 THE FORGE ── -->
+  <div class="section" id="s05">
+    <button class="section-toggle" onclick="toggle(this)">
+      <span class="section-num">05</span>
+      <span class="section-title">The Forge</span>
+      <span class="section-arrow">▼</span>
+    </button>
+    <div class="section-body">
+      <p class="section-intro">The Forge is where you execute crafting jobs. It walks you through selecting material lots for each ingredient slot, projects the resulting quality tier, deducts consumed materials from your inventory, and logs the completed craft.</p>
+
+      <div class="sub-heading">Blueprint Browser</div>
+      <p class="doc-p">The first tab shows all blueprints marked as <strong>Owned</strong> in Blueprint Database. Use the type filter or the Tracked / Orders quick filters to narrow the list. Click <strong>Craft This</strong> on any blueprint to load it onto the workbench.</p>
+      <p class="doc-p">You can also arrive here directly from Blueprint Database — the <strong>FORGE →</strong> button on a tracked blueprint pre-selects it on the workbench automatically.</p>
+
+      <div class="sub-heading">Craft Workbench</div>
+      <p class="doc-p">The workbench shows one slot per ingredient in the blueprint. For each slot:</p>
+      <ul class="doc-list">
+        <li>Click <strong>Add Lot</strong> to open the lot picker for that ingredient. Available lots are shown with quality, quantity, and location.</li>
+        <li>Click <strong>High → Low</strong> / <strong>Low → High</strong> in the picker to sort by quality.</li>
+        <li>Click <strong>Select</strong> on a lot to assign it. The module takes only what is needed — if the lot has more than required, only the required amount is reserved.</li>
+        <li>Multiple lots can be used to fill one slot if a single lot is not large enough.</li>
+        <li>Use <strong>Remove Last</strong> to undo the most recent lot selection for a slot.</li>
+      </ul>
+      <p class="doc-p">A progress bar fills as each slot is satisfied. When all slots are filled, the <strong>Projected Quality Tier</strong> appears at the bottom.</p>
+
+      <div class="sub-heading">Quality Tier Calculation</div>
+      <p class="doc-p">The projected tier is based on the weighted average quality of all <strong>non-aslarite</strong> ingredients. Aslarite does not affect quality. The result maps to a tier: 700+ (700–799), 800+ (800–899), or 900+ (900+).</p>
+      <div class="callout"><p>If an order is attached and the projected tier is <strong>below</strong> the order's target quality, the Make Item button is blocked with a warning. You cannot accidentally under-craft for an attached order.</p></div>
+
+      <div class="sub-heading">Attaching an Order</div>
+      <p class="doc-p">Click <strong>Attach Order</strong> to link an active order to this craft. Only orders for the current blueprint are shown. When an order is attached, the target quality tier is displayed as a reminder. After crafting, the linked order is automatically advanced to <em>Ready</em> status.</p>
+
+      <div class="sub-heading">Making the Item</div>
+      <p class="doc-p">Click <strong>Make Item</strong> when all slots are filled. The module:</p>
+      <ul class="doc-list">
+        <li>Deducts used quantities from Material Database lots (lots emptied to zero are removed).</li>
+        <li>Records a crafting job in the Crafting Log with all ingredient details and the resulting quality tier.</li>
+        <li>Advances any attached order to Ready.</li>
+        <li>Shows a result summary on the workbench with material quality and crafting property effects.</li>
+      </ul>
+
+      <div class="sub-heading">Crafting Log</div>
+      <p class="doc-p">The third tab shows all past crafting jobs, newest first. Filter by All / Personal / Orders. Expand any entry to see per-material quality averages and crafting property effects. You can also attach or detach orders from log entries retroactively.</p>
+      <div class="tip"><p><strong>Crafting properties</strong> show the stat effect each material contributed based on its quality. Energy weapon properties are currently pending — they display as "pending game data" until extracted.</p></div>
+    </div>
+  </div>
+
+  <!-- ── 06 ORDER TRACKER ── -->
+  <div class="section" id="s06">
+    <button class="section-toggle" onclick="toggle(this)">
+      <span class="section-num">06</span>
+      <span class="section-title">Order Tracker</span>
+      <span class="section-arrow">▼</span>
+    </button>
+    <div class="section-body">
+      <p class="section-intro">The Order Tracker manages customer crafting requests from intake to delivery. Orders are tracked through a three-stage pipeline and automatically link to Blueprint Database and The Forge so material readiness is always visible.</p>
+
+      <div class="sub-heading">Creating an Order</div>
+      <p class="doc-p">Go to the <strong>New Order</strong> tab and fill in the form:</p>
+      <ul class="doc-list">
+        <li><strong>Customer</strong> — the player handle or name the order is for.</li>
+        <li><strong>Blueprint</strong> — select from all blueprints loaded in Data Sync.</li>
+        <li><strong>Quality Tier</strong> — choose 700, 800, or 900. This determines which quality band of materials is required.</li>
+        <li><strong>Deadline</strong> — optional. Deadlines within 3 days turn amber; overdue deadlines turn red.</li>
+        <li><strong>Trade Agreed</strong> — free text for payment terms (aUEC amount, items, or other arrangements).</li>
+        <li><strong>Notes</strong> — any special instructions or delivery details.</li>
+      </ul>
+      <p class="doc-p">Clicking <strong>Create Order</strong> saves the order and automatically adds the blueprint to Crafting Tracker so its material readiness is monitored.</p>
+
+      <div class="sub-heading">Order Status Pipeline</div>
+      <table class="kv-table">
+        <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>In Progress</td><td>Order received; materials not yet ready or craft not yet complete.</td></tr>
+          <tr><td>Ready</td><td>Item has been crafted in The Forge. Awaiting handoff to customer.</td></tr>
+          <tr><td>Delivered</td><td>Item handed to customer. Order moves to Past Orders.</td></tr>
+        </tbody>
+      </table>
+      <p class="doc-p">Expand any order row to see its full details and action buttons. Use <strong>Mark Ready</strong> / <strong>Mark Delivered</strong> to advance the status, or the revert button to step back. A <strong>MAT ✓</strong> badge appears on orders where current inventory is sufficient.</p>
+
+      <div class="sub-heading">Active Orders Filter</div>
+      <p class="doc-p">The filter bar on the Active Orders tab lets you view All Active, In Progress only, or Ready only. Delivered orders are always in the Past Orders tab.</p>
+
+      <div class="sub-heading">Deleting an Order</div>
+      <p class="doc-p">Expand an order row and click <strong>Delete Order</strong>. You must confirm. Deleting an order removes it permanently and clears it from Crafting Tracker (unless the blueprint is still personally tracked).</p>
+
+      <div class="warn"><p><strong>Note:</strong> Past Orders are not saved across page reloads. Delivered orders are visible in the current session only. Use Reports → Orders Filled for a persistent record.</p></div>
+    </div>
+  </div>
+
+  <!-- ── 07 REPORTS ── -->
+  <div class="section" id="s07">
+    <button class="section-toggle" onclick="toggle(this)">
+      <span class="section-num">07</span>
+      <span class="section-title">Reports</span>
+      <span class="section-arrow">▼</span>
+    </button>
+    <div class="section-body">
+      <p class="section-intro">Reports generates shareable, branded summaries of your inventory, blueprint availability, and crafting history. Each report is rendered on a light background formatted for readability and screenshotting. <strong>Ammunition blueprints are excluded from all reports.</strong></p>
+
+      <div class="sub-heading">Report 1 — Materials</div>
+      <p class="doc-p">A snapshot of your current Material Database inventory. Shows all ore and gem lots grouped by quality band, with quantities in cSCU. Use the date range filter to limit which lots are shown by when they were added. The Personal / Order checkboxes let you scope the report to specific tracking types.</p>
+
+      <div class="sub-heading">Report 2 — Crafting Availability</div>
+      <p class="doc-p">Shows which blueprints can currently be crafted and at which quality tiers, based on your live inventory. Armor is grouped by set with slot pills; weapons are listed individually. A blueprint appears in the 700+, 800+, or 900+ column only when you have enough material at that quality band.</p>
+      <ul class="doc-list">
+        <li>Use the <strong>Armor / Weapons</strong> toggle to switch between item types.</li>
+        <li>Only blueprints loaded from Data Sync are included. Run a sync first if this report is empty.</li>
+        <li>Quality determination uses the Core piece for armor sets.</li>
+      </ul>
+
+      <div class="sub-heading">Report 3 — Owned Blueprints</div>
+      <p class="doc-p">Lists all blueprints you have marked as Owned in Blueprint Database, sorted alphabetically. Useful for sharing your schematic inventory with org members or customers.</p>
+
+      <div class="sub-heading">Report 4 — Orders Filled</div>
+      <p class="doc-p">A record of delivered orders. Shows customer, blueprint, quality tier, trade agreed, and delivery date. Filter by date range to scope to a specific period.</p>
+
+      <div class="sub-heading">Report 5 — Crafted Items</div>
+      <p class="doc-p">A full log of all crafting jobs from The Forge. Shows item name, quality tier, and the materials used with their average quality. Useful for reviewing craft history and verifying what was made for which order.</p>
+
+    </div>
+  </div>
+
+  <!-- ── 08 OCR IMPORT ── -->
+  <div class="section" id="s08">
+    <button class="section-toggle" onclick="toggle(this)">
+      <span class="section-num">08</span>
+      <span class="section-title">OCR Import</span>
+      <span class="section-arrow">▼</span>
+    </button>
+    <div class="section-body">
+      <p class="section-intro">OCR Import reads your Star Citizen refinery yield screen directly and extracts lot data automatically, eliminating manual entry for large batches of refined ore.</p>
+
+      <div class="sub-heading">Setup — First Use</div>
+      <p class="doc-p">Configure the import settings in the setup bar at the top before capturing:</p>
+      <ul class="doc-list">
+        <li><strong>Storage Location</strong> — where the imported lots will be stored in your inventory.</li>
+        <li><strong>Date</strong> — defaults to today. Change if you are entering historical data.</li>
+      </ul>
+
+      <div class="sub-heading">Capturing and Cropping</div>
+      <p class="doc-p">Click <strong>Start OCR</strong> to open the capture picker. In the picker, click the <strong>Window</strong> tab, then select Star Citizen from the list. Once selected, a snapshot appears on the canvas.</p>
+      <p class="doc-p">Click and drag on the canvas to draw a yellow overlay region around the yield table — specifically the rows showing ore names, box sizes, and quantities.</p>
+      <ul class="doc-list">
+        <li>OCR runs <strong>automatically</strong> as soon as you finish drawing the region. There is no separate button to click.</li>
+        <li>Your crop region is saved and reused on your next visit, so you only need to draw it once per screen layout.</li>
+      </ul>
+
+      <div class="sub-heading">Result Indicators</div>
+      <p class="doc-p">Each ore name in the results table is matched against a known list. Three outcomes are possible:</p>
+      <table class="kv-table">
+        <thead><tr><th>Outcome</th><th>Indicator</th></tr></thead>
+        <tbody>
+          <tr><td>Exact match</td><td>Nothing shown — ore name accepted silently.</td></tr>
+          <tr><td>Fuzzy match <br><span style="font-size:12px;color:var(--tmi-text-dim)">(close but not exact)</span></td><td>Gold <strong>~</strong> badge to the right of the ore name. Hover to see what OCR originally read.</td></tr>
+          <tr><td>No match</td><td>Amber <strong>?</strong> badge. Hover shows "No match found — please verify." Edit the field manually.</td></tr>
+        </tbody>
+      </table>
+      <p class="doc-p">All fields remain editable regardless of match status. Fuzzy matching catches common OCR errors such as transposed or missing letters.</p>
+
+      <div class="sub-heading">Reviewing Results</div>
+      <p class="doc-p">Check each row before committing. You can edit any field directly in the table or remove rows that should not be imported. The module automatically splits refinery yields into standard box sizes (3200 / 1600 / 800 / 400 / 200 / 100 cSCU), matching how the game fills boxes largest-first.</p>
+
+      <div class="sub-heading">Committing</div>
+      <p class="doc-p">Click <strong>Commit to Inventory</strong> to write the reviewed lots to Material Database. A success message confirms the count.</p>
+
+      <div class="warn"><p><strong>Best practices:</strong> The capture can only read what is currently visible on screen. Refine no more than <strong>10 items at a time</strong> for reliable results. Any ore that falls below the scroll line will not be captured — add those lots manually via Material Database or Resource Acquisition. <strong>Do this before collecting the order.</strong></p></div>
+    </div>
+  </div>
+
+  <!-- ── 09 DATA SYNC ── -->
+  <div class="section" id="s09">
+    <button class="section-toggle" onclick="toggle(this)">
+      <span class="section-num">09</span>
+      <span class="section-title">Data Sync</span>
+      <span class="section-arrow">▼</span>
+    </button>
+    <div class="section-body">
+      <p class="section-intro">Data Sync pulls the latest blueprint data from the Star Citizen Wiki community API and stores it locally. This is how the app knows what can be crafted, what ingredients are required, and which blueprints need a mission unlock.</p>
+
+      <div class="sub-heading">When to Sync</div>
+      <ul class="doc-list">
+        <li>Run a sync <strong>once after installing the app</strong> to populate the Blueprint Database.</li>
+        <li>Run again after each <strong>game patch</strong> that adds or changes craftable items.</li>
+        <li>The header shows the date and game version of your last sync, and how many blueprints are currently loaded.</li>
+      </ul>
+
+      <div class="sub-heading">What Gets Imported</div>
+      <ul class="doc-list">
+        <li>Armor, weapon, and ammunition blueprints — approximately 1,144 items after filtering.</li>
+        <li>Ingredient names and quantities (converted to cSCU).</li>
+        <li>Mission unlock flags.</li>
+        <li>Weapon type and armor slot information.</li>
+      </ul>
+      <div class="callout"><p>Excluded types: weapon attachments, ship components, liveries, and other non-craftable entries. These are filtered automatically and counted in the sync log as skipped.</p></div>
+
+      <div class="sub-heading">What Is NOT Imported</div>
+      <ul class="doc-list">
+        <li><strong>Armor category</strong> (Combat, Cosmonaut, Engineer, etc.) — not available from the API. Set this manually in Blueprint Database after syncing.</li>
+        <li><strong>Crafting properties</strong> — stat effects per material are stored in a local file and calculated independently of the API.</li>
+      </ul>
+
+      <div class="sub-heading">Ownership and Tracking Flags</div>
+      <p class="doc-p">Your Owned and Tracked flags are preserved across syncs. Each blueprint is matched by its stable Wiki UUID, so a patch-day re-sync will not reset your ownership data. Only blueprints that are removed entirely from the game will lose their flags.</p>
+
+      <div class="sub-heading">Running a Sync</div>
+      <p class="doc-p">Click <strong>Sync Blueprints</strong>. The module makes approximately 11 API requests in sequence, showing progress for each page. When complete, a results summary shows how many blueprints were imported, updated, and skipped. The sync history panel below records the last 20 syncs.</p>
+      <div class="tip"><p><strong>After syncing:</strong> Open Blueprint Database and mark your owned blueprints. If you craft for customers, also check that any mission-locked blueprints you own are flagged correctly.</p></div>
+
+      <div class="sub-heading">API Status</div>
+      <p class="doc-p">The status card shows the Wiki API connectivity check on load. If it shows an error, your internet connection may be unavailable, or the Wiki API may be temporarily down. Syncing is blocked when the API is unreachable.</p>
+    </div>
+  </div>
+
+</div><!-- /sections -->
+</div><!-- /page-wrap -->
+<script>
+function toggle(btn) {
+  const body = btn.nextElementSibling;
+  const arrow = btn.querySelector('.section-arrow');
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  btn.classList.toggle('open', !isOpen);
+  arrow.textContent = isOpen ? '▼' : '▲';
+}
+
+function jumpTo(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const btn = el.querySelector('.section-toggle');
+  const body = el.querySelector('.section-body');
+  const arrow = btn.querySelector('.section-arrow');
+  body.classList.add('open');
+  btn.classList.add('open');
+  arrow.textContent = '▲';
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+</body>
+</html>

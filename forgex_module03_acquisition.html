@@ -77,7 +77,7 @@
   .queue-title{font-family:'Share Tech Mono',monospace;font-size:14px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;}
   .queue-count{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;color:var(--tmi-gold);background:var(--tmi-gold-glow);border:1px solid var(--tmi-border-dim);padding:2px 10px;}
 
-  .queue-list{flex:1;overflow-y:auto;max-height:280px;}
+  .queue-list{flex:1;overflow-y:auto;max-height:560px;}
   .queue-empty{padding:30px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);letter-spacing:1px;}
   .queue-item{display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid var(--tmi-border-dim);transition:background 0.1s;}
   .queue-item:hover{background:var(--tmi-bg-hover);}
@@ -102,6 +102,9 @@
   .editloc-remove:hover:not([disabled]){background:rgba(204,51,51,0.1);}
   .editloc-remove[disabled]{color:var(--tmi-text-dim);border-color:var(--tmi-border-dim);cursor:not-allowed;opacity:0.5;}
   .editloc-empty{padding:24px 16px;font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--tmi-text-dim);text-align:center;letter-spacing:1px;}
+  .editloc-default-badge{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--tmi-gold);border:1px solid var(--tmi-border);background:var(--tmi-gold-glow);padding:2px 7px;}
+  .editloc-setdefault{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:1px;color:var(--tmi-text-dim);background:none;border:1px solid var(--tmi-border-dim);padding:3px 10px;cursor:pointer;text-transform:uppercase;transition:all 0.15s;}
+  .editloc-setdefault:hover{color:var(--tmi-gold);border-color:var(--tmi-border);}
   /* reuse form-overlay / form-panel / form-header / form-footer from Module 02 pattern */
   .form-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:100;align-items:center;justify-content:center;}
   .form-overlay.open{display:flex;}
@@ -214,11 +217,13 @@
 </div>
 
 <script>
-const GEM_NAMES = new Set(['aphorite','beradom','carinite','dolvine','feynmaline','glacosite','hadanite','jaclium','janalite','sadaryx','saldynium']);
-const ALL_GEMS = ['aphorite','beradom','carinite','dolvine','feynmaline','glacosite','hadanite','jaclium','janalite','sadaryx','saldynium'];
-const ALL_ORES = ['agricium','aluminum','aslarite','beryl','bexalite','borase','copper','corundum','diamond','gold','inertite','iron','laranite','lindinium','quantanium','quartz','silicon','stileron','taranite','titanium','tungsten'];
+const GEM_NAMES = new Set(['aphorite','beradom','carinite','dolivine','feynmaline','glacosite','hadanite','jaclium','janalite','sadaryx','saldynium']);
+const ALL_GEMS = ['aphorite','beradom','carinite','dolivine','feynmaline','glacosite','hadanite','jaclium','janalite','sadaryx','saldynium'];
+const ALL_ORES = ['agricium','aluminum','aslarite','beryl','bexalite','borase','copper','corundum','gold','hephaestanite','ice','iron','laranite','lindinium','ouratite','quantainium','quartz','riccite','savrilium','silicon','stileron','taranite','tin','titanium','torite','tungsten'];
 const LOC_KEY = 'forgex-locations';
-const DEFAULT_LOC = 'Levsky';
+const FALLBACK_LOC = 'Levsky';
+const DEFAULT_LOC_KEY = 'forgex-default-location';
+let DEFAULT_LOC = localStorage.getItem(DEFAULT_LOC_KEY) || FALLBACK_LOC;
 
 function loadLocations(){
   try{const r=localStorage.getItem(LOC_KEY);if(r){const p=JSON.parse(r);if(Array.isArray(p)) return p;}}catch(e){}
@@ -226,7 +231,7 @@ function loadLocations(){
 }
 function persistLocations(){try{localStorage.setItem(LOC_KEY,JSON.stringify(customLocations));}catch(e){}}
 function addCustomLocation(loc){
-  if(!loc||loc===DEFAULT_LOC||customLocations.includes(loc)) return;
+  if(!loc||loc===FALLBACK_LOC||customLocations.includes(loc)) return;
   customLocations.push(loc);
   customLocations.sort();
   persistLocations();
@@ -234,13 +239,14 @@ function addCustomLocation(loc){
 function buildLocOptions(selectId){
   const sel=document.getElementById(selectId);
   const cur=sel.value;
-  sel.innerHTML=`<option value="${DEFAULT_LOC}">${DEFAULT_LOC}</option>`;
+  sel.innerHTML=`<option value="${FALLBACK_LOC}">${FALLBACK_LOC}</option>`;
   customLocations.forEach(loc=>{
     const o=document.createElement('option');o.value=loc;o.textContent=loc;sel.appendChild(o);
   });
   const cust=document.createElement('option');cust.value='custom';cust.textContent='Custom...';sel.appendChild(cust);
   const edit=document.createElement('option');edit.value='edit_list';edit.textContent='— Edit List —';sel.appendChild(edit);
   if(cur&&sel.querySelector(`option[value="${CSS.escape(cur)}"]`)) sel.value=cur;
+  else sel.value=DEFAULT_LOC;
 }
 
 let customLocations=loadLocations();
@@ -344,7 +350,7 @@ function addEntry(){
   const qty = parseInt(parts[1].trim());
 
   if(isNaN(quality)||quality<1||quality>1000){ showError('Quality must be 1–1000'); return; }
-  if(isNaN(qty)||qty<1){ showError('Quantity must be at least 1 cSCU'); return; }
+  if(isNaN(qty)||qty<1){ showError(GEM_NAMES.has(currentOre)?'Quantity must be at least 1 gem':'Quantity must be at least 1 cSCU'); return; }
 
   const isGem = GEM_NAMES.has(currentOre);
   const loc = getLocation();
@@ -395,7 +401,7 @@ function renderQueue(){
       <span class="queue-num">${i+1}</span>
       <span class="queue-ore">${item.ore}${item.hand_mined?'<span class="queue-gem-tag" style="margin-left:5px">GEM</span>':''}</span>
       <span class="queue-qual" style="color:${qcol}">${item.quality}</span>
-      <span class="queue-qty">${item.qty}<span> cSCU (${scu})</span></span>
+      <span class="queue-qty">${item.qty}<span> ${item.hand_mined?'gems':`cSCU (${scu})`}</span></span>
       <span class="queue-loc">${item.location}</span>
       <button class="queue-del" onclick="removeItem(${item.id})">✕</button>
     </div>`;
@@ -484,24 +490,35 @@ function openEditLocations(returnSelectId,customInputId){
 function renderEditLocations(){
   const counts=getLocLotCounts();
   const body=document.getElementById('editloc-body');
-  if(customLocations.length===0){
-    body.innerHTML='<div class="editloc-empty">NO CUSTOM LOCATIONS SAVED</div>';
-    return;
-  }
-  body.innerHTML=customLocations.map((loc,i)=>{
+  const allLocs=[FALLBACK_LOC,...customLocations];
+  body.innerHTML=allLocs.map((loc)=>{
+    const isBuiltIn=loc===FALLBACK_LOC;
+    const isCurrent=loc===DEFAULT_LOC;
+    const customIdx=customLocations.indexOf(loc);
     const count=counts[loc]||0;
-    const blocked=count>0;
+    const blocked=!isBuiltIn&&count>0;
     return `<div class="editloc-row">
       <span class="editloc-name">${loc}</span>
-      ${blocked?`<span class="editloc-count">${count} lot${count>1?'s':''}</span>`:''}
-      <button class="editloc-remove" onclick="removeLocation(${i})" ${blocked?'disabled':''}>Remove</button>
+      ${isCurrent?'<span class="editloc-default-badge">DEFAULT</span>':''}
+      ${!isBuiltIn&&blocked?`<span class="editloc-count">${count} lot${count>1?'s':''}</span>`:''}
+      ${!isCurrent?`<button class="editloc-setdefault" onclick="setDefaultLocation(this.dataset.loc)" data-loc="${loc.replace(/"/g,'&quot;')}">Set Default</button>`:''}
+      ${!isBuiltIn?`<button class="editloc-remove" onclick="removeLocation(${customIdx})" ${blocked?'disabled':''}>Remove</button>`:''}
     </div>`;
   }).join('');
 }
 
+function setDefaultLocation(loc){
+  DEFAULT_LOC=loc;
+  localStorage.setItem(DEFAULT_LOC_KEY,loc);
+  buildLocOptions('loc-preset');
+  renderEditLocations();
+}
+
 function removeLocation(idx){
+  const removed=customLocations[idx];
   customLocations.splice(idx,1);
   persistLocations();
+  if(DEFAULT_LOC===removed){DEFAULT_LOC=FALLBACK_LOC;localStorage.setItem(DEFAULT_LOC_KEY,FALLBACK_LOC);}
   buildLocOptions('loc-preset');
   renderEditLocations();
 }
@@ -511,6 +528,7 @@ function closeEditLocations(){
 }
 
 buildLocOptions('loc-preset');
+document.getElementById('loc-preset').value=DEFAULT_LOC;
 buildOreSelect();
 renderQueue();
 updateFooter();

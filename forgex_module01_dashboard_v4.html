@@ -477,7 +477,7 @@
         </svg>
         <span class="nav-label">Reports</span>
       </div>
-      <div class="nav-item dim" id="nav-codex">
+      <div class="nav-item" id="nav-codex" onclick="loadModule('forgex_module10_codex.html','codex')">
         <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
           <rect x="3" y="1" width="10" height="14" stroke="currentColor" stroke-width="1.5"/>
           <line x1="5" y1="5" x2="11" y2="5" stroke="currentColor" stroke-width="1"/>
@@ -553,10 +553,10 @@
                 <div class="module-desc">Activity summaries, revenue analytics, inventory snapshots and craft history.</div>
                 <div class="module-status"><span class="status-dot ready"></span>ONLINE</div>
               </div>
-              <div class="module-card coming-soon">
+              <div class="module-card ready" onclick="loadModule('forgex_module10_codex.html','codex')">
                 <div class="module-name">Codex</div>
                 <div class="module-desc">Field manual and reference documentation for TI Forgeworks operations.</div>
-                <div class="module-status"><span class="status-dot pending"></span>IN DEVELOPMENT</div>
+                <div class="module-status"><span class="status-dot ready"></span>ONLINE</div>
               </div>
             </div>
 
@@ -787,8 +787,9 @@ function closeBackup() { document.getElementById('backupModal').classList.remove
 window.addEventListener('message', e => {
   if(e.data?.type === 'forgex-navigate' && e.data?.src) {
     const navKeys = {
-      'forgex_module08_ocr.html':       'ocr',
+      'forgex_module08_ocr.html':         'ocr',
       'forgex_module03_acquisition.html': 'acquisition',
+      'forgex_module10_codex.html':       'codex',
     };
     loadModule(e.data.src, navKeys[e.data.src] || '');
   }

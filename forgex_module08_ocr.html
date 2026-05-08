@@ -371,6 +371,9 @@
     .editloc-remove:hover { background:rgba(204,51,51,0.1); }
     .editloc-remove:disabled { opacity:0.35; cursor:not-allowed; }
     .editloc-empty { padding:20px 16px; font-family:'Share Tech Mono',monospace; font-size:12px; color:var(--tmi-text-dim); text-align:center; text-transform:uppercase; }
+    .editloc-default-badge { font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:1px; color:var(--tmi-gold); border:1px solid rgba(200,168,75,0.35); background:rgba(200,168,75,0.1); padding:2px 7px; }
+    .editloc-setdefault { font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px; color:var(--tmi-text-dim); background:none; border:1px solid #3a3020; padding:3px 10px; cursor:pointer; text-transform:uppercase; transition:all 0.15s; }
+    .editloc-setdefault:hover { color:var(--tmi-gold); border-color:var(--tmi-gold-dim); }
 
     /* ── Toast ── */
     .toast {
@@ -400,7 +403,7 @@
   <!-- Setup bar -->
   <div class="setup-bar">
     <div class="setup-field">
-      <div class="field-label">Location <span style="color:var(--tmi-text-dim);font-size:9px">(defaults to Levsky)</span></div>
+      <div class="field-label">Location <span style="color:var(--tmi-text-dim);font-size:9px">(change default via Edit List)</span></div>
       <select id="locationSelect" onchange="applyLocPreset()">
         <option value="Levsky">Levsky</option>
       </select>
@@ -494,8 +497,10 @@ let dragCurrent    = { x: 0, y: 0 };
 let tableRows      = [];
 
 // ── Location system (mirrors Module 02/03) ─────────────────────────────────
-const LOC_KEY    = 'forgex-locations';
-const DEFAULT_LOC = 'Levsky';
+const LOC_KEY     = 'forgex-locations';
+const FALLBACK_LOC = 'Levsky';
+const DEFAULT_LOC_KEY = 'forgex-default-location';
+let DEFAULT_LOC = localStorage.getItem(DEFAULT_LOC_KEY) || FALLBACK_LOC;
 let customLocations = [];
 
 function loadLocationsData() {
@@ -510,7 +515,7 @@ function persistLocations() {
 }
 
 function addCustomLocation(loc) {
-  if (!loc || loc === DEFAULT_LOC || customLocations.includes(loc)) return;
+  if (!loc || loc === FALLBACK_LOC || customLocations.includes(loc)) return;
   customLocations.push(loc);
   customLocations.sort();
   persistLocations();
@@ -519,7 +524,7 @@ function addCustomLocation(loc) {
 function buildLocOptions() {
   const sel = document.getElementById('locationSelect');
   const cur = sel.value;
-  sel.innerHTML = `<option value="${DEFAULT_LOC}">${DEFAULT_LOC}</option>`;
+  sel.innerHTML = `<option value="${FALLBACK_LOC}">${FALLBACK_LOC}</option>`;
   customLocations.forEach(loc => {
     const o = document.createElement('option');
     o.value = o.textContent = loc;
@@ -583,20 +588,32 @@ function openEditLocations() {
 
 function renderEditLocations() {
   const body = document.getElementById('editlocBody');
-  if (customLocations.length === 0) {
-    body.innerHTML = '<div class="editloc-empty">No custom locations saved</div>';
-    return;
-  }
-  body.innerHTML = customLocations.map((loc, i) => `
-    <div class="editloc-row">
+  const allLocs = [FALLBACK_LOC, ...customLocations];
+  body.innerHTML = allLocs.map((loc) => {
+    const isBuiltIn = loc === FALLBACK_LOC;
+    const isCurrent = loc === DEFAULT_LOC;
+    const customIdx = customLocations.indexOf(loc);
+    return `<div class="editloc-row">
       <span class="editloc-name">${esc(loc)}</span>
-      <button class="editloc-remove" onclick="removeLocation(${i})">Remove</button>
-    </div>`).join('');
+      ${isCurrent ? '<span class="editloc-default-badge">DEFAULT</span>' : ''}
+      ${!isCurrent ? `<button class="editloc-setdefault" onclick="setDefaultLocation(this.dataset.loc)" data-loc="${loc.replace(/"/g,'&quot;')}">Set Default</button>` : ''}
+      ${!isBuiltIn ? `<button class="editloc-remove" onclick="removeLocation(${customIdx})">Remove</button>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function setDefaultLocation(loc) {
+  DEFAULT_LOC = loc;
+  localStorage.setItem(DEFAULT_LOC_KEY, loc);
+  buildLocOptions();
+  renderEditLocations();
 }
 
 function removeLocation(idx) {
+  const removed = customLocations[idx];
   customLocations.splice(idx, 1);
   persistLocations();
+  if (DEFAULT_LOC === removed) { DEFAULT_LOC = FALLBACK_LOC; localStorage.setItem(DEFAULT_LOC_KEY, FALLBACK_LOC); }
   buildLocOptions();
   renderEditLocations();
 }
@@ -611,6 +628,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   customLocations = loadLocationsData();
   buildLocOptions();
+  document.getElementById('locationSelect').value = DEFAULT_LOC;
 
   const raw = localStorage.getItem('forgex-ocr-region');
   if (raw) {
@@ -863,11 +881,11 @@ async function runOCR() {
 const KNOWN_ORES = [
   // Refined ores
   'agricium','aluminum','aslarite','beryl','bexalite','borase','copper',
-  'corundum','dolivine','gold','hephaestanite','inertite','iron','laranite',
-  'lindinium','ouratite','quantainium','savrilium','silicon','stileron',
-  'taranite','tin','titanium','tungsten',
+  'corundum','gold','hephaestanite','ice','iron','laranite',
+  'lindinium','ouratite','quantainium','quartz','riccite','savrilium',
+  'silicon','stileron','taranite','tin','titanium','torite','tungsten',
   // Hand-mined gems
-  'aphorite','beradom','carinite','dolvine','feynmaline','glacosite',
+  'aphorite','beradom','carinite','dolivine','feynmaline','glacosite',
   'hadanite','jaclium','janalite','saldynium','sadaryx',
 ];
 

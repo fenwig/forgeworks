@@ -68,6 +68,12 @@
   .action-btn:hover{border-color:var(--tmi-border);color:var(--tmi-text-secondary);}
   .action-btn.del:hover{border-color:rgba(204,51,51,0.4);color:var(--tmi-danger);}
   .row-check{width:16px;height:16px;cursor:pointer;accent-color:var(--tmi-gold);}
+  .filter-select{background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);color:var(--tmi-text-primary);font-family:'Share Tech Mono',monospace;font-size:14px;padding:4px 8px;outline:none;cursor:pointer;}
+  .filter-select:focus{border-color:var(--tmi-border);}
+  .filter-select option{background:var(--tmi-bg-panel);}
+  .bp-list-item{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:600;letter-spacing:1px;color:var(--tmi-text-primary);padding:6px 0;border-bottom:1px solid var(--tmi-border-dim);}
+  .bp-list-item:last-child{border-bottom:none;}
+  .bp-empty{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--tmi-text-dim);padding:8px 0;letter-spacing:1px;}
 
   .empty-state{padding:40px;text-align:center;color:var(--tmi-text-dim);font-family:'Share Tech Mono',monospace;font-size:14px;letter-spacing:1px;}
 
@@ -120,6 +126,9 @@
   .editloc-remove:hover:not([disabled]){background:rgba(204,51,51,0.1);}
   .editloc-remove[disabled]{color:var(--tmi-text-dim);border-color:var(--tmi-border-dim);cursor:not-allowed;opacity:0.5;}
   .editloc-empty{padding:24px 16px;font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--tmi-text-dim);text-align:center;letter-spacing:1px;}
+  .editloc-default-badge{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--tmi-gold);border:1px solid var(--tmi-border);background:var(--tmi-gold-glow);padding:2px 7px;}
+  .editloc-setdefault{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:1px;color:var(--tmi-text-dim);background:none;border:1px solid var(--tmi-border-dim);padding:3px 10px;cursor:pointer;text-transform:uppercase;transition:all 0.15s;}
+  .editloc-setdefault:hover{color:var(--tmi-gold);border-color:var(--tmi-border);}
   .action-row{display:flex;align-items:center;gap:8px;padding:10px 18px;background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);}
   .action-btn-primary{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:1.5px;color:var(--tmi-bg-deep);background:var(--tmi-gold);border:none;padding:7px 18px;cursor:pointer;text-transform:uppercase;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);transition:background 0.15s;white-space:nowrap;}
   .action-btn-primary:hover{background:var(--tmi-gold-bright);}
@@ -137,9 +146,8 @@
   </div>
   <div class="mod-stats">
     <div class="stat"><div class="stat-val" id="stat-lots">0</div><div class="stat-lab">Lots</div></div>
-    <div class="stat"><div class="stat-val" id="stat-total">0</div><div class="stat-lab">Total cSCU</div></div>
-    <div class="stat"><div class="stat-val" id="stat-gems">0</div><div class="stat-lab">Gem cSCU</div></div>
-    <div class="stat"><div class="stat-val" id="stat-ore">0</div><div class="stat-lab">Ore cSCU</div></div>
+    <div class="stat"><div class="stat-val" id="stat-gems">0</div><div class="stat-lab">Gems</div></div>
+    <div class="stat"><div class="stat-val" id="stat-ore">0</div><div class="stat-lab">Ore SCU</div></div>
   </div>
 </div>
 
@@ -151,7 +159,7 @@
 
 <div class="filter-bar">
   <div class="search-wrap">
-    <input class="search-input" id="search-input" placeholder="Search ore or location..." oninput="renderTable()">
+    <input class="search-input" id="search-input" placeholder="Search ore..." oninput="renderTable()">
   </div>
   <div class="filter-sep"></div>
   <div class="filter-group">
@@ -169,6 +177,13 @@
     <button class="filter-btn" onclick="setFilter('qual','900',this)">900s</button>
   </div>
   <div class="filter-sep"></div>
+  <div class="filter-group">
+    <span class="filter-label">Location</span>
+    <select class="filter-select" id="loc-filter" onchange="setLocFilter(this.value)">
+      <option value="all">All</option>
+    </select>
+  </div>
+  <div class="filter-sep"></div>
   <button class="op-btn" id="btn-combine" onclick="openCombine()" disabled>Combine</button>
   <button class="op-btn" id="btn-split" onclick="openSplit()" disabled>Split</button>
   <button class="op-btn" id="btn-move" onclick="openMove()" disabled>Move</button>
@@ -181,7 +196,7 @@
       <th onclick="setSort('ore')">Ore / Material <span id="s-ore"></span></th>
       <th onclick="setSort('quality')">Quality <span id="s-quality"></span></th>
       <th onclick="setSort('qty')">Quantity <span id="s-qty"></span></th>
-      <th onclick="setSort('location')">Location <span id="s-location"></span></th>
+      <th class="no-sort">Location</th>
       <th onclick="setSort('date')">Added <span id="s-date"></span></th>
       <th class="no-sort">Actions</th>
       <th class="no-sort" style="width:44px;text-align:center;padding:10px 8px;">
@@ -221,7 +236,7 @@
             <option value="aphorite">Aphorite</option>
             <option value="beradom">Beradom</option>
             <option value="carinite">Carinite</option>
-            <option value="dolvine">Dolvine</option>
+            <option value="dolivine">Dolivine</option>
             <option value="feynmaline">Feynmaline</option>
             <option value="glacosite">Glacosite</option>
             <option value="hadanite">Hadanite</option>
@@ -239,18 +254,23 @@
             <option value="borase">Borase</option>
             <option value="copper">Copper</option>
             <option value="corundum">Corundum</option>
-            <option value="diamond">Diamond</option>
             <option value="gold">Gold</option>
-            <option value="inertite">Inertite</option>
+            <option value="hephaestanite">Hephaestanite</option>
+            <option value="ice">Ice</option>
             <option value="iron">Iron</option>
             <option value="laranite">Laranite</option>
             <option value="lindinium">Lindinium</option>
-            <option value="quantanium">Quantanium</option>
+            <option value="ouratite">Ouratite</option>
+            <option value="quantainium">Quantainium</option>
             <option value="quartz">Quartz</option>
+            <option value="riccite">Riccite</option>
+            <option value="savrilium">Savrilium</option>
             <option value="silicon">Silicon</option>
             <option value="stileron">Stileron</option>
             <option value="taranite">Taranite</option>
+            <option value="tin">Tin</option>
             <option value="titanium">Titanium</option>
+            <option value="torite">Torite</option>
             <option value="tungsten">Tungsten</option>
           </optgroup>
         </select>
@@ -264,12 +284,12 @@
           <input class="form-input" id="f-quality" type="number" min="1" max="1000" placeholder="e.g. 875">
         </div>
         <div class="form-row">
-          <label class="form-lbl">Quantity (cSCU)</label>
+          <label class="form-lbl" id="f-qty-lbl">Quantity (cSCU)</label>
           <input class="form-input" id="f-qty" type="number" min="1" placeholder="e.g. 3">
         </div>
       </div>
       <div class="form-row">
-        <label class="form-lbl">Storage Location <span class="form-lbl-hint">(defaults to Levsky)</span></label>
+        <label class="form-lbl">Storage Location <span class="form-lbl-hint">(change default via Edit List)</span></label>
         <div class="loc-select-row">
           <select class="form-select" id="f-loc-preset" onchange="applyLocPreset()">
             <option value="Levsky">Levsky</option>
@@ -366,12 +386,28 @@
   </div>
 </div>
 
+<!-- BP PANEL overlay -->
+<div class="form-overlay" id="bp-overlay">
+  <div class="form-panel" style="width:480px">
+    <div class="form-header">
+      <span class="form-title" id="bp-panel-title">Blueprints</span>
+      <button class="form-close" onclick="closeBpPanel()">✕</button>
+    </div>
+    <div id="bp-panel-body" style="max-height:380px;overflow-y:auto;padding:12px 16px;"></div>
+    <div class="form-footer">
+      <button class="btn-cancel" onclick="closeBpPanel()">Close</button>
+    </div>
+  </div>
+</div>
+
 </div><!-- /page-wrap -->
 <script>
-const GEM_NAMES = new Set(['aphorite','beradom','carinite','dolvine','feynmaline','glacosite','hadanite','jaclium','janalite','sadaryx','saldynium']);
-const ALL_GEMS = ['aphorite','beradom','carinite','dolvine','feynmaline','glacosite','hadanite','jaclium','janalite','sadaryx','saldynium'];
-const ALL_ORES = ['agricium','aluminum','aslarite','beryl','bexalite','borase','copper','corundum','diamond','gold','inertite','iron','laranite','lindinium','quantanium','quartz','silicon','stileron','taranite','titanium','tungsten'];
-const DEFAULT_LOC = 'Levsky';
+const GEM_NAMES = new Set(['aphorite','beradom','carinite','dolivine','feynmaline','glacosite','hadanite','jaclium','janalite','sadaryx','saldynium']);
+const ALL_GEMS = ['aphorite','beradom','carinite','dolivine','feynmaline','glacosite','hadanite','jaclium','janalite','sadaryx','saldynium'];
+const ALL_ORES = ['agricium','aluminum','aslarite','beryl','bexalite','borase','copper','corundum','gold','hephaestanite','ice','iron','laranite','lindinium','ouratite','quantainium','quartz','riccite','savrilium','silicon','stileron','taranite','tin','titanium','torite','tungsten'];
+const FALLBACK_LOC = 'Levsky';
+const DEFAULT_LOC_KEY = 'forgex-default-location';
+let DEFAULT_LOC = localStorage.getItem(DEFAULT_LOC_KEY) || FALLBACK_LOC;
 const STORAGE_KEY = 'forgex-lots';
 const LOC_KEY = 'forgex-locations';
 
@@ -404,7 +440,7 @@ function loadLocations(){
 }
 function persistLocations(){try{localStorage.setItem(LOC_KEY,JSON.stringify(customLocations));}catch(e){}}
 function addCustomLocation(loc){
-  if(!loc||loc===DEFAULT_LOC||customLocations.includes(loc)) return;
+  if(!loc||loc===FALLBACK_LOC||customLocations.includes(loc)) return;
   customLocations.push(loc);
   customLocations.sort();
   persistLocations();
@@ -419,6 +455,7 @@ function buildLocOptions(selectId){
   const cust=document.createElement('option');cust.value='custom';cust.textContent='Custom...';sel.appendChild(cust);
   const edit=document.createElement('option');edit.value='edit_list';edit.textContent='— Edit List —';sel.appendChild(edit);
   if(cur&&sel.querySelector(`option[value="${CSS.escape(cur)}"]`)) sel.value=cur;
+  else sel.value=DEFAULT_LOC;
 }
 
 const _d=loadData();
@@ -427,7 +464,9 @@ let nextId=_d.nextId||9;
 let customLocations=loadLocations();
 let sortCol='ore',sortDir=1;
 let filters={type:'all',qual:'all'};
+let filterLoc='all';
 let editingQtyId=null;
+let pendingDeleteId=null;
 let selectedIds=new Set();
 let visibleIds=[];
 
@@ -465,7 +504,8 @@ function getFiltered(){
       const band=parseInt(filters.qual);
       if(l.quality<band||l.quality>=band+100) return false;
     }
-    if(q&&!l.ore.toLowerCase().includes(q)&&!(l.location||'').toLowerCase().includes(q)) return false;
+    if(filterLoc!=='all'&&(l.location||DEFAULT_LOC)!==filterLoc) return false;
+    if(q&&!l.ore.toLowerCase().includes(q)) return false;
     return true;
   });
 }
@@ -485,12 +525,13 @@ function getSorted(arr){
 }
 
 function renderTable(){
+  buildLocFilter();
   const filtered=getSorted(getFiltered());
   visibleIds=filtered.map(l=>l.id);
   const tbody=document.getElementById('table-body');
   const empty=document.getElementById('empty-msg');
 
-  ['ore','quality','qty','location','date'].forEach(c=>{
+  ['ore','quality','qty','date'].forEach(c=>{
     const el=document.getElementById('s-'+c);
     if(el) el.textContent=sortCol===c?(sortDir===1?' ▲':' ▼'):'';
     const th=el&&el.closest('th');
@@ -504,7 +545,7 @@ function renderTable(){
     const qpct=Math.round((l.quality/1000)*100);
     const qcol=getQualityColor(l.quality);
     const isEditingQty=editingQtyId===l.id;
-    const scu=(l.qty/100).toFixed(2);
+    const isPendingDel=pendingDeleteId===l.id;
     const isDefault=l.location===DEFAULT_LOC;
     const isSel=selectedIds.has(l.id);
     return `<tr class="${isSel?'row-selected':''}">
@@ -526,15 +567,17 @@ function renderTable(){
             <button class="qty-cancel-btn" onclick="cancelQtyEdit()">✕</button>
           </div>
         `:`
-          <span class="qty-val" style="color:${qcol}">${l.qty}</span><span class="scu-label">cSCU</span>
-          <span class="scu-label" style="margin-left:4px">(${scu} SCU)</span>
+          <span class="qty-val" style="color:${qcol}">${l.qty}</span><span class="scu-label">${l.hand_mined?'GEMS':'cSCU'}</span>
         `}
       </td>
       <td><span class="loc-tag ${isDefault?'loc-default':''}">${l.location||DEFAULT_LOC}</span></td>
       <td><span class="date-val">${l.date}</span></td>
       <td style="white-space:nowrap">
         <button class="action-btn" onclick="startQtyEdit(${l.id})">QTY</button>
-        <button class="action-btn del" onclick="deleteLot(${l.id})">DEL</button>
+        <button class="action-btn" onclick="openBpPanel('${l.ore}')">BP</button>
+        ${isPendingDel
+          ?`<button class="action-btn del" onclick="confirmDelete(${l.id})">OK</button><button class="action-btn" onclick="cancelDelete()">✕</button>`
+          :`<button class="action-btn del" onclick="startDelete(${l.id})">DEL</button>`}
       </td>
       <td style="text-align:center;padding:10px 8px;">
         <input type="checkbox" class="row-check" ${isSel?'checked':''} onchange="toggleSelect(${l.id},this.checked)">
@@ -594,7 +637,10 @@ function applyQty(id){
   renderTable();
 }
 
-function deleteLot(id){
+function startDelete(id){pendingDeleteId=id;renderTable();}
+function cancelDelete(){pendingDeleteId=null;renderTable();}
+function confirmDelete(id){
+  pendingDeleteId=null;
   lots=lots.filter(l=>l.id!==id);
   selectedIds.delete(id);
   persist();
@@ -602,13 +648,11 @@ function deleteLot(id){
 }
 
 function updateStats(){
-  const total=lots.reduce((s,l)=>s+l.qty,0);
   const gems=lots.filter(l=>l.hand_mined).reduce((s,l)=>s+l.qty,0);
-  const ore=lots.filter(l=>!l.hand_mined).reduce((s,l)=>s+l.qty,0);
+  const oreCscu=lots.filter(l=>!l.hand_mined).reduce((s,l)=>s+l.qty,0);
   document.getElementById('stat-lots').textContent=lots.length;
-  document.getElementById('stat-total').textContent=total.toLocaleString();
   document.getElementById('stat-gems').textContent=gems.toLocaleString();
-  document.getElementById('stat-ore').textContent=ore.toLocaleString();
+  document.getElementById('stat-ore').textContent=(oreCscu/100).toFixed(1);
 }
 
 function updateFooter(filtered){
@@ -630,8 +674,9 @@ function updateFooter(filtered){
 
 function updateHMIndicator(){
   const ore=document.getElementById('f-ore').value;
-  const ind=document.getElementById('hm-indicator');
-  ind.style.display=GEM_NAMES.has(ore)?'block':'none';
+  const isGem=GEM_NAMES.has(ore);
+  document.getElementById('hm-indicator').style.display=isGem?'block':'none';
+  document.getElementById('f-qty-lbl').textContent=isGem?'Quantity (gems)':'Quantity (cSCU)';
 }
 
 function setOreFilter(type,btn){
@@ -668,8 +713,48 @@ function navToModule(src){
   }
 }
 
+function buildLocFilter(){
+  const sel=document.getElementById('loc-filter');
+  if(!sel) return;
+  const cur=sel.value;
+  const locs=[...new Set(lots.map(l=>l.location||DEFAULT_LOC))].sort();
+  sel.innerHTML='<option value="all">All</option>';
+  locs.forEach(loc=>{const o=document.createElement('option');o.value=loc;o.textContent=loc;sel.appendChild(o);});
+  if(cur&&sel.querySelector(`option[value="${CSS.escape(cur)}"]`)) sel.value=cur;
+  else sel.value='all';
+}
+
+function setLocFilter(val){filterLoc=val;renderTable();}
+
+function openBpPanel(ore){
+  const title=document.getElementById('bp-panel-title');
+  const body=document.getElementById('bp-panel-body');
+  title.textContent='Blueprints Using '+ore.charAt(0).toUpperCase()+ore.slice(1);
+  let blueprints=[];
+  let ownedIds=new Set();
+  try{blueprints=JSON.parse(localStorage.getItem('forgex-blueprints')||'[]');}catch(e){}
+  try{ownedIds=new Set(JSON.parse(localStorage.getItem('forgex-owned')||'[]'));}catch(e){}
+  if(!blueprints.length){
+    body.innerHTML='<div class="bp-empty">No blueprint data — run Data Sync first.</div>';
+    document.getElementById('bp-overlay').classList.add('open');
+    return;
+  }
+  const owned=blueprints.filter(bp=>ownedIds.has(bp.id)&&bp.ingredients&&bp.ingredients.some(i=>i.name===ore));
+  const bases=[...new Set(owned.map(bp=>bp.base))].sort();
+  if(!bases.length){
+    body.innerHTML='<div class="bp-empty">No owned blueprints use this material.</div>';
+  } else {
+    body.innerHTML=`<div style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;margin-bottom:10px;">${bases.length} blueprint${bases.length!==1?'s':''} owned</div>`+
+      bases.map(base=>`<div class="bp-list-item">${base}</div>`).join('');
+  }
+  document.getElementById('bp-overlay').classList.add('open');
+}
+
+function closeBpPanel(){document.getElementById('bp-overlay').classList.remove('open');}
+
 function openAddForm(){
   buildLocOptions('f-loc-preset');
+  document.getElementById('f-loc-preset').value=DEFAULT_LOC;
   document.getElementById('f-loc-custom').style.display='none';
   document.getElementById('f-loc-custom').value='';
   document.getElementById('f-quality').value='';
@@ -816,6 +901,7 @@ function openMove(){
     `<div class="info-line">Moving <strong>${sel.length}</strong> lot${sel.length>1?'s':''}</div>`+
     sel.map(l=>`<div class="info-line" style="color:var(--tmi-text-dim)">${l.ore} — ${l.qty} cSCU @ ${l.location}</div>`).join('');
   buildLocOptions('move-loc-preset');
+  document.getElementById('move-loc-preset').value=DEFAULT_LOC;
   document.getElementById('move-loc-custom').style.display='none';
   document.getElementById('move-loc-custom').value='';
   document.getElementById('move-overlay').classList.add('open');
@@ -856,24 +942,35 @@ function openEditLocations(returnSelectId,customInputId){
 function renderEditLocations(){
   const counts=getLocLotCounts();
   const body=document.getElementById('editloc-body');
-  if(customLocations.length===0){
-    body.innerHTML='<div class="editloc-empty">NO CUSTOM LOCATIONS SAVED</div>';
-    return;
-  }
-  body.innerHTML=customLocations.map((loc,i)=>{
+  const allLocs=[FALLBACK_LOC,...customLocations];
+  body.innerHTML=allLocs.map((loc)=>{
+    const isBuiltIn=loc===FALLBACK_LOC;
+    const isCurrent=loc===DEFAULT_LOC;
+    const customIdx=customLocations.indexOf(loc);
     const count=counts[loc]||0;
-    const blocked=count>0;
+    const blocked=!isBuiltIn&&count>0;
     return `<div class="editloc-row">
       <span class="editloc-name">${loc}</span>
-      ${blocked?`<span class="editloc-count">${count} lot${count>1?'s':''}</span>`:''}
-      <button class="editloc-remove" onclick="removeLocation(${i})" ${blocked?'disabled':''}>Remove</button>
+      ${isCurrent?'<span class="editloc-default-badge">DEFAULT</span>':''}
+      ${!isBuiltIn&&blocked?`<span class="editloc-count">${count} lot${count>1?'s':''}</span>`:''}
+      ${!isCurrent?`<button class="editloc-setdefault" onclick="setDefaultLocation(this.dataset.loc)" data-loc="${loc.replace(/"/g,'&quot;')}">Set Default</button>`:''}
+      ${!isBuiltIn?`<button class="editloc-remove" onclick="removeLocation(${customIdx})" ${blocked?'disabled':''}>Remove</button>`:''}
     </div>`;
   }).join('');
 }
 
+function setDefaultLocation(loc){
+  DEFAULT_LOC=loc;
+  localStorage.setItem(DEFAULT_LOC_KEY,loc);
+  ['f-loc-preset','move-loc-preset'].forEach(id=>{if(document.getElementById(id)) buildLocOptions(id);});
+  renderEditLocations();
+}
+
 function removeLocation(idx){
+  const removed=customLocations[idx];
   customLocations.splice(idx,1);
   persistLocations();
+  if(DEFAULT_LOC===removed){DEFAULT_LOC=FALLBACK_LOC;localStorage.setItem(DEFAULT_LOC_KEY,FALLBACK_LOC);}
   ['f-loc-preset','move-loc-preset'].forEach(id=>{if(document.getElementById(id)) buildLocOptions(id);});
   renderEditLocations();
 }
