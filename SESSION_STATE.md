@@ -5,7 +5,7 @@ Last updated: 2026-05-07
 
 ## Where to Resume
 
-**Next session:** No outstanding build tasks. User will direct. Prototype is ready to share with friends — distribution workflow confirmed working.
+**Next session:** No outstanding build tasks. User will direct.
 
 ---
 
@@ -76,6 +76,8 @@ Last updated: 2026-05-07
 - ~~Module 04 blueprint sort~~ ✓ — list now A-Z by full label
 - ~~Module 08 OCR single lot per line~~ ✓ — results now auto-split into box lots (3200/1600/800/400/200/100 cSCU)
 - ~~Distribution workflow~~ ✓ — Collect Updates.ps1 / Clear Updates.ps1 confirmed working
+- ~~All module headers~~ ✓ — all modules updated to "TI Forgeworks — Custom Arms & Armor"
+- ~~Module 04 owned/tracked linked~~ ✓ — owned now stored in `forgex-owned` key, independent of tracker
 
 ---
 
@@ -125,7 +127,7 @@ Last updated: 2026-05-07
 |---|---|
 | Confirm before coding | Always present plan, wait for explicit "go" |
 | No AskUserQuestion tool | Ask questions as plain text |
-| Header pattern | Eyebrow: **TI Forgeworks — Custom Arms & Armor** / Title: module name (white, Rajdhani) — update all modules to this eyebrow text as they are edited |
+| Header pattern | Eyebrow: **TI Forgeworks — Custom Arms & Armor** / Title: module name (white, Rajdhani) — ✓ applied to all modules |
 | Page width | **1200px** max-width |
 | Min font size | **14px** floor (exceptions: badges/pills 9–11px, eyebrow 10px) |
 | Text colors | **#ffffff** primary / **#d0c4b0** secondary / **#90806e** dim |
