@@ -5,7 +5,7 @@ Last updated: 2026-05-07
 
 ## Where to Resume
 
-**Next session:** Run a fresh Data Sync to populate `forgex-sync-log` and review the skipped-type breakdown. No outstanding build tasks. User will direct based on findings.
+**Next session:** No outstanding build tasks. User will direct. Prototype is ready to share with friends — distribution workflow confirmed working.
 
 ---
 
@@ -72,7 +72,10 @@ Last updated: 2026-05-07
 - ~~Module 05 blueprint dropdown hardcoded~~ ✓ — loads from forgex-blueprints
 - ~~Module 06 stale dev notice~~ ✓ — removed
 - ~~Game dates in seed data~~ ✓ CLOSED — seed data is fallback only; all new records use real dates via `new Date()`
-- ~~811 vs 1044 blueprint count~~ ✓ CLOSED — 811 is correct; 233 are intentionally filtered non-craftable types
+- ~~811 vs 1044 blueprint count~~ ✓ FIXED — Char_Armor_Helmet + Char_Armor_Chest added to slot map; WeaponAttachment/Magazine now Ammunition; 811 → 1044
+- ~~Module 04 blueprint sort~~ ✓ — list now A-Z by full label
+- ~~Module 08 OCR single lot per line~~ ✓ — results now auto-split into box lots (3200/1600/800/400/200/100 cSCU)
+- ~~Distribution workflow~~ ✓ — Collect Updates.ps1 / Clear Updates.ps1 confirmed working
 
 ---
 
