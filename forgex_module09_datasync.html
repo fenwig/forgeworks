@@ -186,7 +186,9 @@ const PER_PAGE = 100;
 const ARMOR_SLOT_MAP = {
   'Char_Armor_Legs':     'Legs',
   'Char_Armor_Torso':    'Core',
+  'Char_Armor_Chest':    'Core',
   'Char_Armor_Head':     'Helmet',
+  'Char_Armor_Helmet':   'Helmet',
   'Char_Armor_Arms':     'Arms',
   'Char_Armor_Backpack': 'Backpack',
   'Char_Armor_Undersuit': null,
@@ -199,10 +201,11 @@ const WEAPON_TYPES = [
   'Sniper Rifle','Shotgun','Pistol','SMG','LMG','Rifle'
 ];
 
-function resolveType(apiType) {
+function resolveType(apiType, subType) {
   if (!apiType) return null;
   if (apiType in ARMOR_SLOT_MAP) return 'Armor';
   if (apiType === 'WeaponPersonal') return 'Weapon';
+  if (apiType === 'WeaponAttachment' && subType === 'Magazine') return 'Ammunition';
   if (apiType.toLowerCase().includes('ammo')) return 'Ammunition';
   return null;
 }
@@ -260,7 +263,8 @@ function parseName(rawName, slot, type) {
 function mapBlueprint(record, newId) {
   const { uuid, output_name, output, is_available_by_default, unlocking_missions_count, ingredients } = record;
   const apiType  = output?.type || '';
-  const type     = resolveType(apiType);
+  const subType  = output?.sub_type || '';
+  const type     = resolveType(apiType, subType);
   if (!type) return null;
 
   const slot    = resolveSlot(apiType);

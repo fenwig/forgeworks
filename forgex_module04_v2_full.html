@@ -447,6 +447,13 @@ function renderBrowser(){
     const searchStr=(bp.base+(bp.slot?' '+bp.slot:'')+(bp.finish?' '+bp.finish:'')).toLowerCase();
     return !q||searchStr.includes(q);
   });
+  filtered.sort((a,b)=>{
+    const lbl=bp=>bp.type==='Weapon'?`${bp.base}${bp.weapon_type?' '+bp.weapon_type:''}${bp.finish?' '+bp.finish:''}`
+      :bp.type==='Ammunition'?`${bp.base}${bp.ammo_type?' '+bp.ammo_type:''}`
+      :bp.slot?`${bp.base} ${bp.slot}${bp.finish?' '+bp.finish:''}`:
+      `${bp.base}${bp.finish?' '+bp.finish:''}`;
+    return lbl(a).localeCompare(lbl(b));
+  });
   document.getElementById('tc-browser').textContent=blueprints.length;
   const list=document.getElementById('bp-list');
   const noRes=document.getElementById('no-results');

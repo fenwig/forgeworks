@@ -9,12 +9,14 @@ Last updated: 2026-05-07
 
 ---
 
-## Repository
+## Repository & Workflow
 
 | Field | Value |
 |---|---|
-| Repo | `fenwig/tmi-crafting-app` |
-| Branch | `claude/focused-mendel-7e5577` |
+| Live folder | `D:\Support Files\Crafting App\` |
+| Version control | Local git only — GitHub remote removed |
+| Claude workflow | Edit files directly in live folder (no worktrees/PRs) |
+| Distribution tag | `distributed` — marks last sent version |
 
 ---
 
@@ -44,6 +46,16 @@ Last updated: 2026-05-07
 ### Architecture Decision — Future Blueprint Types
 - Agreed: add `meta: {}` now (done), hold Module 04 filter/display overhaul until a real new type ships
 - When new types arrive: extend `resolveType()` in Module 09 and park type-specific API fields in `meta`
+
+### Distribution Workflow ✓ BUILT
+- GitHub removed — project runs fully local
+- `Collect Updates.ps1` — right-click → Run with PowerShell; copies changed app files to `Updates to be sent\` since last `distributed` tag
+- `Clear Updates.ps1` — right-click → Run with PowerShell; empties folder and advances `distributed` tag to current state
+- `Updates to be sent\` — staging folder; zip and send to friends
+- Friends: drop received files into their project folder (replacing existing); open `forgex_module01_dashboard_v4.html` in Chrome
+- Friends only need the 12 app files — not `.claude/`, `.git/`, `SESSION_STATE.md`, or any dev files
+- Initial `distributed` tag set on commit `e1a98f1`
+- PowerShell execution policy: `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` (one-time, run as admin if scripts are blocked)
 
 ---
 
@@ -82,6 +94,9 @@ Last updated: 2026-05-07
 | `SESSION_STATE.md` | ✓ This file |
 | `large logo.png` | Hero logo |
 | `small logo.png` | Header corner logo |
+| `Collect Updates.ps1` | Distribution script — collects changed app files |
+| `Clear Updates.ps1` | Distribution script — clears folder, advances baseline tag |
+| `Updates to be sent\` | Staging folder for friend distribution |
 
 ---
 
@@ -107,7 +122,7 @@ Last updated: 2026-05-07
 |---|---|
 | Confirm before coding | Always present plan, wait for explicit "go" |
 | No AskUserQuestion tool | Ask questions as plain text |
-| Header pattern | Eyebrow: org name / Title: module name (white, Rajdhani) |
+| Header pattern | Eyebrow: **TI Forgeworks — Custom Arms & Armor** / Title: module name (white, Rajdhani) — update all modules to this eyebrow text as they are edited |
 | Page width | **1200px** max-width |
 | Min font size | **14px** floor (exceptions: badges/pills 9–11px, eyebrow 10px) |
 | Text colors | **#ffffff** primary / **#d0c4b0** secondary / **#90806e** dim |
