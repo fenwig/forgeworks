@@ -159,7 +159,7 @@
 <div class="page-wrap">
 <div class="mod-header">
   <div>
-    <div class="mod-eyebrow">Troublemaker Incorporated — Custom Arms & Armor</div>
+    <div class="mod-eyebrow">TI Forgeworks — Custom Arms & Armor</div>
     <div class="mod-title">Blueprint Database</div>
   </div>
 </div>
@@ -295,8 +295,11 @@
 const GEM_NAMES=new Set(['hadanite','janalite','dolvine','aphorite','sadaryx','carinite','beradom','jaclium','saldynium','feynmaline','glacosite']);
 const LS_TRACKING='forgex-tracking';
 const LS_ORDERS='forgex-active-orders';
+const LS_OWNED='forgex-owned';
 function readTracking(){try{return JSON.parse(localStorage.getItem(LS_TRACKING)||'{}')}catch{return{};}}
 function writeTracking(t){localStorage.setItem(LS_TRACKING,JSON.stringify(t));}
+function readOwned(){try{return new Set(JSON.parse(localStorage.getItem(LS_OWNED)||'[]'));}catch{return new Set();}}
+function writeOwned(){localStorage.setItem(LS_OWNED,JSON.stringify([...ownedIds]));}
 function readActiveOrders(){try{return JSON.parse(localStorage.getItem(LS_ORDERS)||'[]')}catch{return[];}}
 
 
@@ -328,7 +331,7 @@ let inventory=loadInventory();
 
 // tracking state read from localStorage (written by Module 05 for orders, here for personal)
 let tracking=readTracking();
-let ownedIds=new Set(Object.entries(readTracking()).filter(([,v])=>v&&v.personal).map(([k])=>Number(k)));
+let ownedIds=readOwned();
 let expandedBrowser=new Set();
 let expandedTracker=new Set();
 let showOwnedOnly=false;
@@ -498,16 +501,9 @@ function renderBrowser(){
 
 function toggleExpBrowser(id){expandedBrowser.has(id)?expandedBrowser.delete(id):expandedBrowser.add(id);renderBrowser();}
 function toggleOwned(id){
-  if(ownedIds.has(id)){
-    ownedIds.delete(id);
-    if(tracking[id]){tracking[id].personal=false;if(!tracking[id].order)delete tracking[id];writeTracking(tracking);}
-  } else {
-    ownedIds.add(id);
-    if(!tracking[id]) tracking[id]={personal:true,order:false,tiers:[700,800,900]};
-    else{tracking[id].personal=true;if(!tracking[id].tiers)tracking[id].tiers=[700,800,900];}
-    writeTracking(tracking);
-  }
-  updateTrackerCount();
+  if(ownedIds.has(id)) ownedIds.delete(id);
+  else ownedIds.add(id);
+  writeOwned();
   renderBrowser();
 }
 
