@@ -4,14 +4,14 @@
 
 | Field | Value |
 |---|---|
-| App name (dashboard) | TI Forgeworks — Craft Tracker Suite |
+| App name | TI Forgeworks — Craft Tracker Suite |
 | File prefix | `forgex_` |
 | Purpose | Star Citizen 4.7 crafting intelligence system |
-| Org | Troublemaker Incorporated — Custom Arms & Armor |
+| Org | TI Forgeworks — Custom Arms & Armor |
 | Target display | 1920×1080 side monitor |
 | Stack | Pure HTML / CSS / JS — no build tools, no framework, no server |
-| Data persistence | **ALL module data must persist to localStorage.** Currently only cross-module tracking flags and crafting log survive refresh. Retrofit required for Modules 02, 04, 05 before app is production-ready. |
-| Data persistence | In-page JS arrays + localStorage for cross-module state (no backend) |
+| Data persistence | All module data persists to localStorage. All modules fully wired. |
+| Version control | Local git only — no GitHub remote |
 
 ---
 
@@ -25,26 +25,19 @@
 | `forgex_module04_v2_full.html` | Blueprint Database | ✓ Online |
 | `forgex_module05_orders.html` | Order Tracker | ✓ Online |
 | `forgex_module06_crafting.html` | The Forge | ✓ Online |
-
-## Still to Build
-
-| Future file | Title | Notes |
-|---|---|---|
-| (dashboard shell) | iframe Architecture | Module 01 becomes persistent shell; modules 02–09 load in content `<iframe>`. Next major task. |
+| `forgex_module07_reports.html` | Reports | ✓ Online |
+| `forgex_module08_ocr.html` | OCR Import | ✓ Online |
+| `forgex_module09_datasync.html` | Data Sync | ✓ Online |
+| `forgex_crafting_properties.js` | Crafting Properties | ✓ Static lookup (ballistic only) |
 
 ---
 
 ## Frontend Architecture
 
 - **No framework.** Each module is a standalone `.html` file with inline `<style>` and `<script>`.
-- **Navigation (current):** Dashboard cards use `onclick="window.location.href='...'` to navigate between modules. No back-navigation exists yet on module pages.
-- **Navigation (planned):** Module 01 becomes an iframe shell. The sidebar stays persistent; clicking a nav item loads the target module in an `<iframe>` in the main content area. Modules require no changes to work inside the iframe.
-- **Layout:** All modules use `max-width: 960px`, left-aligned, on the dark background. No full-width stretching.
-- **Cross-module state:** Two `localStorage` keys bridge Module 05 → Module 04:
-  - `forgex-tracking` — `{ [bpId]: { personal: bool, order: bool } }`
-  - `forgex-active-orders` — array of active (non-delivered) order objects
-- **All other data** (lots, blueprints, orders) is currently hardcoded in JS arrays within each module. Persistence to localStorage for individual modules is a future retrofit task.
-- **All other data** (lots, blueprints, orders) is currently hardcoded in JS arrays within each module. Persistence to localStorage for individual modules is a future task.
+- **Navigation:** Module 01 is an iframe shell. Sidebar stays persistent; clicking a nav item loads the target module in an `<iframe>` content area. Modules post messages to trigger cross-frame navigation.
+- **Layout:** All modules use `max-width: 1200px`.
+- **All module data persists to localStorage.** No hardcoded seed data is used in production — all modules load from localStorage on init, falling back to empty state if no data exists.
 
 ---
 
@@ -75,38 +68,30 @@
 | Share Tech Mono | Data values, badges, monospace UI |
 | Exo 2 | Body text, descriptions |
 
-- **Minimum font size:** 14px — applies to every readable/functional text element. Intentional exceptions: badges/pills (9px), eyebrow (10px), section header labels (8–10px Share Tech Mono uppercase).
-- **Header eyebrow:** `~10px` Share Tech Mono, gold-dim, uppercase (exception to 14px floor — intentionally small)
-- **Module title:** `~20–22px` Rajdhani, bold, **white** (`--tmi-text-primary`) — not gold
-- **Minimum font size:** 14px — applies to every text element outside the module header. The blueprint/item name on order cards (`.order-item`, 14px Rajdhani) is the established floor. Anything smaller is a bug to fix on next edit.
-- **Header eyebrow:** `~10px` Share Tech Mono, gold-dim, uppercase (exception to 14px floor — intentionally small)
-- **Module title:** `~20px` Rajdhani, bold
+- **Minimum font size:** 14px floor. Exceptions: badges/pills (9–11px), eyebrow (10px).
+- **Header eyebrow:** ~10px Share Tech Mono, gold-dim, uppercase.
+- **Module title:** ~20–22px Rajdhani, bold, white (`--tmi-text-primary`) — not gold.
 
-> **TEXT COLOR RULE — apply on every module edit:**
-> Always use the three canonical text tokens. Never hardcode hex text colors.
-> - `--tmi-text-primary: #ffffff` — primary readable text (full white)
-> - `--tmi-text-secondary: #d0c4b0` — supporting text (warm off-white)
-> - `--tmi-text-dim: #90806e` — labels, metadata, placeholders
-> When editing any module, update its `:root` vars to these values if they differ.
+> **TEXT COLOR RULE:** Always use the three canonical text tokens. Never hardcode hex text colors.
+> - `--tmi-text-primary: #ffffff`
+> - `--tmi-text-secondary: #d0c4b0`
+> - `--tmi-text-dim: #90806e`
 
 ### Header Pattern (all modules)
 ```
-Troublemaker Incorporated — Custom Arms & Armor   ← eyebrow (small, gold-dim)
-[Module Title]                                     ← title (large, Rajdhani, WHITE)
+TI Forgeworks — Custom Arms & Armor   ← eyebrow (small, gold-dim, Share Tech Mono)
+[Module Title]                         ← title (large, Rajdhani, WHITE)
 ```
 
 ### Blueprint Label & Tag Rules
-- **Label** (full item name): `Base Slot Finish` (armor) / `Base WeaponType Finish` (weapon) / `Base AmmoType` (ammo)
-- **Tag** (type descriptor, shown as a small pill): category only for armor (no slot); "Weapon" for weapons (no weapon_type — already in label); "Ammo · WeaponType" for ammo
-- "Finish" is the stylistic name of a blueprint (e.g. "Mire", "Necropolis") — never call it "color"
-
-[Module Title]                                     ← title (large, Rajdhani)
-```
+- **Label:** `Base Slot Finish` (armor) / `Base WeaponType Finish` (weapon) / `Base AmmoType` (ammo)
+- **Tag:** category only for armor (no slot); "Weapon" for weapons; "Ammo · WeaponType" for ammo
+- "Finish" is the stylistic name (e.g. "Mire", "Necropolis") — never call it "color"
 
 ### Style Notes
 - Clipped polygon buttons: `clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%)`
 - Sci-fi HUD aesthetic with gold border glows
-- Logo: transparent PNG (new files: `large logo.png`, `small logo.png`) — background matches `#0a0804`
+- Logo: transparent PNG (`large logo.png`, `small logo.png`) — background matches `#0a0804`
 
 ---
 
@@ -125,19 +110,17 @@ Troublemaker Incorporated — Custom Arms & Armor   ← eyebrow (small, gold-dim
 }
 ```
 
-### Blueprint (Module 04)
+### Blueprint (Module 09 → stored in forgex-blueprints)
 ```js
 {
   id:          number,
+  uuid:        string,          // SC Wiki stable UUID — used for tracking preservation across re-syncs
   base:        string,          // e.g. 'Aztalan', 'Demeco'
   slot:        string|null,     // Helmet / Core / Legs / Arms / Backpack (armor only)
   type:        string,          // 'Armor' | 'Weapon' | 'Ammunition'
-  category:    string|null,     // Combat / Cosmonaut / Engineer / Environment / Explorer /
-                                // Flightsuit / Hunter / Medic / Miner / Racer /
-                                // Radiation / Salvager / Stealth / Undersuit
+  category:    string|null,     // set manually in Module 04; not available from API
   weight:      string|null,     // Light / Medium / Heavy (armor only)
-  finish:      string|null,     // free text, e.g. 'Mire', 'Necropolis' (part of full name)
-  finish:      string|null,     // free text, e.g. 'Necropolis' (part of full name)
+  finish:      string|null,     // e.g. 'Mire', 'Necropolis'
   weapon_type: string|null,     // Sniper Rifle / Pistol / Shotgun / SMG / LMG /
                                 // Energy LMG / Rifle / Energy Assault Rifle /
                                 // Energy SMG / Twin Shotgun / Frag Pistol /
@@ -145,6 +128,7 @@ Troublemaker Incorporated — Custom Arms & Armor   ← eyebrow (small, gold-dim
   ammo_type:   string|null,
   capacity:    number|null,
   has_mission: boolean,
+  meta:        {},              // future: type-specific API fields for new blueprint types
   ingredients: [{ name: string, qty: number }]  // qty in cSCU
 }
 ```
@@ -155,13 +139,11 @@ Troublemaker Incorporated — Custom Arms & Armor   ← eyebrow (small, gold-dim
   id:       number,
   customer: string,             // player handle or name
   bpId:     number,             // references blueprint.id
-  qty:      number,             // ⚠️ TO REMOVE — one crafted item per order. Module 05 update deferred.
-  qty:      number,             // units ordered
   quality:  number,             // 700 | 800 | 900
   status:   string,             // 'inprogress' | 'ready' | 'delivered'
   created:  string,             // 'YYYY-MM-DD'
   deadline: string,             // 'YYYY-MM-DD' or ''
-  price:    number,             // aUEC agreed
+  trade:    string,             // free text — aUEC, items, or other terms
   notes:    string
 }
 ```
@@ -170,109 +152,92 @@ Troublemaker Incorporated — Custom Arms & Armor   ← eyebrow (small, gold-dim
 ```js
 {
   id:           number,
-  bpId:         number,         // references blueprint.id
-  bpLabel:      string,         // cached display label e.g. 'Corbel Arms Mire'
-  orderId:      number|null,    // references order.id — null if personal craft
+  bpId:         number,
+  bpLabel:      string,
+  orderId:      number|null,
   crafted:      string,         // 'YYYY-MM-DD'
-  qualityTier:  number|null,    // 700 | 800 | 900 — from non-aslarite avg quality
+  qualityTier:  number|null,    // 700 | 800 | 900
   materials: [
     {
-      name:           string,   // ingredient name, e.g. 'laranite'
-      reqQty:         number,   // cSCU required by blueprint
-      avgQuality:     number,   // weighted avg quality across lots used
-      characteristic: string,   // placeholder '—' until SC Wiki API data
-      effectPct:      number|null,  // placeholder null until API
+      name:           string,
+      reqQty:         number,
+      avgQuality:     number,
+      characteristic: string,
+      effectPct:      number|null,
       lotsUsed:       [{ lotId: number, qty_taken: number, quality: number }]
     }
   ]
 }
 ```
 
-### localStorage Keys (cross-module)
+### localStorage Keys (full reference)
 ```js
-'forgex-tracking'       // { [bpId]: { personal: bool, order: bool } }
-'forgex-active-orders'  // Order[] — active (non-delivered) orders only
-'forgex-crafting-log'   // CraftingJob[] — persists across sessions ✓ (Module 06 only persistent module data)
-### localStorage Keys (cross-module)
-```js
-'forgex-tracking'      // { [bpId]: { personal: bool, order: bool } }
+'forgex-lots'          // { lots: Lot[], nextId: N } — OBJECT, never flat array
+'forgex-blueprints'    // Blueprint[] — written by Module 09, read by 04/05/06
+'forgex-tracking'      // { [bpId]: { personal: bool, order: bool, tiers: number[] } }
+'forgex-owned'         // number[] — array of owned blueprint IDs (independent of tracking)
 'forgex-active-orders' // Order[] — active (non-delivered) orders only
+'forgex-crafting-log'  // CraftingJob[]
+'forgex-sync-meta'     // { date, gameVersion, count }
+'forgex-sync-log'      // SyncEntry[] — up to 20 entries with skipped-type breakdown
+'forgex-locations'     // string[] — custom location names (shared across modules)
+'forgex-forge-preselect' // string (bpId) — one-time flag, cleared by Module 06 on load
+'forgex-ocr-region'    // { x, y, w, h } — saved OCR crop region
 ```
 
 ---
 
 ## Auth Flow
 
-None. This is a local single-user tool with no login, accounts, or server. All data lives in the browser (in-page JS arrays + localStorage). No authentication is planned.
+None. Local single-user tool. No login, no server, no authentication planned.
 
 ---
 
 ## Key Game Mechanics
 
 - **Quality bands:** 700–799, 800–899, 900–1000 for crafted armor/weapons
-- **Aslarite:** Universal armor ingredient — usable at quality 500+, not band-locked. Excluded from quality tier calculation but included in characteristic/avg quality display.
-- **Hand-mined gems:** Separate tag from mined ore; same inventory system
-- **Gem names:** hadanite, janalite, dolvine, aphorite, sadaryx, carinite, beradom, jaclium, saldynium, feynmaline, glacosite
+- **Aslarite:** Universal armor ingredient — usable at quality 500+, not band-locked. Excluded from quality tier calculation.
+- **Hand-mined gems:** hadanite, janalite, dolvine, aphorite, sadaryx, carinite, beradom, jaclium, saldynium, feynmaline, glacosite
 - **Crafting quality tier:** Determined by weighted avg quality of non-aslarite ingredients only
-
----
-
-## Module 06 — Formula Stub (The Forge)
-
-After clicking MAKE ITEM, display one row per ingredient:
-
-| Material | Avg Quality | Characteristic | Effect |
-|---|---|---|---|
-| Laranite | 770 | Damage Mitigation | +4.28% |
-| Aslarite | 523 | Max / Min Temperature | +0.92% |
-| Titanium | 900 | Damage Mitigation | +4.00% |
-
-- **Characteristic** and **Effect %** are placeholders (`—` / `null`) until game data is pulled via SC Wiki API.
-- **Avg Quality** = weighted average by qty across all lots used for that ingredient. Example: 2 cSCU @ 800 + 2 cSCU @ 700 = avg 750.
-- Aslarite is included in the display but excluded from quality tier calculation.
-- Quality tier blocking: MAKE ITEM is only blocked when an order is attached AND the projected tier doesn't match the order's required tier. Personal crafts always go through.
-- **Aslarite:** Universal armor ingredient — usable at quality 500+, not band-locked
-- **Hand-mined gems:** Separate tag from mined ore; same inventory system
-- **Gem names:** hadanite, janalite, dolvine, aphorite, sadaryx, carinite, beradom, jaclium, saldynium, feynmaline, glacosite
-- **Crafting quality:** Determined by quality of non-aslarite ingredients at the target band
+- **Refinery box sizes:** 3200 / 1600 / 800 / 400 / 200 / 100 cSCU — filled largest to smallest. OCR import auto-splits yields into individual box lots.
 
 ---
 
 ## Star Citizen Wiki API
 
-Endpoint: `https://api.star-citizen.wiki/blueprints`  
-Returns: 1,044 blueprints with filtering by output type, class, craft time, ingredients.  
-Planned use: One-click refresh on patch day via Data Sync module. Will auto-populate the blueprint array in Module 04.
+Endpoint: `https://api.star-citizen.wiki/api/v2/blueprints`
+Returns: ~1,044 blueprints (Armor / Weapon / Ammunition). Fetched 100/page (~11 requests).
+
+**Armor slot map** — API uses both variants, both must be in ARMOR_SLOT_MAP:
+- `Char_Armor_Head` / `Char_Armor_Helmet` → Helmet
+- `Char_Armor_Torso` / `Char_Armor_Chest` → Core
+- `Char_Armor_Legs` → Legs
+- `Char_Armor_Arms` → Arms
+- `Char_Armor_Backpack` → Backpack
+- `Char_Armor_Undersuit` → null slot
+
+**Ammo:** `WeaponAttachment` with `sub_type: "Magazine"` → Ammunition (not a separate ammo type)
+
+**Future types:** New blueprint types (ship components, weapon attachments, etc.) will park type-specific API fields in `meta: {}`.
+
+---
+
+## Distribution Workflow
+
+- **`Collect Updates.ps1`** — right-click → Run with PowerShell. Copies changed app files (`forgex_*.html`, `forgex_*.js`, `*.png`) to `Updates to be sent\` since last `distributed` git tag.
+- **`Clear Updates.ps1`** — empties `Updates to be sent\` and advances the `distributed` tag.
+- **Friends** only need the 12 app files — not `.claude/`, `.git/`, `SESSION_STATE.md`, or dev files.
+- PowerShell execution policy (one-time): `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`
 
 ---
 
 ## Outstanding TODOs
 
-### Next session
-- [ ] **Verify Module 08 OCR behavior** — confirm imports append to existing lots; check Module 02 seed data persistence (see SESSION_STATE Known Bug #1)
-- [ ] **Module 01 — iframe shell conversion** — persistent header + sidebar; modules 02–09 load in `<iframe>` content area; apply canonical text colors
-
 ### Deferred
-- [ ] **Full app backup/restore** — single button exports all `forgex-*` localStorage keys to one JSON file; restore button writes them all back. Covers lots, crafting log, orders, tracking flags, blueprints, locations.
-- [ ] **Remove `qty` from Order form in Module 05** — one crafted item per order
-- [ ] **Energy weapon crafting properties** — extract laser/plasma/electron materials from game files (p4k), add to `forgex_crafting_properties.js`
-- [ ] **Game dates in seed data** — Modules 02 and 05 use `2954-XX-XX` dates; invisible in date-filtered report views
+- [ ] **Energy weapon crafting properties** — `forgex_crafting_properties.js` covers ballistic only. Laser/plasma/electron pending game file extraction.
+- [ ] **Past Orders not persisted** — delivered orders lost on page reload (low priority)
+- [ ] **Module 04 filter/display for new blueprint types** — hold until a real new type ships in-game
 
 ### Future Expansion
-- [ ] **Ship components** in blueprint list (Shield, Powerplant, Radar, Quantum Drive, etc.)
+- [ ] **Ship components / weapon attachments** — future patch; `meta: {}` bag is ready
 - [ ] SC Wiki API — pull characteristic/effect data if exposed in future API version
-
----
-
-## Recently Changed Files
-
-| File | What changed |
-|---|---|
-| `forgex_module08_ocr.html` | NEW — OCR Import module. Live screen capture via getDisplayMedia(); drag-to-select region (saved to forgex-ocr-region); Tesseract.js v4 via CDN; 2× upscale + invert preprocessing; editable results table; location system mirrors Module 02/03; writes to forgex-lots in {lots,nextId} format. |
-| `forgex_module09_datasync.html` | NEW — Data Sync module. Fetches ~1,044 blueprints from SC Wiki API; maps to schema; UUID-based tracking preservation across re-syncs; writes forgex-blueprints + forgex-sync-meta. |
-| `forgex_crafting_properties.js` | NEW — Static crafting property lookup extracted from game files (p4k v4.7.2). Maps 8 materials to gameplay properties with linear quality formulas. Used by Module 06. |
-| `forgex_module04_v2_full.html` | Major update: canonical colors; finish in name label; ammo hidden by default; Target Tier label; 700+/800+/900+ throughout; Crafting Tracker fully rewritten (clickable tier badges, FORGE button, order tier auto-include, per-ingredient tier columns); inventory live from forgex-lots; X button fixed; Material Needs respects selected tiers. |
-| `forgex_module06_crafting.html` | FORGE preselect on init; blueprints from forgex-blueprints; ownedIds from forgex-tracking; lots in Module 02 format; crafting properties live; quality tier logic fixed (higher OK for lower order). |
-| `forgex_module07_reports.html` | loadLots() fixed for Module 02's {lots,nextId} format (was always returning empty). |
-| `forgex_module03_acquisition.html` | commitAll() now actually writes to forgex-lots in {lots,nextId} format; getLocLotCounts() format fix. |
-| `forgex_module02_materials_v2.html` | Fully updated — localStorage persistence, locations, combine/split/move, 1200px, canonical colors. Stores forgex-lots as {lots,nextId} object. |
