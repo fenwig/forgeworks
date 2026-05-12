@@ -1,17 +1,22 @@
 # SESSION STATE — TI Forgeworks
-Last updated: 2026-05-08
+Last updated: 2026-05-12
 
 ---
 
 ## Where to Resume
 
-**Next session:** No outstanding build tasks. All 10 modules online and feature-complete. User will direct next priorities.
+**Next session:** No outstanding build tasks. All 10 modules online and feature-complete. Order fulfillment workflow complete and tested. User will direct next priorities.
 
-**Outstanding action items (from previous sessions — user may choose to defer):**
-1. Run a re-sync in Module 09 — gem ingredient quantities were broken (stored as 0) and are now fixed. Re-sync rebuilds `forgex-blueprints` with correct gem counts.
-2. In Module 02, search for any lots named `dolvine` and delete/re-enter them as `dolivine`.
+**Outstanding action items:** None. All maintenance tasks complete.
 
-**This session notes (2026-05-08 final push):**
+**This session notes (2026-05-12 bug fixes & UX refinement):**
+- **CRITICAL FIX:** Removed conflicting order status update block in Module 06 makeItem() that was setting status='ready' (invalid) instead of 'readytodeliver', causing crafted orders to disappear entirely
+- **Module 05:** Added blueprint search with "BLUEPRINT KEYWORD" placeholder; filter out all ammunition blueprints; sort blueprints alphabetically
+- **Module 06:** Redesigned ORDER FULFILLMENT display with customer name and quality on separate lines; standardized font size to 14px
+- **Module 09 Data Sync:** Re-sync performed — `forgex-blueprints` rebuilt with corrected gem ingredient quantities
+- All changes tested and committed. Order fulfillment workflow fully functional. All modules operational.
+
+**Previous session (2026-05-08 final push):**
 - Module 10 Codex created with full documentation coverage
 - Module 02 major refactor: location filter, BP panel, delete confirmation, stats conversion
 - Default location system implemented globally (localStorage-based, synced across Modules 02/03/08)
@@ -136,7 +141,10 @@ Last updated: 2026-05-08
 3. **Past Orders not persisted** — delivered orders lost on page reload. Deferred — low priority.
 4. **Module 06 owned IDs** — still reads from `forgex-tracking.personal` instead of `forgex-owned`. Does not affect crafting but browser tab may show wrong blueprints.
 
-### RESOLVED THIS SESSION
+### RESOLVED THIS SESSION (2026-05-12)
+- ~~Crafted items disappearing from orders view~~ ✓ — order status being set to invalid 'ready' instead of 'readytodeliver'; removed conflicting status update block in Module 06 makeItem()
+
+### RESOLVED PREVIOUS SESSION (2026-05-08 & earlier)
 - ~~Crafting Availability showing nothing~~ ✓ — was using hardcoded blueprints + wrong owned key
 - ~~Owned Blueprints showing nothing~~ ✓ — `getOwnedBpIds()` now reads `forgex-owned`
 - ~~Material Needs defaulting to 700+~~ ✓ — now defaults to All
