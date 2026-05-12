@@ -64,8 +64,9 @@
   /* STATUS PILLS */
   .status-pill{font-family:'Share Tech Mono',monospace;font-size:14px;letter-spacing:1px;padding:2px 8px;text-transform:uppercase;}
   .status-inprogress{border:1px solid rgba(204,136,0,0.4);color:var(--tmi-warning);background:rgba(204,136,0,0.08);}
-  .status-ready{border:1px solid rgba(200,168,75,0.4);color:var(--tmi-gold);background:var(--tmi-gold-glow);}
-  .status-delivered{border:1px solid rgba(90,153,85,0.4);color:var(--tmi-success);background:rgba(90,153,85,0.08);}
+  .status-readytocraft{border:1px solid rgba(200,168,75,0.4);color:var(--tmi-gold);background:var(--tmi-gold-glow);}
+  .status-readytodeliver{border:1px solid rgba(90,153,85,0.4);color:var(--tmi-success);background:rgba(90,153,85,0.08);}
+  .status-delivered{border:1px solid rgba(90,153,85,0.3);color:var(--tmi-success);background:rgba(90,153,85,0.05);}
 
   /* QUALITY BADGE */
   .qual-badge{font-family:'Share Tech Mono',monospace;font-size:14px;padding:2px 9px;border:1px solid;}
@@ -84,8 +85,9 @@
   .order-list{padding:10px 18px;display:flex;flex-direction:column;gap:5px;}
   .order-row{background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);border-left:2px solid var(--tmi-gold-dark);transition:all 0.15s;}
   .order-row.s-inprogress{border-left-color:var(--tmi-warning);}
-  .order-row.s-ready{border-left-color:var(--tmi-gold);}
-  .order-row.s-delivered{border-left-color:var(--tmi-success);opacity:0.7;}
+  .order-row.s-readytocraft{border-left-color:var(--tmi-gold);}
+  .order-row.s-readytodeliver{border-left-color:var(--tmi-success);}
+  .order-row.s-delivered{border-left-color:var(--tmi-success);opacity:0.6;}
   .order-row:hover{background:var(--tmi-bg-hover);}
   .order-header{padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;}
   .order-id{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);min-width:46px;}
@@ -207,9 +209,9 @@
 <div class="view active" id="view-orders">
   <div class="order-bar">
     <span class="bar-label">Status</span>
-    <button class="filter-btn active" onclick="setFilter('all',this)">All Active</button>
-    <button class="filter-btn" onclick="setFilter('inprogress',this)">In Progress</button>
-    <button class="filter-btn" onclick="setFilter('ready',this)">Ready</button>
+    <button class="filter-btn active" onclick="setFilter('inprogress',this)">In Progress</button>
+    <button class="filter-btn" onclick="setFilter('readytocraft',this)">Ready to Craft</button>
+    <button class="filter-btn" onclick="setFilter('readytodeliver',this)">Ready to Deliver</button>
   </div>
   <div class="order-list" id="order-list"></div>
   <div class="order-empty" id="order-empty" style="display:none">NO ACTIVE ORDERS</div>
@@ -226,6 +228,7 @@
       </div>
       <div class="form-group">
         <label class="form-label">Blueprint</label>
+        <input class="form-input" id="f-blueprint-search" placeholder="Search blueprints..." onkeyup="filterBlueprintOptions(this.value)">
         <select class="form-select" id="f-blueprint">
           <option value="">Select blueprint...</option>
         </select>
@@ -278,7 +281,12 @@ function loadBlueprints(){
   try{const s=JSON.parse(localStorage.getItem('forgex-blueprints')||'null');if(s&&Array.isArray(s)&&s.length)return s;}catch(e){}
   return [];
 }
+function loadOwnedIds(){
+  try{const ownedList=JSON.parse(localStorage.getItem('forgex-owned')||'[]');if(Array.isArray(ownedList)) return new Set(ownedList);}catch(e){}
+  return new Set();
+}
 const blueprints=loadBlueprints();
+const ownedIds=loadOwnedIds();
 
 function loadInventory(){
   try{const s=JSON.parse(localStorage.getItem('forgex-lots')||'null');if(s&&Array.isArray(s.lots))return s.lots;if(Array.isArray(s))return s;}catch(e){}
@@ -333,23 +341,41 @@ function getBpLabel(bp){
 }
 
 /* ── INIT ── */
+let allBpOptions=[];
 function init(){
   const sel=document.getElementById('f-blueprint');
-  blueprints.forEach(bp=>{
-    const opt=document.createElement('option');
-    opt.value=bp.id;
-    opt.textContent=getBpLabel(bp);
-    sel.appendChild(opt);
+  const ownedBps=blueprints.filter(bp=>ownedIds.has(bp.id)&&bp.type!=='Ammo').sort((a,b)=>getBpLabel(a).localeCompare(getBpLabel(b)));
+  allBpOptions=ownedBps.map(bp=>({id:bp.id,label:getBpLabel(bp),bp}));
+  allBpOptions.forEach(opt=>{
+    const optEl=document.createElement('option');
+    optEl.value=opt.id;
+    optEl.textContent=opt.label;
+    sel.appendChild(optEl);
   });
   const activeBpIds=new Set(orders.filter(o=>o.status!=='delivered').map(o=>o.bpId));
   activeBpIds.forEach(id=>setOrderTracked(id));
   renderOrders();
 }
 
+function filterBlueprintOptions(query){
+  const sel=document.getElementById('f-blueprint');
+  const searchInput=query.toLowerCase();
+  sel.innerHTML='<option value="">Select blueprint...</option>';
+  const filtered=allBpOptions.filter(opt=>opt.label.toLowerCase().includes(searchInput));
+  filtered.forEach(opt=>{
+    const optEl=document.createElement('option');
+    optEl.value=opt.id;
+    optEl.textContent=opt.label;
+    sel.appendChild(optEl);
+  });
+}
+
 /* ── TABS ── */
 function switchTab(tab){
   ['orders','new','past'].forEach(v=>document.getElementById('view-'+v).classList.toggle('active',v===tab));
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['orders','new','past'][i]===tab));
+  // Reload orders from localStorage to ensure fresh data from other modules
+  orders=loadOrders();
   if(tab==='past') renderPast();
   if(tab==='orders') renderOrders();
 }
@@ -359,7 +385,7 @@ function updateStats(){
   const active=orders.filter(o=>o.status!=='delivered');
   document.getElementById('stat-active').textContent=active.length;
   document.getElementById('stat-inprogress').textContent=orders.filter(o=>o.status==='inprogress').length;
-  document.getElementById('stat-ready').textContent=orders.filter(o=>o.status==='ready').length;
+  document.getElementById('stat-ready').textContent=orders.filter(o=>o.status==='readytocraft').length;
   document.getElementById('stat-delivered').textContent=orders.filter(o=>o.status==='delivered').length;
   document.getElementById('tc-orders').textContent=active.length;
   document.getElementById('tc-past').textContent=orders.filter(o=>o.status==='delivered').length;
@@ -395,11 +421,11 @@ function checkReady(bp,qty,band){
 }
 
 /* ── STATUS PIPELINE ── */
-const STATUS_NEXT={inprogress:'ready',ready:'delivered'};
-const STATUS_PREV={ready:'inprogress',delivered:'ready'};
-const STATUS_LABELS={inprogress:'In Progress',ready:'Ready',delivered:'Delivered'};
-const STATUS_NEXT_LABEL={inprogress:'Mark Ready',ready:'Mark Delivered'};
-const STATUS_PREV_LABEL={ready:'← Revert to In Progress',delivered:'← Revert to Ready'};
+const STATUS_NEXT={inprogress:'readytocraft',readytocraft:'readytodeliver',readytodeliver:'delivered'};
+const STATUS_PREV={readytocraft:'inprogress',readytodeliver:'readytocraft',delivered:'readytodeliver'};
+const STATUS_LABELS={inprogress:'In Progress',readytocraft:'Ready to Craft',readytodeliver:'Ready to Deliver',delivered:'Delivered'};
+const STATUS_NEXT_LABEL={inprogress:'Mark Ready to Craft',readytocraft:'Mark Ready to Deliver',readytodeliver:'Mark Delivered'};
+const STATUS_PREV_LABEL={readytocraft:'← Revert to In Progress',readytodeliver:'← Revert to Ready to Craft',delivered:'← Revert to Ready to Deliver'};
 
 /* ── VIEW A: ACTIVE ORDERS ── */
 function renderOrders(){
@@ -407,7 +433,19 @@ function renderOrders(){
   const list=document.getElementById('order-list');
   const empty=document.getElementById('order-empty');
   const active=orders.filter(o=>o.status!=='delivered');
-  const filtered=statusFilter==='all'?active:active.filter(o=>o.status===statusFilter);
+
+  // Auto-transition: if inprogress and all materials ready, move to readytocraft
+  active.forEach(order=>{
+    if(order.status==='inprogress'){
+      const bp=blueprints.find(b=>b.id===order.bpId);
+      if(bp&&checkReady(bp,1,order.quality)){
+        order.status='readytocraft';
+      }
+    }
+  });
+  writeActiveOrders();
+
+  const filtered=statusFilter==='inprogress'?active.filter(o=>o.status==='inprogress'):statusFilter==='readytocraft'?active.filter(o=>o.status==='readytocraft'):statusFilter==='readytodeliver'?active.filter(o=>o.status==='readytodeliver'):active;
   if(!filtered.length){list.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
 
@@ -427,8 +465,7 @@ function orderRowHtml(order,showActions){
       <span class="order-customer">${order.customer}</span>
       <span class="order-item">${bp?getBpLabel(bp):'Unknown'}</span>
       <span class="qual-badge qual-${order.quality}">${order.quality}+</span>
-      <span class="status-pill status-${order.status}">${STATUS_LABELS[order.status]}</span>
-      ${matReady&&order.status!=='delivered'?'<span class="mat-ready">MAT ✓</span>':''}
+      <span class="status-pill status-${order.status}" ${order.status==='readytocraft'?`onclick="event.stopPropagation();goToCraftWorkbench(${order.id})" style="cursor:pointer"`:''}>${STATUS_LABELS[order.status]}</span>
       <span class="order-deadline${dlClass?' '+dlClass:''}">${order.deadline||'—'}</span>
       <span class="expand-arrow">${isExp?'▲':'▼'}</span>
     </div>
@@ -596,6 +633,16 @@ function toast(msg){
   el.classList.remove('hidden');
   clearTimeout(toast._t);
   toast._t=setTimeout(()=>el.classList.add('hidden'),2500);
+}
+
+/* ── NAVIGATION TO WORKBENCH ── */
+function goToCraftWorkbench(orderId){
+  const order=orders.find(o=>o.id===orderId);
+  if(!order) return;
+  localStorage.setItem('forgex-forge-preselect',order.bpId);
+  localStorage.setItem('forgex-attach-order',orderId);
+  // Navigate via parent dashboard postMessage
+  window.parent.postMessage({type:'forgex-navigate',src:'forgex_module06_crafting.html'},'*');
 }
 
 init();

@@ -257,8 +257,13 @@
       </div>
 
       <div class="wb-order-row">
-        <span class="wb-order-label">Order Fulfillment</span>
-        <span class="wb-order-info" id="wb-order-info"></span>
+        <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+          <span class="wb-order-label">Order Fulfillment</span>
+          <div id="wb-order-info" style="display:none;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-primary)">
+            <div style="color:var(--tmi-gold)"><strong id="order-customer">—</strong></div>
+            <div style="color:var(--tmi-gold-dim)">Quality <span id="order-quality">—</span>+</div>
+          </div>
+        </div>
         <button class="btn btn-order btn-sm" id="btn-attach-order" onclick="toggleOrderPicker()">Attach Order</button>
         <button class="btn btn-danger btn-sm" id="btn-detach-order" onclick="detachOrder()" style="display:none">Detach</button>
       </div>
@@ -601,18 +606,22 @@ function resetWorkbench(){
 // ── ORDER ATTACHMENT ──
 function renderOrderRow(){
   const info=document.getElementById('wb-order-info');
+  const customerEl=document.getElementById('order-customer');
+  const qualityEl=document.getElementById('order-quality');
   const btnAttach=document.getElementById('btn-attach-order');
   const btnDetach=document.getElementById('btn-detach-order');
   if(attachedOrderId){
     const o=readActiveOrders().find(o=>o.id===attachedOrderId);
     if(o){
-      info.innerHTML=`<strong>${o.customer||'Unknown'}</strong> &mdash; <span class="qual-badge ${qualTierClass(o.quality)}">REQUIRED ${o.quality}+</span>`;
+      customerEl.textContent=o.customer||'Unknown';
+      qualityEl.textContent=o.quality||'—';
       info.style.display='';
     }
     btnAttach.style.display='none';
     btnDetach.style.display='';
   } else {
-    info.innerHTML='';
+    customerEl.textContent='—';
+    qualityEl.textContent='—';
     info.style.display='none';
     btnAttach.style.display='';
     btnDetach.style.display='none';
