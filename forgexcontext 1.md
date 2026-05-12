@@ -233,6 +233,18 @@ Returns: ~1,044 blueprints (Armor / Weapon / Ammunition). Fetched 100/page (~11 
 
 ---
 
+## Recent Changes (2026-05-12)
+
+### Fixed
+- **Critical:** Module 06 order status corruption — removed conflicting code block that was setting status='ready' (invalid) instead of 'readytodeliver', causing crafted orders to disappear entirely
+- **Module 09:** Re-sync completed — `forgex-blueprints` rebuilt with corrected gem ingredient quantities
+
+### Enhanced
+- **Module 05:** Blueprint search added ("BLUEPRINT KEYWORD" filter); ammunition blueprints filtered out; blueprints sorted alphabetically
+- **Module 06:** ORDER FULFILLMENT display redesigned with customer name and quality on separate lines; font size standardized to 14px
+
+---
+
 ## Outstanding TODOs
 
 ### Deferred
