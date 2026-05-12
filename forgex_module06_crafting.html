@@ -249,6 +249,13 @@
         <button class="btn btn-ghost btn-sm" onclick="resetWorkbench()">← Change Blueprint</button>
       </div>
 
+      <div style="padding:12px 14px;border-bottom:1px solid var(--tmi-border-dim);display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap">
+        <div>
+          <label style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-dim);text-transform:uppercase;display:block;margin-bottom:6px;letter-spacing:1px">Gathering Location</label>
+          <select id="crafting-location-select" onchange="setCraftingLocation(this.value)" style="background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);color:var(--tmi-text-primary);font-family:'Share Tech Mono',monospace;font-size:14px;padding:8px 10px;outline:none;min-width:180px;cursor:pointer"></select>
+        </div>
+      </div>
+
       <div class="wb-order-row">
         <span class="wb-order-label">Order Fulfillment</span>
         <span class="wb-order-info" id="wb-order-info"></span>
@@ -336,10 +343,13 @@ function loadBlueprints(){
 }
 let blueprints=loadBlueprints();
 
-// Owned ids — reads from forgex-tracking (set in Module 04 Blueprint Database)
+// Owned ids — reads from forgex-owned (set in Module 04 Blueprint Database)
 function loadOwnedIds(){
-  const t=readTracking();
-  return new Set(Object.entries(t).filter(([,v])=>v&&v.personal).map(([k])=>Number(k)));
+  try{
+    const ownedList=JSON.parse(localStorage.getItem('forgex-owned')||'[]');
+    if(Array.isArray(ownedList)) return new Set(ownedList);
+  }catch(e){}
+  return new Set();
 }
 let ownedIds=loadOwnedIds();
 
@@ -353,6 +363,11 @@ function writeLots(){
   localStorage.setItem('forgex-lots',JSON.stringify({lots,nextId}));
 }
 
+// ── DEFAULT LOCATION ──
+const DEFAULT_LOC_KEY='forgex-default-location';
+const FALLBACK_LOC='Lesvki';
+let DEFAULT_LOC=localStorage.getItem(DEFAULT_LOC_KEY)||FALLBACK_LOC;
+
 // ── STATE ──
 let browserFilter='all';
 let browserExpanded=new Set();
@@ -361,6 +376,7 @@ let attachedOrderId=null;
 let slotSelections=[];
 let openPickerSlot=-1;
 let lotSortHigh=[];
+let craftingLocation=null;
 let logFilter='all';
 let logExpanded=new Set();
 let openLogPicker=null;
@@ -447,6 +463,12 @@ function init(){
     localStorage.removeItem('forgex-forge-preselect');
     const bp=blueprints.find(b=>b.id===preselectId);
     if(bp) craftThis(preselectId);
+    // Auto-attach order if coming from Module 5
+    const attachOrderId=parseInt(localStorage.getItem('forgex-attach-order')||'0');
+    if(attachOrderId){
+      localStorage.removeItem('forgex-attach-order');
+      setTimeout(()=>{attachedOrderId=attachOrderId;renderOrderRow();renderTierRow();},100);
+    }
   }
 }
 
@@ -520,6 +542,24 @@ function renderBrowser(){
 
 function toggleBrowserExp(id){browserExpanded.has(id)?browserExpanded.delete(id):browserExpanded.add(id);renderBrowser();}
 
+// ── CRAFTING LOCATION SELECTOR ──
+function buildCraftingLocOptions(){
+  const sel=document.getElementById('crafting-location-select');
+  if(!sel) return;
+  const allLocs=[...new Set(lots.map(l=>l.location||FALLBACK_LOC))];
+  if(!allLocs.includes(FALLBACK_LOC)) allLocs.push(FALLBACK_LOC);
+  allLocs.sort();
+  sel.innerHTML=allLocs.map(loc=>`<option value="${loc}">${loc}</option>`).join('');
+  const toSelect=craftingLocation||DEFAULT_LOC;
+  sel.value=toSelect;
+}
+
+function setCraftingLocation(location){
+  craftingLocation=location;
+  renderSlots();
+  renderTierRow();
+}
+
 function craftThis(bpId){
   selectBlueprint(bpId);
   switchTab('workbench');
@@ -533,12 +573,14 @@ function selectBlueprint(bpId){
   slotSelections=bp.ingredients.map(()=>[]);
   lotSortHigh=bp.ingredients.map(()=>true);
   openPickerSlot=-1;
+  craftingLocation=DEFAULT_LOC;
   document.getElementById('wb-empty').style.display='none';
   document.getElementById('wb-body').style.display='block';
   document.getElementById('wb-result').style.display='none';
   document.getElementById('wb-bp-name').textContent=getBpLabel(bp);
   document.getElementById('wb-bp-tag').textContent=getBpTag(bp);
   document.getElementById('wb-bp-type').textContent=bp.type;
+  buildCraftingLocOptions();
   renderOrderRow();
   renderSlots();
   renderTierRow();
@@ -564,7 +606,7 @@ function renderOrderRow(){
   if(attachedOrderId){
     const o=readActiveOrders().find(o=>o.id===attachedOrderId);
     if(o){
-      info.innerHTML=`${o.customer||'Unknown'} &mdash; <span class="qual-badge ${qualTierClass(o.quality)}">TARGET ${o.quality}+</span>`;
+      info.innerHTML=`<strong>${o.customer||'Unknown'}</strong> &mdash; <span class="qual-badge ${qualTierClass(o.quality)}">REQUIRED ${o.quality}+</span>`;
       info.style.display='';
     }
     btnAttach.style.display='none';
@@ -641,8 +683,9 @@ function renderSlotHtml(bp,ing,si){
     </div>`;
   }).join('');
 
+  const filterLoc=craftingLocation||DEFAULT_LOC;
   const availLots=lots
-    .filter(l=>l.ore===ing.name&&l.qty>0&&!usedLotIds.has(l.id))
+    .filter(l=>l.ore===ing.name&&l.qty>0&&!usedLotIds.has(l.id)&&(l.location||FALLBACK_LOC)===filterLoc)
     .sort((a,b)=>lotSortHigh[si]?b.quality-a.quality:a.quality-b.quality);
 
   const lotRowsHtml=availLots.length
@@ -710,11 +753,25 @@ function renderTierRow(){
   tierVal.innerHTML=tier?`<span class="qual-badge ${qualTierClass(tier)}">${tier}+</span>`:'—';
   const filled=allSlotsFilled();
   let blocked=false;
+  let blockedReason='';
   if(filled&&attachedOrderId){
     const o=readActiveOrders().find(o=>o.id===attachedOrderId);
-    if(o&&tier!==null&&tier<o.quality) blocked=true;
+    if(o){
+      if(tier===null){
+        blocked=true;
+        blockedReason='⚠ INSUFFICIENT DATA — CANNOT DETERMINE QUALITY';
+      } else if(tier<o.quality){
+        blocked=true;
+        blockedReason='⚠ QUALITY TOO LOW — MATERIALS BELOW ORDER REQUIREMENT';
+      }
+    }
   }
-  mismatch.style.display=blocked?'':'none';
+  if(blocked){
+    mismatch.textContent=blockedReason;
+    mismatch.style.display='';
+  } else {
+    mismatch.style.display='none';
+  }
   btnMake.disabled=!filled||blocked;
 }
 
@@ -756,22 +813,26 @@ function makeItem(){
   craftingLog.unshift(job);
   writeLog();
 
-  if(attachedOrderId){
+  const hadOrder=!!attachedOrderId;
+  if(hadOrder){
     const orders=readActiveOrders();
     const o=orders.find(o=>o.id===attachedOrderId);
-    if(o){o.status='ready';writeActiveOrders(orders);}
+    if(o&&o.status==='readytocraft'){
+      o.status='readytodeliver';
+      localStorage.setItem('forgex-active-orders',JSON.stringify(orders.filter(x=>x.status!=='delivered')));
+    }
   }
-
-  const hadOrder=!!attachedOrderId;
   attachedOrderId=null;
   slotSelections=blueprints.find(b=>b.id===selectedBpId).ingredients.map(()=>[]);
+  craftingLocation=null;
+  selectedBpId=null;
   openPickerSlot=-1;
   updateStats();
   renderOrderRow();
   renderSlots();
   renderTierRow();
   showResult(job);
-  toast('ITEM CRAFTED'+(hadOrder?' — ORDER MARKED READY':''));
+  toast('ITEM CRAFTED'+(hadOrder?' — ORDER MARKED READY TO DELIVER':''));
 }
 
 function showResult(job){
