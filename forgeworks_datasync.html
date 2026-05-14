@@ -87,6 +87,10 @@
 
   /* ── WARN BADGE ── */
   .warn-badge{display:inline-block;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--tmi-warning);border:1px solid rgba(204,136,0,0.3);background:rgba(204,136,0,0.07);padding:2px 7px;margin-left:6px;}
+
+  /* ── FACTORY RESET ── */
+  .factory-reset{display:block;width:100%;padding:12px;margin-top:14px;background:transparent;color:var(--tmi-danger);border:1px solid var(--tmi-danger);font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:1.5px;cursor:pointer;text-align:center;text-transform:uppercase;transition:all 0.2s;}
+  .factory-reset:hover{background:rgba(204,51,51,0.1);border-color:var(--tmi-danger);color:#ff5555;}
 </style>
 </head>
 <body>
@@ -172,6 +176,16 @@
           <li>Owned and tracked flags are preserved across re-syncs. Each blueprint is matched by its stable Wiki UUID, so a patch-day refresh will not lose your ownership data. Only blueprints removed entirely from the game will lose their flags.</li>
         </ul>
       </div>
+    </div>
+
+    <!-- FACTORY RESET -->
+    <div class="about-card" style="border-left-color: var(--tmi-danger);">
+      <div class="about-label" style="color: var(--tmi-danger);">⚠ Factory Reset</div>
+      <div class="about-text">
+        Clear all app data (material lots, orders, blueprints, crafting log, tracked flags).
+        This cannot be undone. Use before a major refactor or data reset.
+      </div>
+      <button class="factory-reset" onclick="factoryReset()" title="Clear all app data">⚠ Factory Reset</button>
     </div>
 
   </div><!-- /content -->
@@ -546,6 +560,27 @@ function renderSyncLog() {
 // ── Helpers ────────────────────────────────────────────────────────────────
 
 function el(id) { return document.getElementById(id); }
+
+// ── Factory Reset ──────────────────────────────────────────────────────────
+
+function factoryReset() {
+  // First confirmation
+  if (!confirm('Clear ALL app data? This cannot be undone.')) {
+    return;
+  }
+
+  // Second confirmation (required)
+  if (!confirm('Are you absolutely sure? This will delete everything.')) {
+    return;
+  }
+
+  // Clear all forgex-* keys
+  const keys = Object.keys(localStorage).filter(k => k.startsWith('forgex-'));
+  keys.forEach(k => localStorage.removeItem(k));
+
+  alert('All data cleared. Refresh page.');
+  location.reload();
+}
 
 // ── Init ───────────────────────────────────────────────────────────────────
 

@@ -292,7 +292,7 @@
         <label class="form-lbl">Storage Location <span class="form-lbl-hint">(change default via Edit List)</span></label>
         <div class="loc-select-row">
           <select class="form-select" id="f-loc-preset" onchange="applyLocPreset()">
-            <option value="Levsky">Levsky</option>
+            <option value="Levski">Levski</option>
             <option value="custom">Custom...</option>
           </select>
           <input class="form-input" id="f-loc-custom" type="text" placeholder="Enter location" style="display:none;">
@@ -358,7 +358,7 @@
         <label class="form-lbl">New Location</label>
         <div class="loc-select-row">
           <select class="form-select" id="move-loc-preset" onchange="applyMoveLoc()">
-            <option value="Levsky">Levsky</option>
+            <option value="Levski">Levski</option>
             <option value="custom">Custom...</option>
           </select>
           <input class="form-input" id="move-loc-custom" type="text" placeholder="Enter location" style="display:none;">
@@ -405,21 +405,21 @@
 const GEM_NAMES = new Set(['aphorite','beradom','carinite','dolivine','feynmaline','glacosite','hadanite','jaclium','janalite','sadaryx','saldynium']);
 const ALL_GEMS = ['aphorite','beradom','carinite','dolivine','feynmaline','glacosite','hadanite','jaclium','janalite','sadaryx','saldynium'];
 const ALL_ORES = ['agricium','aluminum','aslarite','beryl','bexalite','borase','copper','corundum','gold','hephaestanite','ice','iron','laranite','lindinium','ouratite','quantainium','quartz','riccite','savrilium','silicon','stileron','taranite','tin','titanium','torite','tungsten'];
-const FALLBACK_LOC = 'Levsky';
+const FALLBACK_LOC = 'Levski';
 const DEFAULT_LOC_KEY = 'forgex-default-location';
 let DEFAULT_LOC = localStorage.getItem(DEFAULT_LOC_KEY) || FALLBACK_LOC;
 const STORAGE_KEY = 'forgex-lots';
 const LOC_KEY = 'forgex-locations';
 
 const SEED_LOTS = [
-  {id:1,ore:'janalite',quality:875,qty:3,location:'Levsky',hand_mined:true,date:'2954-01-12'},
-  {id:2,ore:'hadanite',quality:920,qty:7,location:'Levsky',hand_mined:true,date:'2954-01-14'},
-  {id:3,ore:'laranite',quality:743,qty:45,location:'Levsky',hand_mined:false,date:'2954-01-15'},
-  {id:4,ore:'quantanium',quality:812,qty:18,location:'Levsky',hand_mined:false,date:'2954-01-15'},
-  {id:5,ore:'aphorite',quality:960,qty:2,location:'Levsky',hand_mined:true,date:'2954-01-16'},
-  {id:6,ore:'bexalite',quality:688,qty:72,location:'Levsky',hand_mined:false,date:'2954-01-16'},
+  {id:1,ore:'janalite',quality:875,qty:3,location:'Levski',hand_mined:true,date:'2954-01-12'},
+  {id:2,ore:'hadanite',quality:920,qty:7,location:'Levski',hand_mined:true,date:'2954-01-14'},
+  {id:3,ore:'laranite',quality:743,qty:45,location:'Levski',hand_mined:false,date:'2954-01-15'},
+  {id:4,ore:'quantanium',quality:812,qty:18,location:'Levski',hand_mined:false,date:'2954-01-15'},
+  {id:5,ore:'aphorite',quality:960,qty:2,location:'Levski',hand_mined:true,date:'2954-01-16'},
+  {id:6,ore:'bexalite',quality:688,qty:72,location:'Levski',hand_mined:false,date:'2954-01-16'},
   {id:7,ore:'sadaryx',quality:840,qty:5,location:'Port Olisar',hand_mined:true,date:'2954-01-17'},
-  {id:8,ore:'aslarite',quality:534,qty:200,location:'Levsky',hand_mined:false,date:'2954-01-18'},
+  {id:8,ore:'aslarite',quality:534,qty:200,location:'Levski',hand_mined:false,date:'2954-01-18'},
 ];
 
 function loadData(){
@@ -448,7 +448,7 @@ function addCustomLocation(loc){
 function buildLocOptions(selectId){
   const sel=document.getElementById(selectId);
   const cur=sel.value;
-  sel.innerHTML='<option value="Levsky">Levsky</option>';
+  sel.innerHTML='<option value="Levski">Levski</option>';
   customLocations.forEach(loc=>{
     const o=document.createElement('option');o.value=loc;o.textContent=loc;sel.appendChild(o);
   });

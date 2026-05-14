@@ -35,7 +35,7 @@
 
     .page-wrap {
       max-width: 1200px;
-      margin: 0 auto;
+      margin: 0;
       padding: 24px 24px 80px;
     }
 
@@ -405,7 +405,7 @@
     <div class="setup-field">
       <div class="field-label">Location <span style="color:var(--tmi-text-dim);font-size:9px">(change default via Edit List)</span></div>
       <select id="locationSelect" onchange="applyLocPreset()">
-        <option value="Levsky">Levsky</option>
+        <option value="Levski">Levski</option>
       </select>
       <input type="text" id="locationCustom" placeholder="Enter location name…" onblur="commitCustomLoc()" onkeydown="if(event.key==='Enter')commitCustomLoc()">
     </div>
@@ -498,7 +498,7 @@ let tableRows      = [];
 
 // ── Location system (mirrors Module 02/03) ─────────────────────────────────
 const LOC_KEY     = 'forgex-locations';
-const FALLBACK_LOC = 'Levsky';
+const FALLBACK_LOC = 'Levski';
 const DEFAULT_LOC_KEY = 'forgex-default-location';
 let DEFAULT_LOC = localStorage.getItem(DEFAULT_LOC_KEY) || FALLBACK_LOC;
 let customLocations = [];

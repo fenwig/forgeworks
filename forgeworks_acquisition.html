@@ -156,7 +156,7 @@
       <span class="config-label">Storage Location</span>
       <div class="loc-row">
         <select class="form-select" id="loc-preset" onchange="onLocChange()" style="margin-bottom:6px;">
-          <option value="Levsky">Levsky</option>
+          <option value="Levski">Levski</option>
           <option value="custom">Custom...</option>
         </select>
         <input class="form-input-sm" id="loc-custom" type="text" placeholder="Enter location..." style="display:none;width:100%;">
@@ -195,7 +195,7 @@
 
     <div class="footer-bar">
       <div class="footer-txt">Session: <span id="footer-session">inactive</span></div>
-      <div class="footer-txt" style="margin-left:auto">Location: <span id="footer-loc">Levsky</span></div>
+      <div class="footer-txt" style="margin-left:auto">Location: <span id="footer-loc">Levski</span></div>
     </div>
   </div>
 </div>
@@ -221,7 +221,7 @@ const GEM_NAMES = new Set(['aphorite','beradom','carinite','dolivine','feynmalin
 const ALL_GEMS = ['aphorite','beradom','carinite','dolivine','feynmaline','glacosite','hadanite','jaclium','janalite','sadaryx','saldynium'];
 const ALL_ORES = ['agricium','aluminum','aslarite','beryl','bexalite','borase','copper','corundum','gold','hephaestanite','ice','iron','laranite','lindinium','ouratite','quantainium','quartz','riccite','savrilium','silicon','stileron','taranite','tin','titanium','torite','tungsten'];
 const LOC_KEY = 'forgex-locations';
-const FALLBACK_LOC = 'Levsky';
+const FALLBACK_LOC = 'Levski';
 const DEFAULT_LOC_KEY = 'forgex-default-location';
 let DEFAULT_LOC = localStorage.getItem(DEFAULT_LOC_KEY) || FALLBACK_LOC;
 
@@ -254,7 +254,7 @@ let customLocations=loadLocations();
 let queue = [];
 let nextId = 1;
 let currentOre = '';
-let currentLoc = 'Levsky';
+let currentLoc = 'Levski';
 let oreFilterType = 'all';
 
 function buildOreSelect(){
@@ -287,7 +287,7 @@ function setOreFilter(type, btn){
 
 function getLocation(){
   const preset = document.getElementById('loc-preset').value;
-  if(preset === 'custom') return document.getElementById('loc-custom').value.trim() || 'Levsky';
+  if(preset === 'custom') return document.getElementById('loc-custom').value.trim() || 'Levski';
   return preset;
 }
 

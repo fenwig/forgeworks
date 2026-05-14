@@ -394,6 +394,25 @@
     .btn-secondary:hover { color: var(--tmi-gold); border-color: var(--tmi-gold); background: var(--tmi-gold-glow); }
     .import-label { cursor: pointer; }
     .modal-footer { padding: 14px 20px; border-top: 1px solid var(--tmi-border-dim); text-align: right; }
+    .return-to-top {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin-top: 20px;
+      background: transparent;
+      color: var(--tmi-text-dim);
+      border: 1px solid var(--tmi-border-dim);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 12px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .return-to-top:hover {
+      color: var(--tmi-text-secondary);
+      border-color: var(--tmi-border);
+      background: var(--tmi-bg-hover);
+    }
   </style>
 </head>
 <body>
@@ -486,6 +505,7 @@
         </svg>
         <span class="nav-label">Codex</span>
       </div>
+      <button class="return-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑ Return to Top</button>
     </nav>
 
     <!-- Main -->
@@ -510,11 +530,15 @@
             <div class="stat-value muted" id="stat-bps">—</div>
           </div>
           <div class="stat-cell">
+            <div class="stat-label">Blueprints Owned</div>
+            <div class="stat-value muted" id="stat-owned">—</div>
+          </div>
+          <div class="stat-cell">
             <div class="stat-label">Active Orders</div>
             <div class="stat-value warning" id="stat-orders">—</div>
           </div>
           <div class="stat-cell">
-            <div class="stat-label">Crafts Logged</div>
+            <div class="stat-label">Builds Logged</div>
             <div class="stat-value success" id="stat-crafts">—</div>
           </div>
         </div>
@@ -649,6 +673,9 @@ function loadStats() {
 
   const bps = readJSON('forgex-blueprints');
   document.getElementById('stat-bps').textContent = Array.isArray(bps) ? bps.length : '—';
+
+  const owned = readJSON('forgex-owned');
+  document.getElementById('stat-owned').textContent = Array.isArray(owned) ? owned.length : '0';
 
   const orders = readJSON('forgex-active-orders');
   document.getElementById('stat-orders').textContent = Array.isArray(orders) ? orders.length : '0';
