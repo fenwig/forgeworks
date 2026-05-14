@@ -297,26 +297,9 @@ function writeOwned(){localStorage.setItem(LS_OWNED,JSON.stringify([...ownedIds]
 function readActiveOrders(){try{return JSON.parse(localStorage.getItem(LS_ORDERS)||'[]')}catch{return[];}}
 
 
-const HARDCODED_BLUEPRINTS=[
-  {id:1,base:'Aztalan',slot:'Helmet',type:'Armor',category:'Combat',weight:'Medium',finish:'Nightfall',weapon_type:null,ammo_type:null,capacity:null,has_mission:false,ingredients:[{name:'aslarite',qty:6},{name:'lindinium',qty:4},{name:'taranite',qty:3}]},
-  {id:2,base:'Aztalan',slot:'Core',type:'Armor',category:'Combat',weight:'Medium',finish:'Nightfall',weapon_type:null,ammo_type:null,capacity:null,has_mission:false,ingredients:[{name:'aslarite',qty:12},{name:'lindinium',qty:8},{name:'taranite',qty:6}]},
-  {id:3,base:'Aztalan',slot:'Legs',type:'Armor',category:'Combat',weight:'Medium',finish:'Nightfall',weapon_type:null,ammo_type:null,capacity:null,has_mission:false,ingredients:[{name:'aslarite',qty:10},{name:'lindinium',qty:6},{name:'taranite',qty:5}]},
-  {id:4,base:'Aztalan',slot:'Arms',type:'Armor',category:'Combat',weight:'Medium',finish:'Nightfall',weapon_type:null,ammo_type:null,capacity:null,has_mission:false,ingredients:[{name:'aslarite',qty:8},{name:'lindinium',qty:5},{name:'taranite',qty:4}]},
-  {id:5,base:'Corbel',slot:'Helmet',type:'Armor',category:'Combat',weight:'Heavy',finish:'Sanguine',weapon_type:null,ammo_type:null,capacity:null,has_mission:true,ingredients:[{name:'laranite',qty:5},{name:'titanium',qty:6},{name:'aslarite',qty:4}]},
-  {id:6,base:'Corbel',slot:'Core',type:'Armor',category:'Combat',weight:'Heavy',finish:'Sanguine',weapon_type:null,ammo_type:null,capacity:null,has_mission:true,ingredients:[{name:'laranite',qty:10},{name:'titanium',qty:12},{name:'aslarite',qty:8}]},
-  {id:7,base:'Corbel',slot:'Legs',type:'Armor',category:'Combat',weight:'Heavy',finish:'Sanguine',weapon_type:null,ammo_type:null,capacity:null,has_mission:true,ingredients:[{name:'laranite',qty:8},{name:'titanium',qty:10},{name:'aslarite',qty:6}]},
-  {id:8,base:'Corbel',slot:'Arms',type:'Armor',category:'Combat',weight:'Heavy',finish:'Sanguine',weapon_type:null,ammo_type:null,capacity:null,has_mission:true,ingredients:[{name:'laranite',qty:6},{name:'titanium',qty:8},{name:'aslarite',qty:5}]},
-  {id:9,base:'Demeco',slot:null,type:'Weapon',category:null,weight:null,finish:'Ironside',weapon_type:'LMG',ammo_type:'Battery',capacity:100,has_mission:false,ingredients:[{name:'corundum',qty:14},{name:'copper',qty:10},{name:'hadanite',qty:5}]},
-  {id:10,base:'Demeco',slot:null,type:'Ammunition',category:null,weight:null,finish:null,weapon_type:'LMG',ammo_type:'Battery',capacity:100,has_mission:false,ingredients:[{name:'copper',qty:6},{name:'corundum',qty:4}]},
-  {id:11,base:'Parasite',slot:'Helmet',type:'Armor',category:'Combat',weight:'Light',finish:'Necropolis',weapon_type:null,ammo_type:null,capacity:null,has_mission:false,ingredients:[{name:'aslarite',qty:5},{name:'lindinium',qty:3},{name:'borase',qty:4}]},
-  {id:12,base:'Parasite',slot:'Core',type:'Armor',category:'Combat',weight:'Light',finish:'Necropolis',weapon_type:null,ammo_type:null,capacity:null,has_mission:false,ingredients:[{name:'aslarite',qty:10},{name:'lindinium',qty:6},{name:'borase',qty:8}]},
-  {id:13,base:'Pyro RXL',slot:null,type:'Weapon',category:null,weight:null,finish:'Ashguard',weapon_type:'Pistol',ammo_type:'Laser',capacity:30,has_mission:false,ingredients:[{name:'copper',qty:8},{name:'gold',qty:3},{name:'janalite',qty:2}]},
-  {id:14,base:'Salvo Frag',slot:null,type:'Weapon',category:null,weight:null,finish:'Ruinous',weapon_type:'Rifle',ammo_type:'Ballistic',capacity:20,has_mission:true,ingredients:[{name:'iron',qty:12},{name:'copper',qty:6},{name:'titanium',qty:5}]},
-];
-// Load from Data Sync if available, otherwise use hardcoded sample data
 function loadBlueprints(){
   try{const s=JSON.parse(localStorage.getItem('forgex-blueprints')||'null');if(s&&s.length)return s;}catch(e){}
-  return HARDCODED_BLUEPRINTS;
+  return [];
 }
 const blueprints=loadBlueprints();
 
