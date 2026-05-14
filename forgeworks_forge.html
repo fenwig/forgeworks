@@ -222,6 +222,7 @@
     <button class="filter-btn" onclick="setBrowserFilter('Armor',this)">Armor</button>
     <button class="filter-btn" onclick="setBrowserFilter('Weapon',this)">Weapon</button>
     <button class="filter-btn" onclick="setBrowserFilter('Ammunition',this)">Ammo</button>
+    <button class="filter-btn" onclick="setBrowserFilter('ShipComponent',this)">Component</button>
     <span class="filter-divider"></span>
     <button class="filter-btn" onclick="setBrowserFilter('tracked',this)">Tracked</button>
     <button class="filter-btn" onclick="setBrowserFilter('orders',this)">Orders</button>
@@ -394,6 +395,11 @@ function writeLog(){localStorage.setItem(LS_LOG,JSON.stringify(craftingLog));}
 
 // ── HELPERS ──
 function getBpLabel(bp){
+  if(bp.type==='ShipComponent'){
+    const m=bp.meta||{};
+    const detail=[m.component_type,m.component_size!=null?'Size '+m.component_size:null,m.component_class,m.component_grade?'Grade '+m.component_grade:null].filter(Boolean).join(', ');
+    return bp.base+(detail?' — '+detail:'');
+  }
   const parts=[bp.base];
   if(bp.slot) parts.push(bp.slot);
   if(bp.weapon_type&&bp.type!=='Ammunition') parts.push(bp.weapon_type);
@@ -404,6 +410,7 @@ function getBpTag(bp){
   if(bp.type==='Armor') return bp.category||'Armor';
   if(bp.type==='Weapon') return 'Weapon';
   if(bp.type==='Ammunition') return 'Ammo'+(bp.weapon_type?' · '+bp.weapon_type:'');
+  if(bp.type==='ShipComponent') return (bp.meta?.manufacturer)||'Component';
   return bp.type;
 }
 function qualTierClass(tier){return tier===700?'qual-700':tier===800?'qual-800':'qual-900';}
@@ -484,6 +491,8 @@ function renderBrowser(){
   const filtered=owned.filter(bp=>{
     if(browserFilter==='Armor'||browserFilter==='Weapon'||browserFilter==='Ammunition'){
       if(bp.type!==browserFilter) return false;
+    } else if(browserFilter==='ShipComponent'){
+      if(bp.type!=='ShipComponent') return false;
     } else if(browserFilter==='tracked'){
       const t=tracking[bp.id];
       if(!t||!t.personal) return false;
@@ -493,7 +502,7 @@ function renderBrowser(){
     }
     if(!q) return true;
     return getBpLabel(bp).toLowerCase().includes(q)||bp.base.toLowerCase().includes(q);
-  });
+  }).sort((a,b)=>getBpLabel(a).localeCompare(getBpLabel(b)));
   document.getElementById('tc-browser').textContent=owned.length;
   const list=document.getElementById('bp-list');
   const noRes=document.getElementById('no-results');

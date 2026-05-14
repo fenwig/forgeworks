@@ -77,8 +77,8 @@
   .no-results{padding:30px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);letter-spacing:1px;}
 
   /* ── VIEW B: TRACKER ── */
-  .tracker-bar{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:8px 18px;display:flex;align-items:center;gap:8px;}
-  .tracker-legend{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-dim);letter-spacing:1px;margin-left:auto;display:flex;align-items:center;gap:12px;}
+  .tracker-bar{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:8px 18px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .tracker-legend{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-dim);letter-spacing:1px;margin-left:auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
   .legend-item{display:flex;align-items:center;gap:5px;}
   .legend-dot{width:7px;height:7px;}
 
@@ -138,19 +138,20 @@
   .needs-table-wrap{padding:12px 18px;}
   table{width:100%;border-collapse:collapse;}
   thead tr{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border);}
-  th{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;padding:10px 14px;text-align:left;}
+  th{font-family:'Share Tech Mono',monospace;font-size:13px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;padding:10px 14px;text-align:left;}
   th.band{text-align:center;}
   tbody tr{border-bottom:1px solid var(--tmi-border-dim);transition:background 0.1s;}
   tbody tr:hover{background:var(--tmi-bg-hover);}
-  td{padding:10px 14px;font-size:14px;vertical-align:middle;}
+  td{padding:10px 14px;font-size:15px;vertical-align:middle;}
   td.band-cell{text-align:center;}
-  .ore-cell{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:600;letter-spacing:1px;text-transform:capitalize;color:var(--tmi-text-primary);}
-  .need-cell{font-family:'Share Tech Mono',monospace;font-size:13px;}
+  .ore-cell{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:600;letter-spacing:1px;text-transform:capitalize;color:var(--tmi-text-primary);}
+  .need-cell{font-family:'Share Tech Mono',monospace;font-size:14px;}
   .need-ok{color:var(--tmi-success);}
   .need-short{color:var(--tmi-danger);}
   .need-zero{color:var(--tmi-text-dim);}
   .need-asl{color:var(--tmi-warning);}
   .needs-empty{padding:30px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);letter-spacing:1px;}
+  .th-500{color:var(--tmi-text-secondary);}
   .th-700{color:var(--tmi-gold-dim);}
   .th-800{color:var(--tmi-gold);}
   .th-900{color:var(--tmi-gold-bright);}
@@ -182,6 +183,7 @@
         <button class="filter-btn" id="ft-armor" onclick="setTypeFilter('armor',this)">Armor</button>
         <button class="filter-btn" id="ft-weapon" onclick="setTypeFilter('weapon',this)">Weapon</button>
         <button class="filter-btn" id="ft-ammo" onclick="setTypeFilter('ammo',this)">Ammo</button>
+        <button class="filter-btn" id="ft-component" onclick="setTypeFilter('component',this)">Component</button>
       </div>
       <div class="filter-sep"></div>
       <button class="filter-btn active" id="owned-filter" onclick="toggleOwnedFilter()">All Blueprints</button>
@@ -237,6 +239,13 @@
 <!-- VIEW B -->
 <div class="view" id="view-tracker">
   <div class="tracker-bar">
+    <span class="filter-label">Quality Filter</span>
+    <button class="filter-btn active" id="tq-all" onclick="setTrackerQualityFilter('all',this)">All</button>
+    <button class="filter-btn" id="tq-500" onclick="setTrackerQualityFilter('500',this)">500+</button>
+    <button class="filter-btn active" id="tq-700" onclick="setTrackerQualityFilter('700',this)">700+</button>
+    <button class="filter-btn active" id="tq-800" onclick="setTrackerQualityFilter('800',this)">800+</button>
+    <button class="filter-btn active" id="tq-900" onclick="setTrackerQualityFilter('900',this)">900+</button>
+    <div class="filter-sep" style="margin:0 12px;height:22px;"></div>
     <div class="tracker-legend">
       <div class="legend-item"><span style="font-size:12px;color:var(--tmi-text-dim)">Personal: Select quality tier(s) to track.&nbsp;&nbsp;<span style="color:var(--tmi-success)">✓</span> — ready when materials acquired.</span></div>
       <div class="legend-item"><span class="order-pill ready" style="margin-left:12px">800+ ORDER ✓</span><span style="font-size:12px;color:var(--tmi-text-dim);margin-left:6px">Order tier — green when materials ready</span></div>
@@ -251,6 +260,7 @@
   <div class="needs-bar">
     <span class="needs-label">Target Tier</span>
     <button class="filter-btn active" id="nb-all" onclick="setNeedsBand('all',this)">All</button>
+    <button class="filter-btn" id="nb-500" onclick="setNeedsBand('500',this)">500+</button>
     <button class="filter-btn" id="nb-700" onclick="setNeedsBand('700',this)">700+</button>
     <button class="filter-btn" id="nb-800" onclick="setNeedsBand('800',this)">800+</button>
     <button class="filter-btn" id="nb-900" onclick="setNeedsBand('900',this)">900+</button>
@@ -261,6 +271,7 @@
       <thead>
         <tr>
           <th>Ore / Material</th>
+          <th class="band th-500" id="th-500">500+ cSCU</th>
           <th class="band th-700" id="th-700">700+ cSCU</th>
           <th class="band th-800" id="th-800">800+ cSCU</th>
           <th class="band th-900" id="th-900">900+ cSCU</th>
@@ -323,6 +334,7 @@ let filterType='all';
 let filterSlot='all';
 let filterWeight='all';
 let needsBand='all';
+let trackerQualityFilter=new Set([700,800,900]);
 let currentTab='browser';
 
 function switchTab(tab){
@@ -352,7 +364,7 @@ function toggleMissionFilter(){
 
 function setTypeFilter(type,btn){
   filterType=type;
-  document.querySelectorAll('#ft-all,#ft-armor,#ft-weapon,#ft-ammo').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#ft-all,#ft-armor,#ft-weapon,#ft-ammo,#ft-component').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('armor-filters').style.display=type==='armor'?'flex':'none';
   document.getElementById('weapon-filters').style.display=type==='weapon'?'flex':'none';
@@ -383,6 +395,26 @@ function setNeedsBand(band,btn){
   document.querySelectorAll('.needs-bar .filter-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   renderNeeds();
+}
+
+function setTrackerQualityFilter(tier,btn){
+  if(tier==='all'){
+    trackerQualityFilter=new Set([700,800,900]);
+    document.getElementById('tq-all').classList.add('active');
+    document.getElementById('tq-500').classList.remove('active');
+    document.getElementById('tq-700').classList.add('active');
+    document.getElementById('tq-800').classList.add('active');
+    document.getElementById('tq-900').classList.add('active');
+  } else {
+    const t=Number(tier);
+    if(trackerQualityFilter.has(t)) trackerQualityFilter.delete(t);
+    else trackerQualityFilter.add(t);
+    btn.classList.toggle('active');
+    // Update "All" button state: active only if filter is exactly [700,800,900]
+    const isAll=trackerQualityFilter.size===3&&trackerQualityFilter.has(700)&&trackerQualityFilter.has(800)&&trackerQualityFilter.has(900);
+    document.getElementById('tq-all').classList.toggle('active',isAll);
+  }
+  renderTracker();
 }
 
 /* ── INVENTORY HELPERS ── */
@@ -422,17 +454,19 @@ function renderBrowser(){
     if(filterType==='armor'&&bp.type!=='Armor') return false;
     if(filterType==='weapon'&&bp.type!=='Weapon') return false;
     if(filterType==='ammo'&&bp.type!=='Ammunition') return false;
+    if(filterType==='component'&&bp.type!=='ShipComponent') return false;
     if(filterType==='armor'){
       if(filterSlot!=='all'&&(bp.slot||'')!==filterSlot) return false;
       if(filterWeight!=='all'&&(bp.weight||'')!==filterWeight) return false;
     }
     if(filterType==='weapon'&&wepF!=='all'&&(bp.weapon_type||'')!==wepF) return false;
-    const searchStr=(bp.base+(bp.slot?' '+bp.slot:'')+(bp.finish?' '+bp.finish:'')).toLowerCase();
+    const searchStr=(bp.base+(bp.slot?' '+bp.slot:'')+(bp.finish?' '+bp.finish:'')+(bp.weapon_type?' '+bp.weapon_type:'')+(bp.meta?.component_type?' '+bp.meta.component_type:'')+(bp.meta?.component_class?' '+bp.meta.component_class:'')).toLowerCase();
     return !q||searchStr.includes(q);
   });
   filtered.sort((a,b)=>{
     const lbl=bp=>bp.type==='Weapon'?`${bp.base}${bp.weapon_type?' '+bp.weapon_type:''}${bp.finish?' '+bp.finish:''}`
       :bp.type==='Ammunition'?`${bp.base}${bp.ammo_type?' '+bp.ammo_type:''}`
+      :bp.type==='ShipComponent'?`${bp.base}${bp.meta?.component_type?' '+bp.meta.component_type:''}`
       :bp.slot?`${bp.base} ${bp.slot}${bp.finish?' '+bp.finish:''}`:
       `${bp.base}${bp.finish?' '+bp.finish:''}`;
     return lbl(a).localeCompare(lbl(b));
@@ -448,14 +482,18 @@ function renderBrowser(){
     const t=tr[bp.id]||{};
     const isTracked=t.personal||t.order;
     const isExp=expandedBrowser.has(bp.id);
+    const cmpMeta=bp.meta||{};
+    const cmpDetail=[cmpMeta.component_type,cmpMeta.component_size!=null?'Size '+cmpMeta.component_size:null,cmpMeta.component_class,cmpMeta.component_grade?'Grade '+cmpMeta.component_grade:null].filter(Boolean).join(', ');
     const label=bp.type==='Weapon'
       ?`${bp.base}${bp.weapon_type?' '+bp.weapon_type:''}${bp.finish?' '+bp.finish:''}`
       :bp.type==='Ammunition'?`${bp.base}${bp.ammo_type?' '+bp.ammo_type:''}`
+      :bp.type==='ShipComponent'?`${bp.base}${cmpDetail?' — '+cmpDetail:''}`
       :bp.slot?`${bp.base} ${bp.slot}${bp.finish?' '+bp.finish:''}`:
       `${bp.base}${bp.finish?' '+bp.finish:''}`;
     const tags=[];
     if(bp.type==='Armor'&&bp.category) tags.push(bp.category);
     if(bp.type==='Ammunition'&&bp.capacity) tags.push('×'+bp.capacity);
+    if(bp.type==='ShipComponent'&&cmpMeta.manufacturer) tags.push(cmpMeta.manufacturer);
     return`<div class="bp-card${isOwned?' owned':''}">
       <div class="bp-card-header" onclick="toggleExpBrowser(${bp.id})">
         <span class="bp-name">${label}</span>
@@ -516,7 +554,13 @@ function renderTracker(){
     if(!t) return false;
     // treat as active-order if actual orders exist (handles stale tracking.order flag)
     const hasOrder=allOrders.some(o=>o.bpId===bp.id);
-    return t.personal||hasOrder;
+    if(!(t.personal||hasOrder)) return false;
+    // Apply quality tier filter: show only if blueprint has tracked tier(s) matching filter
+    const userTiers=t.tiers||[700,800,900];
+    const bpOrders=allOrders.filter(o=>o.bpId===bp.id);
+    const orderQuals=new Set(bpOrders.map(o=>o.quality));
+    const matchesTierFilter=userTiers.some(tier=>trackerQualityFilter.has(tier))||orderQuals.size>0&&[...orderQuals].some(q=>trackerQualityFilter.has(q));
+    return matchesTierFilter;
   });
   if(!tracked.length){list.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
@@ -526,14 +570,18 @@ function renderTracker(){
     const userTiers=t.tiers||[700,800,900];
     const isExp=expandedTracker.has(bp.id);
 
+    const tcmpMeta=bp.meta||{};
+    const tcmpDetail=[tcmpMeta.component_type,tcmpMeta.component_size!=null?'Size '+tcmpMeta.component_size:null,tcmpMeta.component_class,tcmpMeta.component_grade?'Grade '+tcmpMeta.component_grade:null].filter(Boolean).join(', ');
     const label=bp.type==='Weapon'
       ?`${bp.base}${bp.weapon_type?' '+bp.weapon_type:''}${bp.finish?' '+bp.finish:''}`
       :bp.type==='Ammunition'?`${bp.base}${bp.ammo_type?' '+bp.ammo_type:''}`
+      :bp.type==='ShipComponent'?`${bp.base}${tcmpDetail?' — '+tcmpDetail:''}`
       :bp.slot?`${bp.base} ${bp.slot}${bp.finish?' '+bp.finish:''}`:
       `${bp.base}${bp.finish?' '+bp.finish:''}`;
     const tags=[];
     if(bp.type==='Armor'&&bp.category) tags.push(bp.category);
     if(bp.type==='Ammunition'&&bp.capacity) tags.push('×'+bp.capacity);
+    if(bp.type==='ShipComponent'&&tcmpMeta.manufacturer) tags.push(tcmpMeta.manufacturer);
 
     const ready=t.personal?checkReady(bp,1):{r700:false,r800:false,r900:false};
 
@@ -568,6 +616,7 @@ function renderTracker(){
     // Expanded detail — all 3 tier columns, only effective tiers show amounts
     const detailRows=bp.ingredients.map(ing=>{
       const isAsl=ing.name==='aslarite';
+      const isGem=GEM_NAMES.has(ing.name);
       const need=ing.qty*detailQty;
       if(isAsl){
         const b=getBands('aslarite');
@@ -588,7 +637,7 @@ function renderTracker(){
         return`<span class="tier-block"><span class="tier-lbl">${tier}+</span><span class="tier-amt ${valCls}">${valTxt}</span></span>`;
       }).join('');
       return`<div class="detail-ing-row">
-        <span class="detail-ing-name">${ing.name}${GEM_NAMES.has(ing.name)?'<span class="ing-gem" style="margin-left:4px">GEM</span>':''}</span>
+        <span class="detail-ing-name">${ing.name}${isGem?'<span class="ing-gem" style="margin-left:4px">GEM</span>':''}</span>
         <span class="detail-needed">Need ${need} cSCU</span>
         ${tierCols}
       </div>`;
@@ -670,19 +719,21 @@ function renderNeeds(){
     const bpOrders=activeOrders.filter(o=>o.bpId===bp.id);
     bp.ingredients.forEach(ing=>{
       const isAsl=ing.name==='aslarite';
-      if(!needs[ing.name]) needs[ing.name]={isAsl,isGem:GEM_NAMES.has(ing.name),n700:0,n800:0,n900:0,nAsl:0};
+      if(!needs[ing.name]) needs[ing.name]={isAsl,isGem:GEM_NAMES.has(ing.name),n500:0,n700:0,n800:0,n900:0,nAsl:0};
       if(isAsl){
         const total=(t.personal?1:0)+bpOrders.reduce((s,o)=>s+o.qty,0);
         needs[ing.name].nAsl+=ing.qty*total;
       } else {
         const tiers=t.tiers||[700,800,900];
         if(t.personal){
+          if(tiers.includes(500)) needs[ing.name].n500+=ing.qty;
           if(tiers.includes(700)) needs[ing.name].n700+=ing.qty;
           if(tiers.includes(800)) needs[ing.name].n800+=ing.qty;
           if(tiers.includes(900)) needs[ing.name].n900+=ing.qty;
         }
         bpOrders.forEach(o=>{
-          if(o.quality===700) needs[ing.name].n700+=ing.qty*o.qty;
+          if(o.quality===500) needs[ing.name].n500+=ing.qty*o.qty;
+          else if(o.quality===700) needs[ing.name].n700+=ing.qty*o.qty;
           else if(o.quality===800) needs[ing.name].n800+=ing.qty*o.qty;
           else needs[ing.name].n900+=ing.qty*o.qty;
         });
@@ -709,12 +760,13 @@ function renderNeeds(){
       const cell=`<td class="band-cell need-asl">${safeNeed} needed<br><span class="${cls}" style="font-size:9px">${safeHave} avail · ${txt}</span></td>`;
       return`<tr>
         <td class="ore-cell">${ore}<span class="asl-note" style="margin-left:6px;font-size:8px">500+</span></td>
+        ${showAll||needsBand==='500'?cell:''}
         ${showAll||needsBand==='700'?cell:''}
         ${showAll||needsBand==='800'?cell:''}
         ${showAll||needsBand==='900'?cell:''}
       </tr>`;
     }
-    const cells=[['700',info.n700,b.b700],['800',info.n800,b.b800],['900',info.n900,b.b900]].map(([band,need,have])=>{
+    const cells=[['500',info.n500,b.b500],['700',info.n700,b.b700],['800',info.n800,b.b800],['900',info.n900,b.b900]].map(([band,need,have])=>{
       if(!showAll&&needsBand!==band) return '';
       const safeNeed=(need||0);
       const safeHave=(have||0);

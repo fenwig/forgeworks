@@ -141,7 +141,7 @@
       </div>
       <div class="sync-controls">
         <button class="btn-sync" id="syncBtn" onclick="startSync()">SYNC BLUEPRINTS</button>
-        <div class="sync-hint" id="syncHint">~1,044 blueprints · ~11 API requests</div>
+        <div class="sync-hint" id="syncHint">~1,559 blueprints · ~16 API requests</div>
       </div>
       <div class="progress-panel" id="progressPanel">
         <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
@@ -169,7 +169,7 @@
       <div class="about-text">
         Blueprint data is sourced from the <strong>Star Citizen Wiki</strong> community API at <code>api.star-citizen.wiki</code>.
         <ul>
-          <li><strong>Armor, weapon, and ammunition</strong> blueprints are imported. Weapon attachments, ship components, liveries, and other non-craftable types are excluded.</li>
+          <li><strong>Armor, weapon, ammunition, and ship component</strong> blueprints are imported. Weapon attachments, liveries, and other non-craftable types are excluded.</li>
           <li>Ingredient quantities are converted from SCU to <strong>cSCU</strong> (0.01 SCU) to match the app's internal format.</li>
           <li><strong>Armor category</strong> (Combat, Cosmonaut, Engineer, etc.) is not available from the API — set it manually in Blueprint Database after syncing.</li>
           <li>After a sync, open <strong>Blueprint Database</strong> to review imported blueprints and mark items as owned.</li>
@@ -215,12 +215,28 @@ const WEAPON_TYPES = [
   'Sniper Rifle','Shotgun','Pistol','SMG','LMG','Rifle'
 ];
 
+const COMPONENT_TYPES = new Set([
+  'PowerPlant','Cooler','Radar','Shield','QuantumDrive',
+  'WeaponGun','MiningLaser','SalvageModifier','TractorBeam','FuelIntake','FuelTank'
+]);
+
+const MANUFACTURER_CLASS = {
+  'ACOM':'Competition','ACAS':'Competition',
+  'AEG':'Military','AEGS':'Military','AMRS':'Military','GRNP':'Military','WETK':'Military',
+  'JUST':'Industrial',
+  'RACO':'Stealth',
+  'RSI':'Civilian','TARS':'Civilian',
+};
+
+const GRADE_MAP = {'1':'A','2':'B','3':'C','4':'D','5':'E'};
+
 function resolveType(apiType, subType) {
   if (!apiType) return null;
   if (apiType in ARMOR_SLOT_MAP) return 'Armor';
   if (apiType === 'WeaponPersonal') return 'Weapon';
   if (apiType === 'WeaponAttachment' && subType === 'Magazine') return 'Ammunition';
   if (apiType.toLowerCase().includes('ammo')) return 'Ammunition';
+  if (COMPONENT_TYPES.has(apiType)) return 'ShipComponent';
   return null;
 }
 
@@ -237,10 +253,24 @@ function resolveWeight(subType) {
   return null;
 }
 
+function resolveComponentMeta(record) {
+  const cls   = record.output_class || '';
+  const parts = cls.split('_');                          // 'powr_acom_s01_lumacore_scitem'
+  const mfr   = (parts[1] || '').toUpperCase();
+  const szMatch = (parts[2] || '').match(/^s(\d+)$/i);
+  return {
+    component_type:  record.output?.type_label || record.output?.type || null,
+    component_class: MANUFACTURER_CLASS[mfr] || null,
+    component_grade: GRADE_MAP[record.output?.grade] || record.output?.grade || null,
+    component_size:  szMatch ? parseInt(szMatch[1]) : null,
+    manufacturer:    mfr || null,
+  };
+}
+
 // ── Name parser ────────────────────────────────────────────────────────────
 
 function parseName(rawName, slot, type) {
-  let name = rawName.trim();
+  let name = (rawName || '').trim();
   let base = name, finish = null, weapon_type = null;
 
   if (type === 'Armor' && slot) {
@@ -284,24 +314,25 @@ function mapBlueprint(record, newId) {
   const slot    = resolveSlot(apiType);
   const weight  = (type === 'Armor') ? resolveWeight(output?.sub_type) : null;
   const { base, finish, weapon_type } = parseName(output_name, slot, type);
+  const meta    = (type === 'ShipComponent') ? resolveComponentMeta(record) : {};
 
   return {
     id:          newId,
-    uuid,                             // preserved for future tracking re-mapping
+    uuid,
     base:        base || output_name,
     slot,
     type,
-    category:    null,                // not available from API — set manually in Module 04
+    category:    null,
     weight,
     finish:      finish || null,
     weapon_type: weapon_type || null,
     ammo_type:   null,
     capacity:    null,
     has_mission: unlocking_missions_count > 0,
-    meta:        {},
+    meta,
     ingredients: (ingredients || []).map(ing => ({
       name: ing.name.toLowerCase(),
-      qty:  Math.round(ing.quantity_scu * 100)   // SCU → cSCU
+      qty:  Math.round((ing.quantity_scu || 0) * 100)
     }))
   };
 }
@@ -460,11 +491,12 @@ async function startSync() {
     showResults(blueprints, skipped, preserved, gameVersion);
 
     // Persist sync log entry
-    const armor  = blueprints.filter(b => b.type === 'Armor').length;
-    const weapon = blueprints.filter(b => b.type === 'Weapon').length;
-    const ammo   = blueprints.filter(b => b.type === 'Ammunition').length;
+    const armor     = blueprints.filter(b => b.type === 'Armor').length;
+    const weapon    = blueprints.filter(b => b.type === 'Weapon').length;
+    const ammo      = blueprints.filter(b => b.type === 'Ammunition').length;
+    const component = blueprints.filter(b => b.type === 'ShipComponent').length;
     const logEntry = { date: meta.date, count: blueprints.length, skipped, gameVersion,
-      breakdown: { Armor: armor, Weapon: weapon, Ammunition: ammo }, skippedTypes };
+      breakdown: { Armor: armor, Weapon: weapon, Ammunition: ammo, Component: component }, skippedTypes };
     const syncLog = JSON.parse(localStorage.getItem('forgex-sync-log') || '[]');
     syncLog.unshift(logEntry);
     if (syncLog.length > 20) syncLog.length = 20;
@@ -482,9 +514,10 @@ async function startSync() {
 // ── Results summary ────────────────────────────────────────────────────────
 
 function showResults(blueprints, skipped, preserved, gameVersion) {
-  const armor  = blueprints.filter(b => b.type === 'Armor').length;
-  const weapon = blueprints.filter(b => b.type === 'Weapon').length;
-  const ammo   = blueprints.filter(b => b.type === 'Ammunition').length;
+  const armor     = blueprints.filter(b => b.type === 'Armor').length;
+  const weapon    = blueprints.filter(b => b.type === 'Weapon').length;
+  const ammo      = blueprints.filter(b => b.type === 'Ammunition').length;
+  const component = blueprints.filter(b => b.type === 'ShipComponent').length;
 
   el('resultsGrid').innerHTML = `
     <div class="result-stat">
@@ -502,6 +535,10 @@ function showResults(blueprints, skipped, preserved, gameVersion) {
     <div class="result-stat">
       <div class="result-stat-label">Ammunition</div>
       <div class="result-stat-value">${ammo}</div>
+    </div>
+    <div class="result-stat">
+      <div class="result-stat-label">Components</div>
+      <div class="result-stat-value">${component}</div>
     </div>
     <div class="result-stat">
       <div class="result-stat-label">Flags Preserved</div>
@@ -523,7 +560,7 @@ function showResults(blueprints, skipped, preserved, gameVersion) {
 
   el('resultsNote').innerHTML = `
     ${flagNote}<br>
-    <strong>${skipped}</strong> records excluded (weapon attachments, ship components, liveries, and other non-craftable types).
+    <strong>${skipped}</strong> records excluded (weapon attachments, liveries, and other non-craftable types).
   `;
 
   el('resultsPanel').classList.add('visible');
@@ -550,7 +587,7 @@ function renderSyncLog() {
         <span style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-success)">${entry.count} imported</span>
         <span style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-dim)">${entry.skipped} skipped</span>
         <span style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-dim)">v${entry.gameVersion}</span>
-        <span style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-dim)">Armor&nbsp;<span style="color:var(--tmi-text-secondary)">${bd.Armor||0}</span>&nbsp;&nbsp;Weapon&nbsp;<span style="color:var(--tmi-text-secondary)">${bd.Weapon||0}</span>&nbsp;&nbsp;Ammo&nbsp;<span style="color:var(--tmi-text-secondary)">${bd.Ammunition||0}</span></span>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-dim)">Armor&nbsp;<span style="color:var(--tmi-text-secondary)">${bd.Armor||0}</span>&nbsp;&nbsp;Weapon&nbsp;<span style="color:var(--tmi-text-secondary)">${bd.Weapon||0}</span>&nbsp;&nbsp;Ammo&nbsp;<span style="color:var(--tmi-text-secondary)">${bd.Ammunition||0}</span>&nbsp;&nbsp;Component&nbsp;<span style="color:var(--tmi-text-secondary)">${bd.Component||0}</span></span>
       </div>
       ${skippedRows ? `<div style="margin-top:4px"><span style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--tmi-text-dim);text-transform:uppercase;margin-right:10px">Skipped:</span>${skippedRows}</div>` : ''}
     </div>`;

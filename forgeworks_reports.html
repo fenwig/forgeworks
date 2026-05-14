@@ -203,6 +203,7 @@
   <div class="filter-bar">
     <button class="toggle-btn active" id="r2-armor-btn" onclick="setR2View('armor',this)">Armor</button>
     <button class="toggle-btn" id="r2-weapon-btn" onclick="setR2View('weapon',this)">Weapons</button>
+    <button class="toggle-btn" id="r2-component-btn" onclick="setR2View('component',this)">Components</button>
     <div style="width:1px;height:20px;background:var(--rpt-border);flex-shrink:0;margin:0 6px;"></div>
     <span class="filter-label">Show Available At</span>
     <div class="check-wrap">
@@ -219,6 +220,7 @@
   <div class="filter-bar">
     <button class="toggle-btn active" id="r3-armor-btn" onclick="setR3View('armor',this)">Armor</button>
     <button class="toggle-btn" id="r3-weapon-btn" onclick="setR3View('weapon',this)">Weapons</button>
+    <button class="toggle-btn" id="r3-component-btn" onclick="setR3View('component',this)">Components</button>
   </div>
   <div class="rpt-body" id="r3-content"></div>
 </div>
@@ -369,7 +371,7 @@ function buildReport1(){
 let r2View='armor';
 function setR2View(view,btn){
   r2View=view;
-  document.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#report-2 .toggle-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   buildReport2();
 }
@@ -422,7 +424,7 @@ function buildReport2(){
     }
     document.getElementById('r2-content').innerHTML=brandHTML('Crafting Availability — Armor','')+html;
 
-  } else {
+  } else if(r2View==='weapon'){
     // Group weapons by base+weapon_type, collect finishes
     const weaponGroups={};
     owned.filter(bp=>bp.type==='Weapon').forEach(bp=>{
@@ -463,6 +465,35 @@ function buildReport2(){
       }).join('')+'</tbody></table>';
     }
     document.getElementById('r2-content').innerHTML=brandHTML('Crafting Availability — Weapons','')+html;
+  } else {
+    // Component view
+    const compList=owned.filter(bp=>bp.type==='ShipComponent').map(bp=>{
+      const avail=checkAvailability(bp,lots);
+      const showIt=(show700&&avail[700])||(show800&&avail[800])||(show900&&avail[900]);
+      return showIt?{bp,avail}:null;
+    }).filter(Boolean).sort((a,b)=>a.bp.base.localeCompare(b.bp.base));
+    let html;
+    if(!compList.length){
+      html='<div class="empty-state">No components ready to craft</div>';
+    } else {
+      html=`<table class="rpt-full-table"><thead><tr>
+        <th>Component</th><th>Details</th><th>Ready At</th>
+      </tr></thead><tbody>`+compList.map(({bp,avail})=>{
+        const m=bp.meta||{};
+        const detail=[m.component_type,m.component_size!=null?'Size '+m.component_size:null,m.component_class,m.component_grade?'Grade '+m.component_grade:null].filter(Boolean).join(', ');
+        const badges=[
+          show700&&avail[700]?'<span class="avail-badge avail-700">700+</span>':'',
+          show800&&avail[800]?'<span class="avail-badge avail-800">800+</span>':'',
+          show900&&avail[900]?'<span class="avail-badge avail-900">900+</span>':'',
+        ].join('');
+        return`<tr>
+          <td><span class="bp-name">${bp.base}</span></td>
+          <td><span class="bp-finishes">${detail}</span></td>
+          <td><div class="avail-badges">${badges}</div></td>
+        </tr>`;
+      }).join('')+'</tbody></table>';
+    }
+    document.getElementById('r2-content').innerHTML=brandHTML('Crafting Availability — Components','')+html;
   }
 }
 
@@ -525,10 +556,27 @@ function buildReport3(){
       <div class="rpt-card-header"><span class="rpt-card-title">Armor</span><span class="rpt-card-count">${armorList.length} blueprint${armorList.length!==1?'s':''}</span></div>
       ${armorTbl()}
     </div>`;
-  } else {
+  } else if(r3View==='weapon'){
     html=`<div class="rpt-card">
       <div class="rpt-card-header"><span class="rpt-card-title">Weapons</span><span class="rpt-card-count">${weaponList.length} blueprint${weaponList.length!==1?'s':''}</span></div>
       ${weaponTbl()}
+    </div>`;
+  } else {
+    const compList=owned.filter(bp=>bp.type==='ShipComponent').sort((a,b)=>a.base.localeCompare(b.base));
+    function compTbl(){
+      if(!compList.length) return'<div class="empty-state">No component blueprints owned</div>';
+      return`<table class="rpt-table"><tbody>`+compList.map(bp=>{
+        const m=bp.meta||{};
+        const detail=[m.component_type,m.component_size!=null?'Size '+m.component_size:null,m.component_class,m.component_grade?'Grade '+m.component_grade:null].filter(Boolean).join(', ');
+        return`<tr>
+          <td><span class="bp-name">${bp.base}</span></td>
+          <td><span class="bp-slots">${detail}</span></td>
+        </tr>`;
+      }).join('')+'</tbody></table>';
+    }
+    html=`<div class="rpt-card">
+      <div class="rpt-card-header"><span class="rpt-card-title">Components</span><span class="rpt-card-count">${compList.length} blueprint${compList.length!==1?'s':''}</span></div>
+      ${compTbl()}
     </div>`;
   }
   document.getElementById('r3-content').innerHTML=brandHTML('Owned Blueprints','')+html;
