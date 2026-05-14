@@ -53,7 +53,7 @@
   .check-label input{accent-color:var(--rpt-gold);width:13px;height:13px;}
 
   /* ── Report body ─────────────────────────────────────────────── */
-  .rpt-body{padding:16px 18px;}
+  .rpt-body{padding:16px 18px;width:100%;}
 
   /* branded report header strip */
   .rpt-brand{display:flex;align-items:center;gap:14px;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid var(--rpt-border-strong);}
@@ -70,24 +70,24 @@
   .rpt-card{background:var(--rpt-card);border:1px solid var(--rpt-border);}
   .rpt-card-header{background:var(--tmi-bg-panel);padding:8px 14px;display:flex;align-items:center;justify-content:space-between;}
   .rpt-card-title{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tmi-gold);}
-  .rpt-card-count{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--tmi-text-dim);}
+  .rpt-card-count{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:1px;color:var(--tmi-gold);font-weight:700;}
 
   /* compact table */
-  .rpt-table{width:100%;border-collapse:collapse;}
+  .rpt-table{width:100%;border-collapse:collapse;table-layout:fixed;}
   .rpt-table thead tr{background:#f5f0e6;border-bottom:1px solid var(--rpt-border);}
-  .rpt-table th{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--rpt-text-dim);text-transform:uppercase;padding:5px 12px;text-align:left;}
+  .rpt-table th{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--rpt-text-dim);text-transform:uppercase;padding:4px 8px;text-align:left;}
   .rpt-table th.num{text-align:right;}
   .rpt-table tbody tr{border-bottom:1px solid rgba(176,126,8,0.07);}
   .rpt-table tbody tr:last-child{border-bottom:none;}
   .rpt-table tbody tr:hover{background:#faf6ee;}
-  .rpt-table td{padding:5px 12px;vertical-align:middle;}
+  .rpt-table td{padding:3px 8px;vertical-align:middle;text-align:left;}
   .rpt-table td.num{text-align:right;}
 
   /* material names */
-  .mat-name{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;letter-spacing:1px;color:var(--rpt-text);text-transform:capitalize;}
+  .mat-name{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:600;letter-spacing:1px;color:var(--rpt-text);text-transform:capitalize;}
 
   /* quality band values */
-  .band-val{font-family:'Share Tech Mono',monospace;font-size:13px;font-weight:700;}
+  .band-val{font-family:'Share Tech Mono',monospace;font-size:14px;font-weight:700;}
   .band-700{color:var(--rpt-700);}
   .band-800{color:var(--rpt-800);}
   .band-900{color:var(--rpt-900);}
@@ -101,27 +101,54 @@
   .avail-900{color:var(--rpt-900);border-color:var(--rpt-avail-border);background:var(--rpt-avail-bg);}
 
   /* BP names */
-  .bp-name{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;letter-spacing:1px;color:var(--rpt-text);}
-  .bp-slots{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--rpt-text-dim);letter-spacing:1px;}
+  .bp-name{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.5px;color:var(--rpt-text);text-align:left;}
+  .bp-slots{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--rpt-text-dim);letter-spacing:0.5px;text-align:left;}
+  .bp-finishes{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--rpt-text-dim);letter-spacing:0.5px;text-align:left;}
 
   /* full-width table (orders / crafted) */
-  .rpt-full-table{width:100%;border-collapse:collapse;background:var(--rpt-card);border:1px solid var(--rpt-border);}
+  .rpt-full-table{width:100%;border-collapse:collapse;table-layout:fixed;background:var(--rpt-card);border:1px solid var(--rpt-border);}
   .rpt-full-table thead tr{background:var(--tmi-bg-panel);}
-  .rpt-full-table th{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--tmi-gold-dim);text-transform:uppercase;padding:8px 14px;text-align:left;border-bottom:1px solid var(--rpt-border-strong);}
+  .rpt-full-table th{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.5px;color:var(--tmi-gold);text-transform:uppercase;padding:8px 10px;text-align:left;border-bottom:1px solid var(--rpt-border-strong);}
   .rpt-full-table tbody tr{border-bottom:1px solid rgba(176,126,8,0.07);}
   .rpt-full-table tbody tr:hover{background:#faf6ee;}
-  .rpt-full-table td{padding:5px 14px;vertical-align:middle;}
+  .rpt-full-table td{padding:4px 10px;vertical-align:middle;text-align:left;}
 
   .rpt-item-name{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:var(--rpt-text);}
   .rpt-customer{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;color:var(--rpt-text);}
   .rpt-date{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--rpt-text-sub);}
-  .rpt-tier{font-family:'Share Tech Mono',monospace;font-size:12px;font-weight:700;}
+  .rpt-tier{font-family:'Share Tech Mono',monospace;font-size:12px;font-weight:700;color:var(--rpt-text);}
   .rpt-tier-700{color:var(--rpt-700);}
   .rpt-tier-800{color:var(--rpt-800);}
   .rpt-tier-900{color:var(--rpt-900);}
   .rpt-pending{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--rpt-muted);letter-spacing:0.5px;font-style:italic;}
 
   .empty-state{padding:30px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--rpt-muted);letter-spacing:1px;}
+  .toggle-btn{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1.5px;color:var(--rpt-text-dim);background:transparent;border:1px solid var(--rpt-border);padding:4px 12px;cursor:pointer;text-transform:uppercase;transition:all 0.15s;}
+  .toggle-btn.active{background:var(--rpt-gold-light);border-color:var(--rpt-border-strong);color:var(--rpt-gold);}
+  .toggle-btn:hover:not(.active){border-color:var(--rpt-border-strong);color:var(--rpt-text-sub);}
+  .slot-pill{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--rpt-text-sub);background:rgba(176,126,8,0.06);border:1px solid var(--rpt-border);padding:2px 6px;display:inline-block;}
+  .slot-pills{display:flex;gap:3px;flex-wrap:wrap;}
+
+  /* Table column widths — scaled to 1200px max-width (1164px available after padding) */
+  /* 4-column tables (Materials Available: Material | 700+ | 800+ | 900+) — fits in 575px grid columns */
+  .rpt-table th:first-child, .rpt-table td:first-child{width:260px;}
+  .rpt-table th:nth-child(2), .rpt-table td:nth-child(2){width:105px;}
+  .rpt-table th:nth-child(3), .rpt-table td:nth-child(3){width:105px;}
+  .rpt-table th:nth-child(4), .rpt-table td:nth-child(4){width:105px;}
+
+  /* 3-column tables (Orders/Crafted Items) */
+  .rpt-full-table th:first-child, .rpt-full-table td:first-child{width:280px;text-align:left;}
+  .rpt-full-table th:nth-child(2), .rpt-full-table td:nth-child(2){width:420px;text-align:left;}
+  .rpt-full-table th:nth-child(3), .rpt-full-table td:nth-child(3){width:464px;text-align:left;}
+
+  /* Report 3 — Owned Blueprints (2-column tables) */
+  #report-3 .rpt-table th:first-child, #report-3 .rpt-table td:first-child{width:280px;}
+  #report-3 .rpt-table th:nth-child(2), #report-3 .rpt-table td:nth-child(2){width:884px;}
+
+  /* Report 5 — Crafted Items */
+  #report-5 .rpt-full-table th:first-child, #report-5 .rpt-full-table td:first-child{width:280px;text-align:left;}
+  #report-5 .rpt-full-table th:nth-child(2), #report-5 .rpt-full-table td:nth-child(2){width:140px;text-align:left;}
+  #report-5 .rpt-full-table th:nth-child(3), #report-5 .rpt-full-table td:nth-child(3){width:744px;text-align:left;}
 
   /* ── Print ───────────────────────────────────────────────────── */
   @media print {
@@ -174,6 +201,9 @@
 <!-- REPORT 2 -->
 <div class="report" id="report-2">
   <div class="filter-bar">
+    <button class="toggle-btn active" id="r2-armor-btn" onclick="setR2View('armor',this)">Armor</button>
+    <button class="toggle-btn" id="r2-weapon-btn" onclick="setR2View('weapon',this)">Weapons</button>
+    <div style="width:1px;height:20px;background:var(--rpt-border);flex-shrink:0;margin:0 6px;"></div>
     <span class="filter-label">Show Available At</span>
     <div class="check-wrap">
       <label class="check-label"><input type="checkbox" id="r2-700" checked onchange="buildReport2()"> 700+</label>
@@ -186,6 +216,10 @@
 
 <!-- REPORT 3 -->
 <div class="report" id="report-3">
+  <div class="filter-bar">
+    <button class="toggle-btn active" id="r3-armor-btn" onclick="setR3View('armor',this)">Armor</button>
+    <button class="toggle-btn" id="r3-weapon-btn" onclick="setR3View('weapon',this)">Weapons</button>
+  </div>
   <div class="rpt-body" id="r3-content"></div>
 </div>
 
@@ -215,21 +249,13 @@
 
 </div>
 <script>
-// ── Blueprint master list (no ammo) ───────────────────────────────────────────
-const BLUEPRINTS = [
-  {id:1,base:'Aztalan',slot:'Helmet',type:'Armor',weight:'Medium',finish:'Nightfall',weapon_type:null,ingredients:[{name:'aslarite',qty:6},{name:'lindinium',qty:4},{name:'taranite',qty:3}]},
-  {id:2,base:'Aztalan',slot:'Core',type:'Armor',weight:'Medium',finish:'Nightfall',weapon_type:null,ingredients:[{name:'aslarite',qty:12},{name:'lindinium',qty:8},{name:'taranite',qty:6}]},
-  {id:3,base:'Aztalan',slot:'Legs',type:'Armor',weight:'Medium',finish:'Nightfall',weapon_type:null,ingredients:[{name:'aslarite',qty:10},{name:'lindinium',qty:6},{name:'taranite',qty:5}]},
-  {id:4,base:'Aztalan',slot:'Arms',type:'Armor',weight:'Medium',finish:'Nightfall',weapon_type:null,ingredients:[{name:'aslarite',qty:8},{name:'lindinium',qty:5},{name:'taranite',qty:4}]},
-  {id:5,base:'Corbel',slot:'Helmet',type:'Armor',weight:'Heavy',finish:'Sanguine',weapon_type:null,ingredients:[{name:'laranite',qty:5},{name:'titanium',qty:6},{name:'aslarite',qty:4}]},
-  {id:6,base:'Corbel',slot:'Core',type:'Armor',weight:'Heavy',finish:'Sanguine',weapon_type:null,ingredients:[{name:'laranite',qty:10},{name:'titanium',qty:12},{name:'aslarite',qty:8}]},
-  {id:7,base:'Corbel',slot:'Legs',type:'Armor',weight:'Heavy',finish:'Sanguine',weapon_type:null,ingredients:[{name:'laranite',qty:8},{name:'titanium',qty:10},{name:'aslarite',qty:6}]},
-  {id:8,base:'Corbel',slot:'Arms',type:'Armor',weight:'Heavy',finish:'Sanguine',weapon_type:null,ingredients:[{name:'laranite',qty:6},{name:'titanium',qty:8},{name:'aslarite',qty:5}]},
-  {id:9,base:'Demeco',slot:null,type:'Weapon',weight:null,finish:'Ironside',weapon_type:'LMG',ingredients:[{name:'corundum',qty:14},{name:'copper',qty:10},{name:'hadanite',qty:5}]},
-  {id:11,base:'Corbel',slot:'Arms',type:'Armor',weight:'Heavy',finish:'Mire',weapon_type:null,ingredients:[{name:'laranite',qty:6},{name:'titanium',qty:8},{name:'aslarite',qty:5}]},
-];
-const SLOT_ORDER=['Helmet','Core','Arms','Legs'];
-const GEM_NAMES=new Set(['aphorite','beradom','carinite','dolvine','feynmaline','glacosite','hadanite','jaclium','janalite','sadaryx','saldynium']);
+// ── Blueprint loader ──────────────────────────────────────────────────────────
+function loadBlueprints(){
+  try{const r=localStorage.getItem('forgex-blueprints');if(r){const p=JSON.parse(r);if(Array.isArray(p))return p.filter(bp=>bp.type!=='Ammunition');}}catch(e){}
+  return [];
+}
+const SLOT_ORDER=['Helmet','Core','Legs','Arms','Backpack'];
+const GEM_NAMES=new Set(['aphorite','beradom','carinite','dolivine','feynmaline','glacosite','hadanite','jaclium','janalite','sadaryx','saldynium']);
 
 // ── Data loaders ───────────────────────────────────────────────────────────────
 function loadLots(){try{const r=JSON.parse(localStorage.getItem('forgex-lots')||'null');if(!r)return[];if(Array.isArray(r))return r;if(r.lots&&Array.isArray(r.lots))return r.lots;}catch(e){}return[];}
@@ -249,12 +275,10 @@ function getBpLabel(bp){
   if(bp.type==='Armor') return [bp.base,bp.finish].filter(Boolean).join(' ')+' Armor';
   return [bp.base,bp.finish,bp.weapon_type].filter(Boolean).join(' ');
 }
-function getBpById(id){return BLUEPRINTS.find(b=>b.id===id)||null;}
+function getBpById(id){return loadBlueprints().find(b=>b.id===id)||null;}
 function getOwnedBpIds(){
-  const t=loadTracking();
-  const ids=new Set();
-  Object.entries(t).forEach(([k,v])=>{if(v&&v.personal)ids.add(parseInt(k));});
-  return ids;
+  try{const r=localStorage.getItem('forgex-owned');if(r){const p=JSON.parse(r);if(Array.isArray(p))return new Set(p);}}catch(e){}
+  return new Set();
 }
 
 // ── Availability check ─────────────────────────────────────────────────────────
@@ -342,44 +366,118 @@ function buildReport1(){
 }
 
 // ── REPORT 2 — Crafting Availability ──────────────────────────────────────────
+let r2View='armor';
+function setR2View(view,btn){
+  r2View=view;
+  document.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  buildReport2();
+}
+
 function buildReport2(){
   const show700=document.getElementById('r2-700').checked;
   const show800=document.getElementById('r2-800').checked;
   const show900=document.getElementById('r2-900').checked;
   const lots=loadLots();
   const ownedIds=getOwnedBpIds();
-  const owned=BLUEPRINTS.filter(bp=>ownedIds.has(bp.id));
-  function rows(bps){
-    const craftable=bps.map(bp=>({bp,avail:checkAvailability(bp,lots)}))
-      .filter(({avail})=>(show700&&avail[700])||(show800&&avail[800])||(show900&&avail[900]));
-    if(!craftable.length)return'<div class="empty-state">No blueprints ready to craft</div>';
-    return`<table class="rpt-table"><thead><tr><th>Blueprint</th><th>Ready At</th></tr></thead><tbody>`+
-      craftable.map(({bp,avail})=>`<tr>
-        <td><span class="bp-name">${getBpLabel(bp)}</span></td>
-        <td><div class="avail-badges">
-          ${show700&&avail[700]?'<span class="avail-badge avail-700">700+</span>':''}
-          ${show800&&avail[800]?'<span class="avail-badge avail-800">800+</span>':''}
-          ${show900&&avail[900]?'<span class="avail-badge avail-900">900+</span>':''}
-        </div></td>
-      </tr>`).join('')+'</tbody></table>';
+  const owned=loadBlueprints().filter(bp=>ownedIds.has(bp.id));
+
+  if(r2View==='armor'){
+    const groups={};
+    owned.filter(bp=>bp.type==='Armor').forEach(bp=>{
+      const key=bp.base+'|'+(bp.finish||'');
+      if(!groups[key]) groups[key]={base:bp.base,finish:bp.finish,pieces:[]};
+      groups[key].pieces.push(bp);
+    });
+    const groupList=Object.values(groups).map(g=>{
+      g.pieces.sort((a,b)=>SLOT_ORDER.indexOf(a.slot)-SLOT_ORDER.indexOf(b.slot));
+      const ref=g.pieces.find(p=>p.slot==='Core')||g.pieces.reduce((best,p)=>
+        (p.ingredients||[]).reduce((s,i)=>s+i.qty,0)>(best.ingredients||[]).reduce((s,i)=>s+i.qty,0)?p:best
+      );
+      return{...g,ref,avail:checkAvailability(ref,lots)};
+    });
+    const craftable=groupList
+      .filter(g=>(show700&&g.avail[700])||(show800&&g.avail[800])||(show900&&g.avail[900]))
+      .sort((a,b)=>a.base.localeCompare(b.base));
+    let html;
+    if(!craftable.length){
+      html='<div class="empty-state">No armor sets ready to craft</div>';
+    } else {
+      html=`<table class="rpt-full-table"><thead><tr>
+        <th>Blueprint</th><th>Pieces Owned</th><th>Ready At</th>
+      </tr></thead><tbody>`+craftable.map(g=>{
+        const name=[g.base,g.finish].filter(Boolean).join(' ');
+        const slots=g.pieces.map(p=>`<span class="slot-pill">${p.slot||'—'}</span>`).join('');
+        const badges=[
+          show700&&g.avail[700]?'<span class="avail-badge avail-700">700+</span>':'',
+          show800&&g.avail[800]?'<span class="avail-badge avail-800">800+</span>':'',
+          show900&&g.avail[900]?'<span class="avail-badge avail-900">900+</span>':'',
+        ].join('');
+        return`<tr>
+          <td><span class="bp-name">${name}</span></td>
+          <td><div class="slot-pills">${slots}</div></td>
+          <td><div class="avail-badges">${badges}</div></td>
+        </tr>`;
+      }).join('')+'</tbody></table>';
+    }
+    document.getElementById('r2-content').innerHTML=brandHTML('Crafting Availability — Armor','')+html;
+
+  } else {
+    // Group weapons by base+weapon_type, collect finishes
+    const weaponGroups={};
+    owned.filter(bp=>bp.type==='Weapon').forEach(bp=>{
+      const key=bp.base+'|'+(bp.weapon_type||'');
+      if(!weaponGroups[key]){
+        const avail=checkAvailability(bp,lots);
+        const showIt=(show700&&avail[700])||(show800&&avail[800])||(show900&&avail[900]);
+        if(showIt){
+          weaponGroups[key]={base:bp.base,weapon_type:bp.weapon_type,finishes:[],avail};
+        }
+      }
+      if(weaponGroups[key]){
+        weaponGroups[key].finishes.push(bp.finish||'Base');
+      }
+    });
+    Object.values(weaponGroups).forEach(g=>{g.finishes.sort((a,b)=>a==='Base'?-1:b==='Base'?1:a.localeCompare(b));});
+    const craftable=Object.values(weaponGroups).sort((a,b)=>a.base.localeCompare(b.base));
+    let html;
+    if(!craftable.length){
+      html='<div class="empty-state">No weapons ready to craft</div>';
+    } else {
+      html=`<table class="rpt-full-table"><thead><tr>
+        <th>Blueprint</th><th>Finishes</th><th>Ready At</th>
+      </tr></thead><tbody>`+craftable.map(g=>{
+        const hasTypeInBase=g.weapon_type&&g.base.toLowerCase().includes(g.weapon_type.toLowerCase());
+        const label=hasTypeInBase?g.base:g.base+(g.weapon_type?' ['+g.weapon_type+']':'');
+        const finishes=g.finishes.join(' &nbsp; ');
+        const badges=[
+          show700&&g.avail[700]?'<span class="avail-badge avail-700">700+</span>':'',
+          show800&&g.avail[800]?'<span class="avail-badge avail-800">800+</span>':'',
+          show900&&g.avail[900]?'<span class="avail-badge avail-900">900+</span>':'',
+        ].join('');
+        return`<tr>
+          <td><span class="bp-name">${label}</span></td>
+          <td><span class="bp-finishes">${finishes}</span></td>
+          <td><div class="avail-badges">${badges}</div></td>
+        </tr>`;
+      }).join('')+'</tbody></table>';
+    }
+    document.getElementById('r2-content').innerHTML=brandHTML('Crafting Availability — Weapons','')+html;
   }
-  const armor=owned.filter(bp=>bp.type==='Armor');
-  const weapons=owned.filter(bp=>bp.type==='Weapon');
-  document.getElementById('r2-content').innerHTML=brandHTML('Crafting Availability','')+`
-    <div class="rpt-cols">
-      <div class="rpt-card">
-        <div class="rpt-card-header"><span class="rpt-card-title">Armor</span></div>${rows(armor)}
-      </div>
-      <div class="rpt-card">
-        <div class="rpt-card-header"><span class="rpt-card-title">Weapons</span></div>${rows(weapons)}
-      </div>
-    </div>`;
+}
+
+let r3View='armor';
+function setR3View(view,btn){
+  r3View=view;
+  document.querySelectorAll('#report-3 .toggle-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  buildReport3();
 }
 
 // ── REPORT 3 — Owned Blueprints ────────────────────────────────────────────────
 function buildReport3(){
   const ownedIds=getOwnedBpIds();
-  const owned=BLUEPRINTS.filter(bp=>ownedIds.has(bp.id));
+  const owned=loadBlueprints().filter(bp=>ownedIds.has(bp.id));
   // Group armor by base+finish
   const armorGroups={};
   owned.filter(bp=>bp.type==='Armor').forEach(bp=>{
@@ -389,12 +487,14 @@ function buildReport3(){
   });
   Object.values(armorGroups).forEach(g=>g.slots.sort((a,b)=>SLOT_ORDER.indexOf(a)-SLOT_ORDER.indexOf(b)));
   const armorList=Object.values(armorGroups).sort((a,b)=>a.base.localeCompare(b.base));
-  // Weapons — each unique base+weapon_type+finish
+  // Weapons — group by base+weapon_type, collect finishes
   const weaponGroups={};
   owned.filter(bp=>bp.type==='Weapon').forEach(bp=>{
-    const key=bp.base+'|'+(bp.weapon_type||'')+'|'+(bp.finish||'');
-    weaponGroups[key]={base:bp.base,finish:bp.finish,weapon_type:bp.weapon_type};
+    const key=bp.base+'|'+(bp.weapon_type||'');
+    if(!weaponGroups[key]){weaponGroups[key]={base:bp.base,weapon_type:bp.weapon_type,finishes:[]};}
+    weaponGroups[key].finishes.push(bp.finish||'Base');
   });
+  Object.values(weaponGroups).forEach(g=>{g.finishes.sort((a,b)=>a==='Base'?-1:b==='Base'?1:a.localeCompare(b));});
   const weaponList=Object.values(weaponGroups).sort((a,b)=>a.base.localeCompare(b.base));
 
   function armorTbl(){
@@ -410,21 +510,28 @@ function buildReport3(){
   function weaponTbl(){
     if(!weaponList.length)return'<div class="empty-state">No weapon blueprints owned</div>';
     return`<table class="rpt-table"><tbody>`+weaponList.map(g=>{
-      const label=[g.base,g.finish,g.weapon_type].filter(Boolean).join(' ');
-      return`<tr><td colspan="2"><span class="bp-name">${label}</span></td></tr>`;
+      const hasTypeInBase=g.weapon_type&&g.base.toLowerCase().includes(g.weapon_type.toLowerCase());
+      const label=hasTypeInBase?g.base:g.base+(g.weapon_type?' ['+g.weapon_type+']':'');
+      const finishes=g.finishes.join(' &nbsp; ');
+      return`<tr>
+        <td><span class="bp-name">${label}</span></td>
+        <td><span class="bp-slots">${finishes}</span></td>
+      </tr>`;
     }).join('')+'</tbody></table>';
   }
-  document.getElementById('r3-content').innerHTML=brandHTML('Owned Blueprints','')+`
-    <div class="rpt-cols">
-      <div class="rpt-card">
-        <div class="rpt-card-header"><span class="rpt-card-title">Armor</span><span class="rpt-card-count">${armorList.length} blueprint${armorList.length!==1?'s':''}</span></div>
-        ${armorTbl()}
-      </div>
-      <div class="rpt-card">
-        <div class="rpt-card-header"><span class="rpt-card-title">Weapons</span><span class="rpt-card-count">${weaponList.length} blueprint${weaponList.length!==1?'s':''}</span></div>
-        ${weaponTbl()}
-      </div>
+  let html;
+  if(r3View==='armor'){
+    html=`<div class="rpt-card">
+      <div class="rpt-card-header"><span class="rpt-card-title">Armor</span><span class="rpt-card-count">${armorList.length} blueprint${armorList.length!==1?'s':''}</span></div>
+      ${armorTbl()}
     </div>`;
+  } else {
+    html=`<div class="rpt-card">
+      <div class="rpt-card-header"><span class="rpt-card-title">Weapons</span><span class="rpt-card-count">${weaponList.length} blueprint${weaponList.length!==1?'s':''}</span></div>
+      ${weaponTbl()}
+    </div>`;
+  }
+  document.getElementById('r3-content').innerHTML=brandHTML('Owned Blueprints','')+html;
 }
 
 // ── REPORT 4 — Orders Filled ───────────────────────────────────────────────────
@@ -464,9 +571,9 @@ function buildReport5(){
   const from=document.getElementById('r5-from').value,to=document.getElementById('r5-to').value;
   const hasFilter=from||to;
   const entries=loadCraftingLog().filter(e=>{
-    if(hasFilter)return inRange(e.date,from,to);
+    if(hasFilter)return inRange(e.crafted,from,to);
     return true;
-  }).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  }).sort((a,b)=>(b.crafted||'').localeCompare(a.crafted||''));
   const dateNote=hasFilter?`filtered ${from||'…'} → ${to||'…'}`:'';
   if(!entries.length){
     document.getElementById('r5-content').innerHTML=brandHTML('Crafted Items',dateNote)+'<div class="empty-state">No crafted items found</div>';
@@ -474,18 +581,17 @@ function buildReport5(){
   }
   const rows=entries.map(e=>{
     const bp=getBpById(e.bpId);
-    const label=bp?getBpLabel(bp):(e.bpName||'Unknown');
-    const tl=tierLabel(e.tier),tc=tierClass(e.tier||0);
+    const label=bp?getBpLabel(bp):(e.bpLabel||'Unknown');
+    const tl=tierLabel(e.qualityTier),tc=tierClass(e.qualityTier||0);
     return`<tr>
       <td><span class="rpt-item-name">${label}</span></td>
       <td><span class="rpt-tier ${tc}">${tl}</span></td>
-      <td><span class="rpt-pending">— pending game data —</span></td>
-      <td><span class="rpt-date">${fmtDate(e.date)}</span></td>
+      <td><span class="rpt-date">${fmtDate(e.crafted)}</span></td>
     </tr>`;
   }).join('');
   document.getElementById('r5-content').innerHTML=brandHTML('Crafted Items',dateNote)+`
     <table class="rpt-full-table">
-      <thead><tr><th>Item</th><th>Quality</th><th>Crafted Impact</th><th>Date</th></tr></thead>
+      <thead><tr><th>Item</th><th>Quality</th><th>Date</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>`;
 }
@@ -509,7 +615,7 @@ function copyAsText(){
       L.push('');
     });
   } else if(activeTab===3){
-    const ownedIds=getOwnedBpIds(),owned=BLUEPRINTS.filter(bp=>ownedIds.has(bp.id));
+    const ownedIds=getOwnedBpIds(),owned=loadBlueprints().filter(bp=>ownedIds.has(bp.id));
     ['Armor','Weapon'].forEach(type=>{
       L.push('=== '+type.toUpperCase()+' ===');
       if(type==='Armor'){

@@ -1,0 +1,32 @@
+ Command prompts for CLAUDE to maintain project status across projects
+
+ On new conversation: 
+ 
+You are helping with a star citizen crafting tracker project.
+
+First check documents in the live folder:
+1. Read forge_context.md
+2. Read session_state.md
+3. Ask any clarifying questions.
+
+Important rules:
+- Do not rewrite working code unnecessarily
+- Explain major architectural changes first
+- Keep changes minimal and focused
+- Request authorization before you start coding. 
+
+
+Also upon closing converations:
+
+Update forge_context.md to reflect:
+- current database schema
+- auth flow
+- frontend architecture
+- outstanding TODOs
+- recently changed files
+- Don't remove any useful information
+
+Update SESSION_STATE.md with everything needed to resume later.
+
+Add any new TODO items
+Summarize unresolved issues

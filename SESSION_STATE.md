@@ -1,15 +1,36 @@
 # SESSION STATE — TI Forgeworks
-Last updated: 2026-05-12
+Last updated: 2026-05-13 (Session 3 — Reports formatting)
 
 ---
 
 ## Where to Resume
 
-**Next session:** No outstanding build tasks. All 10 modules online and feature-complete. Order fulfillment workflow complete and tested. User will direct next priorities.
+**Next session:** All bugs fixed for 4.8 drop. Reports formatting unified. 10 modules online and feature-complete. User will direct next priorities.
 
-**Outstanding action items:** None. All maintenance tasks complete.
+**Outstanding action items:** None. All identified issues resolved. Ready for distribution.
 
-**This session notes (2026-05-12 bug fixes & UX refinement):**
+**This session notes (2026-05-13 Session 3 — Reports formatting & compaction):**
+
+*Part 1: Weapon Display Unification*
+- **Module 07 — Crafting Availability Report:** Weapons now grouped by weapon name with finishes listed beside (matching armor slot display pattern)
+- **Module 07 — Owned Blueprints Report:** Weapons now grouped by weapon name with finishes listed beside (consistent with Crafting Availability)
+- **Unified weapon display:** Both reports now use same grouping logic: group by base+weapon_type, collect finishes/colors, sort with "Base" first
+- Added `.bp-finishes` CSS class for consistency with `.bp-slots`
+
+*Part 2: Report Compaction*
+- **Materials Available:** Reduced table padding (5px 12px → 3px 8px), increased font sizes for better compact readability (mat-name 14→15px, band-val 13→14px)
+- **Blueprint Availability:** Set column widths (35% | 40% | 25%), reduced padding, tightened slot pill spacing
+- **Crafted Items:** Removed "Crafted Impact" placeholder column, now displays Item | Quality | Date only
+- **Global:** Reduced rpt-full-table padding (8px 14px → 6px 10px), adjusted bp name/slot/finishes font sizes and letter-spacing for tighter look
+
+**Previous session notes (2026-05-12 Session 2 — Mission filter & NaN fixes):**
+- **Module 04 — Mission Filter Fix:** Changed condition from `!bp.has_mission` to `bp.has_mission!==true` to properly handle undefined values in default blueprints. Mission filter now correctly shows only blueprints with missions.
+- **Module 04 — NaN in Material Needs:** Fixed NaN display by adding safety checks in `getBands()` function (changed reduce to use `(l.qty||0)`) and explicit `isNaN()` guards on diff calculations.
+- **Module 09 — Mission Flag Logic:** Simplified `has_mission` calculation from `!is_available_by_default || (unlocking_missions_count > 0)` to `unlocking_missions_count > 0`. Now only blueprints with actual unlocking missions receive the mission flag.
+- **Module 04 — [DEFAULT] Badge:** Added CSS styling and display logic for [DEFAULT] badge on default blueprints (both browser and tracker views).
+- **Files deployed:** Both Module 04 and Module 09 synced to live folder. Ready for 4.8 distribution.
+
+**Previous session notes (2026-05-12 bug fixes & UX refinement):**
 - **CRITICAL FIX:** Removed conflicting order status update block in Module 06 makeItem() that was setting status='ready' (invalid) instead of 'readytodeliver', causing crafted orders to disappear entirely
 - **Module 05:** Added blueprint search with "BLUEPRINT KEYWORD" placeholder; filter out all ammunition blueprints; sort blueprints alphabetically
 - **Module 06:** Redesigned ORDER FULFILLMENT display with customer name and quality on separate lines; standardized font size to 14px
@@ -141,7 +162,12 @@ Last updated: 2026-05-12
 3. **Past Orders not persisted** — delivered orders lost on page reload. Deferred — low priority.
 4. **Module 06 owned IDs** — still reads from `forgex-tracking.personal` instead of `forgex-owned`. Does not affect crafting but browser tab may show wrong blueprints.
 
-### RESOLVED THIS SESSION (2026-05-12)
+### RESOLVED THIS SESSION (2026-05-12 Session 2)
+- ~~Mission filter showing only mission blueprints~~ ✓ — changed condition from `!bp.has_mission` to `bp.has_mission!==true`
+- ~~NaN values in Material Needs page~~ ✓ — added safety checks in getBands() and diff calculations
+- ~~has_mission flag set to true for all blueprints~~ ✓ — simplified Module 09 logic to check only `unlocking_missions_count > 0`
+
+### RESOLVED PREVIOUS SESSION (2026-05-12 Session 1)
 - ~~Crafted items disappearing from orders view~~ ✓ — order status being set to invalid 'ready' instead of 'readytodeliver'; removed conflicting status update block in Module 06 makeItem()
 
 ### RESOLVED PREVIOUS SESSION (2026-05-08 & earlier)
@@ -167,7 +193,7 @@ Last updated: 2026-05-12
 | `forgex_module05_orders.html` | ✓ Done |
 | `forgex_module06_crafting.html` | ✓ Done — note: owned IDs bug (see Known Bugs #4) |
 | `forgex_crafting_properties.js` | ✓ Done — ballistic only; energy weapons pending |
-| `forgex_module07_reports.html` | ✓ Done — Reports 2 & 3 overhauled this session |
+| `forgex_module07_reports.html` | ✓ Done — Reports 2 & 3 formatting unified (Session 3) |
 | `forgex_module08_ocr.html` | ✓ Done |
 | `forgex_module09_datasync.html` | ✓ Done — gem qty fix this session; re-sync required |
 | `forgex_module10_codex.html` | ✓ Done — In-app documentation with collapsible sections |

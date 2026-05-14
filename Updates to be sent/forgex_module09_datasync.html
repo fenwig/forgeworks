@@ -97,7 +97,7 @@
     <div class="mod-header-left">
       <img src="small logo.png" alt="" class="mod-logo">
       <div>
-        <div class="mod-eyebrow">TI Forgeworks — Custom Arms &amp; Armor</div>
+        <div class="mod-eyebrow">Troublemaker Incorporated — Custom Arms &amp; Armor</div>
         <div class="mod-title">Data Sync</div>
       </div>
     </div>
@@ -283,7 +283,7 @@ function mapBlueprint(record, newId) {
     weapon_type: weapon_type || null,
     ammo_type:   null,
     capacity:    null,
-    has_mission: unlocking_missions_count > 0,
+    has_mission: !is_available_by_default || (unlocking_missions_count > 0),
     meta:        {},
     ingredients: (ingredients || []).map(ing => ({
       name: ing.name.toLowerCase(),

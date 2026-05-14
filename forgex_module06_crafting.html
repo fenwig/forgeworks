@@ -243,8 +243,6 @@
 
       <div class="wb-info">
         <span class="wb-bp-name" id="wb-bp-name"></span>
-        <span class="wb-bp-tag" id="wb-bp-tag"></span>
-        <span class="wb-bp-tag" id="wb-bp-type"></span>
         <div style="flex:1"></div>
         <button class="btn btn-ghost btn-sm" onclick="resetWorkbench()">← Change Blueprint</button>
       </div>
@@ -294,7 +292,7 @@
           <span id="result-order-note" style="font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-steel);display:none"></span>
         </div>
         <table class="result-mat-table">
-          <thead><tr><th>Material</th><th>Avg Quality</th><th>Characteristic</th><th>Effect</th></tr></thead>
+          <thead><tr><th>Material</th><th>Avg Quality</th></tr></thead>
           <tbody id="result-mat-body"></tbody>
         </table>
         <div class="result-actions">
@@ -321,7 +319,6 @@
 </div><!-- /page-wrap -->
 <div class="toast hidden" id="toast"></div>
 
-<script src="forgex_crafting_properties.js"></script>
 <script>
 const GEM_NAMES=new Set(['hadanite','janalite','dolvine','aphorite','sadaryx','carinite','beradom','jaclium','saldynium','feynmaline','glacosite']);
 const LS_TRACKING='forgex-tracking';
@@ -411,20 +408,6 @@ function getBpTag(bp){
 }
 function qualTierClass(tier){return tier===700?'qual-700':tier===800?'qual-800':'qual-900';}
 
-// ── CRAFTING PROPERTY HELPERS ──
-function fmtEffect(effects){
-  if(!effects||!effects.length) return{char:'—',eff:'pending game data',color:'var(--tmi-text-dim)',italic:true};
-  const char=effects.map(e=>e.property).join(' / ');
-  const uniquePcts=[...new Set(effects.map(e=>e.effectPct))];
-  const better=effects[0].better;
-  function sign(p){return(p>=0?'+':'')+p+'%';}
-  function goodColor(p,b){return(b==='high'&&p>0)||(b==='low'&&p<0)?'var(--tmi-success)':'var(--tmi-text-dim)';}
-  if(uniquePcts.length===1){
-    return{char,eff:sign(uniquePcts[0]),color:goodColor(uniquePcts[0],better),italic:false};
-  }
-  const eff=effects.map(e=>sign(e.effectPct)).join(' / ');
-  return{char,eff,color:'var(--tmi-gold)',italic:false};
-}
 
 function getSlotFilled(si){return slotSelections[si].reduce((s,e)=>s+e.qty_taken,0);}
 function getSlotAvgQuality(si){
@@ -519,7 +502,6 @@ function renderBrowser(){
   list.innerHTML=filtered.map(bp=>{
     const isExp=browserExpanded.has(bp.id);
     const label=getBpLabel(bp);
-    const tag=getBpTag(bp);
     const t=tracking[bp.id]||{};
     const trackBadge=t.personal?'<span class="tracked-badge">★ TRACKED</span>':'';
     const orderBadge=t.order?'<span class="order-track-badge">★ ORDER</span>':'';
@@ -530,7 +512,6 @@ function renderBrowser(){
     return`<div class="bp-card">
       <div class="bp-card-header" onclick="toggleBrowserExp(${bp.id})">
         <span class="bp-name">${label}</span>
-        <span class="bp-tag">${tag}</span>
         ${trackBadge}${orderBadge}
         <div class="bp-actions" onclick="event.stopPropagation()">
           <button class="btn btn-gold btn-sm" onclick="craftThis(${bp.id})">Craft This</button>
@@ -583,8 +564,6 @@ function selectBlueprint(bpId){
   document.getElementById('wb-body').style.display='block';
   document.getElementById('wb-result').style.display='none';
   document.getElementById('wb-bp-name').textContent=getBpLabel(bp);
-  document.getElementById('wb-bp-tag').textContent=getBpTag(bp);
-  document.getElementById('wb-bp-type').textContent=bp.type;
   buildCraftingLocOptions();
   renderOrderRow();
   renderSlots();
@@ -700,9 +679,9 @@ function renderSlotHtml(bp,ing,si){
   const lotRowsHtml=availLots.length
     ?availLots.map(l=>`<div class="lot-row">
         <span class="lot-qual">${l.quality}</span>
+        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();selectLot(${si},${l.id})">Select</button>
         <span class="lot-qty">${l.qty} cSCU</span>
         <span class="lot-loc">${l.location}</span>
-        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();selectLot(${si},${l.id})">Select</button>
       </div>`).join('')
     :'<div class="lot-none">No available lots</div>';
 
@@ -801,18 +780,10 @@ function makeItem(){
 
   const materials=bp.ingredients.map((ing,si)=>{
     const avgQ=getSlotAvgQuality(si)||0;
-    let effects=null;
-    if(typeof getMaterialEffects==='function'){
-      const effs=getMaterialEffects(ing.name,avgQ,bp.weapon_type||null);
-      if(effs&&effs.length) effects=effs;
-    }
     return{
       name:ing.name,
       reqQty:ing.qty,
       avgQuality:avgQ,
-      characteristic:effects?effects.map(e=>e.property).join(' / '):'—',
-      effectPct:effects&&effects.length===1?effects[0].effectPct:null,
-      effects,
       lotsUsed:slotSelections[si].map(e=>({lotId:e.lotId,qty_taken:e.qty_taken,quality:e.quality}))
     };
   });
@@ -854,12 +825,9 @@ function showResult(job){
   on.style.display=job.orderId?'':'none';
   if(job.orderId) on.textContent='ORDER MARKED READY';
   document.getElementById('result-mat-body').innerHTML=job.materials.map(m=>{
-    const fmt=fmtEffect(m.effects);
     return`<tr>
       <td class="result-mat-name">${m.name}${m.name==='aslarite'?'<span class="asl-note">500+</span>':''}</td>
       <td class="result-qual">${m.avgQuality||'—'}</td>
-      <td class="result-char">${fmt.char}</td>
-      <td class="result-eff" style="color:${fmt.color};font-style:${fmt.italic?'italic':'normal'}">${fmt.eff}</td>
     </tr>`;
   }).join('');
 }
@@ -900,12 +868,9 @@ function renderLogRow(job){
   const orderBadge=job.orderId?`<span class="order-badge">ORDER #${String(job.orderId).padStart(3,'0')}</span>`:'';
 
   const detailMatRows=job.materials.map(m=>{
-    const fmt=fmtEffect(m.effects);
     return`<tr>
       <td style="font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;text-transform:capitalize;color:var(--tmi-text-primary)">${m.name}${m.name==='aslarite'?'<span class="asl-note">500+</span>':''}</td>
       <td style="font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-gold)">${m.avgQuality||'—'}</td>
-      <td style="font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-secondary)">${fmt.char}</td>
-      <td style="font-family:'Share Tech Mono',monospace;font-size:14px;color:${fmt.color};font-style:${fmt.italic?'italic':'normal'}">${fmt.eff}</td>
     </tr>`;
   }).join('');
 
@@ -945,7 +910,7 @@ function renderLogRow(job){
     </div>
     <div class="log-detail${isExp?' open':''}">
       <table class="log-detail-mat-table">
-        <thead><tr><th>Material</th><th>Avg Quality</th><th>Characteristic</th><th>Effect</th></tr></thead>
+        <thead><tr><th>Material</th><th>Avg Quality</th></tr></thead>
         <tbody>${detailMatRows}</tbody>
       </table>
       <div class="log-detail-actions">${detailActions}</div>

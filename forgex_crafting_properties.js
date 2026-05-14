@@ -123,3 +123,60 @@ function getMaterialEffects(materialName, quality, weaponType) {
     better:    e.better
   }));
 }
+
+// ── Part-based characteristics (extracted from game blueprint XML) ─────────────
+// This provides accurate part-to-characteristic mappings instead of material-only
+const PART_CHARACTERISTICS = {
+  'ARMOURED CARAPACE': { property: 'Damage Mitigation', better: 'high' },
+  'INSULATIVE LINER': { properties: ['Temperature Min', 'Temperature Max'], better: 'high' },
+  'SUPPORT STRUCTURE': { property: 'Damage Mitigation', better: 'high' },
+  'FRAME': { properties: ['Recoil Smoothness', 'Recoil Handling', 'Recoil Kick'], better: 'low' },
+  'STOCK': { properties: ['Recoil Smoothness', 'Recoil Handling', 'Recoil Kick'], better: 'low' },
+  'GRIP': { properties: ['Recoil Smoothness', 'Recoil Handling', 'Recoil Kick'], better: 'low' },
+  'BARREL': { properties: ['Damage', 'Fire Rate'], better: 'high' },
+  'WIRING': { property: 'Fire Rate', better: 'high' },
+  'LENSES': { property: 'Impact Force', better: 'high' }
+};
+
+// ── Helper: Get effects for a material+part combination (preferred method) ─────
+// part: string (e.g., 'BARREL', 'FRAME')  |  materialName: lowercase string
+// quality: number (0-1000)
+// Returns array of { property, effectPct, better } or [] if no data
+function getMaterialEffectsByPart(part, materialName, quality) {
+  // Use part-based characteristics if available
+  const partCharacteristics = PART_CHARACTERISTICS[part];
+  if (!partCharacteristics) {
+    // Fallback to material-only lookup
+    return getMaterialEffects(materialName, quality);
+  }
+
+  // For now, use the part characteristics without material-specific modifiers
+  // In the future, this could be enhanced with more granular part+material→effect mapping
+  const properties = partCharacteristics.properties
+    ? partCharacteristics.properties
+    : [partCharacteristics.property];
+
+  // Fallback: Get actual modifiers from material if available
+  const mat = CRAFTING_PROPERTIES.effects[materialName];
+  if (mat) {
+    let entries;
+    if (mat.default !== undefined) {
+      const isSniper = false; // weaponType not available here, but FRAME shouldn't be sniper-specific
+      entries = mat.default;
+    } else {
+      entries = mat;
+    }
+    return entries.map(e => ({
+      property:  e.property,
+      effectPct: parseFloat(((calcModifier(e, quality) - 1) * 100).toFixed(2)),
+      better:    e.better
+    }));
+  }
+
+  // Generic fallback if no material data
+  return properties.map(prop => ({
+    property: prop,
+    effectPct: 0,
+    better: partCharacteristics.better
+  }));
+}

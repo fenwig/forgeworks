@@ -275,7 +275,11 @@
 const GEM_NAMES=new Set(['hadanite','janalite','dolvine','aphorite','sadaryx','carinite','beradom','jaclium','saldynium','feynmaline','glacosite']);
 const LS_TRACKING='forgex-tracking';
 const LS_ORDERS='forgex-active-orders';
-function writeActiveOrders(){localStorage.setItem(LS_ORDERS,JSON.stringify(orders.filter(o=>o.status!=='delivered')));}
+const LS_ALL_ORDERS='forgex-all-orders';
+function writeActiveOrders(){
+  localStorage.setItem(LS_ORDERS,JSON.stringify(orders.filter(o=>o.status!=='delivered')));
+  localStorage.setItem(LS_ALL_ORDERS,JSON.stringify(orders));
+}
 
 function loadBlueprints(){
   try{const s=JSON.parse(localStorage.getItem('forgex-blueprints')||'null');if(s&&Array.isArray(s)&&s.length)return s;}catch(e){}
@@ -295,7 +299,13 @@ function loadInventory(){
 let inventory=loadInventory();
 
 function loadOrders(){
-  try{const s=JSON.parse(localStorage.getItem(LS_ORDERS)||'null');if(s&&Array.isArray(s))return s;}catch(e){}
+  try{
+    let s=JSON.parse(localStorage.getItem(LS_ALL_ORDERS)||'null');
+    if(s&&Array.isArray(s))return s;
+    // Fallback: if all-orders doesn't exist, load from active-orders (migration)
+    s=JSON.parse(localStorage.getItem(LS_ORDERS)||'null');
+    if(s&&Array.isArray(s))return s;
+  }catch(e){}
   return [];
 }
 let orders=loadOrders();

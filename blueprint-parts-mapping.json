@@ -1,0 +1,737 @@
+{
+  "timestamp": "2026-05-12T20:13:06.012Z",
+  "filesProcessed": 1044,
+  "filesWithParts": 1008,
+  "uniquePropertyRecords": 8,
+  "uniquePartCombinations": 43,
+  "propertyRecords": {
+    "804e9acc-c3a5-4787-b2b1-c898e5198f92": {
+      "count": 1277,
+      "examples": [
+        {
+          "part": "ARMOURED CARAPACE",
+          "file": "bp_craft_cds_armor_heavy_arms_01_01_01.xml"
+        },
+        {
+          "part": "ARMOURED CARAPACE",
+          "file": "bp_craft_cds_armor_heavy_core_01_01_01.xml"
+        },
+        {
+          "part": "ARMOURED CARAPACE",
+          "file": "bp_craft_cds_armor_heavy_helmet_01_01_01.xml"
+        }
+      ]
+    },
+    "69143912-ee80-43e9-8862-e1745f0f0b9f": {
+      "count": 848,
+      "examples": [
+        {
+          "part": "INSULATIVE LINER",
+          "file": "bp_craft_cds_armor_heavy_arms_01_01_01.xml"
+        },
+        {
+          "part": "INSULATIVE LINER",
+          "file": "bp_craft_cds_armor_heavy_core_01_01_01.xml"
+        },
+        {
+          "part": "INSULATIVE LINER",
+          "file": "bp_craft_cds_armor_heavy_helmet_01_01_01.xml"
+        }
+      ]
+    },
+    "6c186289-6db8-4820-a367-5292f4ea1c61": {
+      "count": 848,
+      "examples": [
+        {
+          "part": "INSULATIVE LINER",
+          "file": "bp_craft_cds_armor_heavy_arms_01_01_01.xml"
+        },
+        {
+          "part": "INSULATIVE LINER",
+          "file": "bp_craft_cds_armor_heavy_core_01_01_01.xml"
+        },
+        {
+          "part": "INSULATIVE LINER",
+          "file": "bp_craft_cds_armor_heavy_helmet_01_01_01.xml"
+        }
+      ]
+    },
+    "1156716c-b01e-4228-8136-7430be5bb9b8": {
+      "count": 231,
+      "examples": [
+        {
+          "part": "FRAME",
+          "file": "bp_craft_behr_lmg_ballistic_01.xml"
+        },
+        {
+          "part": "STOCK:",
+          "file": "bp_craft_behr_lmg_ballistic_01.xml"
+        },
+        {
+          "part": "FRAME",
+          "file": "bp_craft_behr_lmg_ballistic_01_tint01.xml"
+        }
+      ]
+    },
+    "037ea34c-e564-492e-b575-3e5aac5895e4": {
+      "count": 231,
+      "examples": [
+        {
+          "part": "FRAME",
+          "file": "bp_craft_behr_lmg_ballistic_01.xml"
+        },
+        {
+          "part": "STOCK:",
+          "file": "bp_craft_behr_lmg_ballistic_01.xml"
+        },
+        {
+          "part": "FRAME",
+          "file": "bp_craft_behr_lmg_ballistic_01_tint01.xml"
+        }
+      ]
+    },
+    "f68f87d6-1981-4c22-bed6-ce352922cb34": {
+      "count": 231,
+      "examples": [
+        {
+          "part": "FRAME",
+          "file": "bp_craft_behr_lmg_ballistic_01.xml"
+        },
+        {
+          "part": "STOCK:",
+          "file": "bp_craft_behr_lmg_ballistic_01.xml"
+        },
+        {
+          "part": "FRAME",
+          "file": "bp_craft_behr_lmg_ballistic_01_tint01.xml"
+        }
+      ]
+    },
+    "cfc129ce-488a-46f2-92f7-9272cd0cfdfb": {
+      "count": 95,
+      "examples": [
+        {
+          "part": "BARREL:",
+          "file": "bp_craft_behr_lmg_ballistic_01.xml"
+        },
+        {
+          "part": "BARREL:",
+          "file": "bp_craft_behr_lmg_ballistic_01_tint01.xml"
+        },
+        {
+          "part": "BARREL:",
+          "file": "bp_craft_behr_lmg_ballistic_01_xenothreat01.xml"
+        }
+      ]
+    },
+    "551b651c-8a34-438f-9d19-93fdffe56246": {
+      "count": 125,
+      "examples": [
+        {
+          "part": "BARREL:",
+          "file": "bp_craft_behr_lmg_ballistic_01.xml"
+        },
+        {
+          "part": "BARREL:",
+          "file": "bp_craft_behr_lmg_ballistic_01_tint01.xml"
+        },
+        {
+          "part": "BARREL:",
+          "file": "bp_craft_behr_lmg_ballistic_01_xenothreat01.xml"
+        }
+      ]
+    }
+  },
+  "partResourceToProperties": {
+    "989f9b73-f636-4f35-a81d-579dcbe3f0ab|ARMOURED CARAPACE": [
+      {
+        "uuid": "804e9acc-c3a5-4787-b2b1-c898e5198f92",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.85,
+        "modEnd": 1.15
+      }
+    ],
+    "fde0cd65-8827-4b23-804d-cc8845dfa7ac|INSULATIVE LINER": [
+      {
+        "uuid": "69143912-ee80-43e9-8862-e1745f0f0b9f",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.8,
+        "modEnd": 1.2
+      },
+      {
+        "uuid": "6c186289-6db8-4820-a367-5292f4ea1c61",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.8,
+        "modEnd": 1.2
+      }
+    ],
+    "4a47cad8-0271-4048-b19b-d9b52521fc20|SUPPORT STRUCTURE": [
+      {
+        "uuid": "804e9acc-c3a5-4787-b2b1-c898e5198f92",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.95,
+        "modEnd": 1.05
+      }
+    ],
+    "07570c9f-fdf6-4bca-a56b-c42809ec0e01|SUPPORT STRUCTURE": [
+      {
+        "uuid": "804e9acc-c3a5-4787-b2b1-c898e5198f92",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.95,
+        "modEnd": 1.05
+      }
+    ],
+    "dc6fbcbb-5990-4ed5-82ee-93152dab7845|SUPPORT STRUCTURE": [
+      {
+        "uuid": "804e9acc-c3a5-4787-b2b1-c898e5198f92",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.95,
+        "modEnd": 1.05
+      }
+    ],
+    "392b4dca-449a-4d4d-8fef-beab024d9ee7|SUPPORT STRUCTURE": [
+      {
+        "uuid": "804e9acc-c3a5-4787-b2b1-c898e5198f92",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.95,
+        "modEnd": 1.05
+      }
+    ],
+    "60f116f4-c02a-45b2-9ded-333747795124|SUPPORT STRUCTURE": [
+      {
+        "uuid": "804e9acc-c3a5-4787-b2b1-c898e5198f92",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.95,
+        "modEnd": 1.05
+      }
+    ],
+    "8cd317a3-df9b-4315-8ac3-0f1fca42dfd4|SUPPORT STRUCTURE": [
+      {
+        "uuid": "804e9acc-c3a5-4787-b2b1-c898e5198f92",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.95,
+        "modEnd": 1.05
+      }
+    ],
+    "06cafea0-49fe-4dce-b0f0-dc583316c66d|SEGMENT PANELING": [
+      {
+        "uuid": "804e9acc-c3a5-4787-b2b1-c898e5198f92",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.85,
+        "modEnd": 1.15
+      }
+    ],
+    "7f4599b0-a2b2-4178-8c7e-13292054ab20|CASING": [
+      {
+        "uuid": "804e9acc-c3a5-4787-b2b1-c898e5198f92",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.9,
+        "modEnd": 1.1
+      }
+    ],
+    "07570c9f-fdf6-4bca-a56b-c42809ec0e01|CASING WEAVE": [
+      {
+        "uuid": "804e9acc-c3a5-4787-b2b1-c898e5198f92",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.95,
+        "modEnd": 1.05
+      }
+    ],
+    "4a47cad8-0271-4048-b19b-d9b52521fc20|CASING WEAVE": [
+      {
+        "uuid": "804e9acc-c3a5-4787-b2b1-c898e5198f92",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.95,
+        "modEnd": 1.05
+      }
+    ],
+    "8cd317a3-df9b-4315-8ac3-0f1fca42dfd4|SHELL": [
+      {
+        "uuid": "804e9acc-c3a5-4787-b2b1-c898e5198f92",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.85,
+        "modEnd": 1.15
+      }
+    ],
+    "06cafea0-49fe-4dce-b0f0-dc583316c66d|SEGMENT PANELLING": [
+      {
+        "uuid": "804e9acc-c3a5-4787-b2b1-c898e5198f92",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.85,
+        "modEnd": 1.15
+      }
+    ],
+    "86d00bd8-08f7-4231-b375-a609803fc46d|PANEL COVERING": [
+      {
+        "uuid": "804e9acc-c3a5-4787-b2b1-c898e5198f92",
+        "startQuality": 500,
+        "endQuality": 1000,
+        "modStart": 1,
+        "modEnd": 1.05
+      }
+    ],
+    "7bbd3197-a6e1-49b3-a495-0b7ef4f8ce40|SUIT UNDERLAY": [
+      {
+        "uuid": "6c186289-6db8-4820-a367-5292f4ea1c61",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.8,
+        "modEnd": 1.2
+      },
+      {
+        "uuid": "69143912-ee80-43e9-8862-e1745f0f0b9f",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.8,
+        "modEnd": 1.2
+      }
+    ],
+    "60f116f4-c02a-45b2-9ded-333747795124|PROTECTIVE SHEATHING": [
+      {
+        "uuid": "804e9acc-c3a5-4787-b2b1-c898e5198f92",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.9,
+        "modEnd": 1.1
+      }
+    ],
+    "8cd317a3-df9b-4315-8ac3-0f1fca42dfd4|SHEATHING COATING": [
+      {
+        "uuid": "804e9acc-c3a5-4787-b2b1-c898e5198f92",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.95,
+        "modEnd": 1.05
+      }
+    ],
+    "7f4599b0-a2b2-4178-8c7e-13292054ab20|SHEATHING COATING": [
+      {
+        "uuid": "804e9acc-c3a5-4787-b2b1-c898e5198f92",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.95,
+        "modEnd": 1.05
+      }
+    ],
+    "8cd317a3-df9b-4315-8ac3-0f1fca42dfd4|CASING WEAVE": [
+      {
+        "uuid": "804e9acc-c3a5-4787-b2b1-c898e5198f92",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.95,
+        "modEnd": 1.05
+      }
+    ],
+    "4236c16b-c47f-4083-9e26-4313733f2326|PLATING": [
+      {
+        "uuid": "804e9acc-c3a5-4787-b2b1-c898e5198f92",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.9,
+        "modEnd": 1.1
+      }
+    ],
+    "86d00bd8-08f7-4231-b375-a609803fc46d|PLATING BARRIER": [
+      {
+        "uuid": "804e9acc-c3a5-4787-b2b1-c898e5198f92",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.95,
+        "modEnd": 1.05
+      }
+    ],
+    "60f116f4-c02a-45b2-9ded-333747795124|PLATING BARRIER": [
+      {
+        "uuid": "804e9acc-c3a5-4787-b2b1-c898e5198f92",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.95,
+        "modEnd": 1.05
+      }
+    ],
+    "1b4c4042-5fdc-4b52-bec4-07085cb3520a|CASING": [
+      {
+        "uuid": "804e9acc-c3a5-4787-b2b1-c898e5198f92",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.85,
+        "modEnd": 1.15
+      }
+    ],
+    "8cd317a3-df9b-4315-8ac3-0f1fca42dfd4|PANEL COVERING": [
+      {
+        "uuid": "804e9acc-c3a5-4787-b2b1-c898e5198f92",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.95,
+        "modEnd": 1.05
+      }
+    ],
+    "392b4dca-449a-4d4d-8fef-beab024d9ee7|PANEL COVERING": [
+      {
+        "uuid": "804e9acc-c3a5-4787-b2b1-c898e5198f92",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.95,
+        "modEnd": 1.05
+      }
+    ],
+    "392b4dca-449a-4d4d-8fef-beab024d9ee7|FRAME": [
+      {
+        "uuid": "1156716c-b01e-4228-8136-7430be5bb9b8",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.2,
+        "modEnd": 0.8
+      },
+      {
+        "uuid": "037ea34c-e564-492e-b575-3e5aac5895e4",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.2,
+        "modEnd": 0.8
+      },
+      {
+        "uuid": "f68f87d6-1981-4c22-bed6-ce352922cb34",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.2,
+        "modEnd": 0.8
+      }
+    ],
+    "61189578-ed7a-4491-9774-37ae2f82b8b0|STOCK:": [
+      {
+        "uuid": "1156716c-b01e-4228-8136-7430be5bb9b8",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.2,
+        "modEnd": 0.8
+      },
+      {
+        "uuid": "037ea34c-e564-492e-b575-3e5aac5895e4",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.2,
+        "modEnd": 0.8
+      },
+      {
+        "uuid": "f68f87d6-1981-4c22-bed6-ce352922cb34",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.2,
+        "modEnd": 0.8
+      }
+    ],
+    "f386a33c-ac9a-400a-a7b8-fe1fc7c8d270|BARREL:": [
+      {
+        "uuid": "cfc129ce-488a-46f2-92f7-9272cd0cfdfb",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.925,
+        "modEnd": 1.075
+      },
+      {
+        "uuid": "551b651c-8a34-438f-9d19-93fdffe56246",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.88,
+        "modEnd": 1.12
+      }
+    ],
+    "4236c16b-c47f-4083-9e26-4313733f2326|FRAME": [
+      {
+        "uuid": "1156716c-b01e-4228-8136-7430be5bb9b8",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.4,
+        "modEnd": 0.6
+      },
+      {
+        "uuid": "037ea34c-e564-492e-b575-3e5aac5895e4",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.4,
+        "modEnd": 0.6
+      },
+      {
+        "uuid": "f68f87d6-1981-4c22-bed6-ce352922cb34",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.4,
+        "modEnd": 0.6
+      }
+    ],
+    "a789f57a-e12b-4bcd-8132-e0c03d84fc89|WIRING:": [
+      {
+        "uuid": "551b651c-8a34-438f-9d19-93fdffe56246",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.88,
+        "modEnd": 1.12
+      }
+    ],
+    "60f116f4-c02a-45b2-9ded-333747795124|FRAME": [
+      {
+        "uuid": "1156716c-b01e-4228-8136-7430be5bb9b8",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.4,
+        "modEnd": 0.6
+      },
+      {
+        "uuid": "037ea34c-e564-492e-b575-3e5aac5895e4",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.4,
+        "modEnd": 0.6
+      },
+      {
+        "uuid": "f68f87d6-1981-4c22-bed6-ce352922cb34",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.4,
+        "modEnd": 0.6
+      }
+    ],
+    "21825507-7923-4683-9bf3-9cfe316940e3|CABLING": [
+      {
+        "uuid": "cfc129ce-488a-46f2-92f7-9272cd0cfdfb",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.9,
+        "modEnd": 1.1
+      }
+    ],
+    "48c7080a-bbef-43d2-901a-698321ed4340|FRAME": [
+      {
+        "uuid": "1156716c-b01e-4228-8136-7430be5bb9b8",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.2,
+        "modEnd": 0.8
+      },
+      {
+        "uuid": "037ea34c-e564-492e-b575-3e5aac5895e4",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.2,
+        "modEnd": 0.8
+      },
+      {
+        "uuid": "f68f87d6-1981-4c22-bed6-ce352922cb34",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.2,
+        "modEnd": 0.8
+      }
+    ],
+    "61189578-ed7a-4491-9774-37ae2f82b8b0|GRIP:": [
+      {
+        "uuid": "1156716c-b01e-4228-8136-7430be5bb9b8",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.2,
+        "modEnd": 0.8
+      },
+      {
+        "uuid": "037ea34c-e564-492e-b575-3e5aac5895e4",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.2,
+        "modEnd": 0.8
+      },
+      {
+        "uuid": "f68f87d6-1981-4c22-bed6-ce352922cb34",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.2,
+        "modEnd": 0.8
+      }
+    ],
+    "f386a33c-ac9a-400a-a7b8-fe1fc7c8d270|FRAME": [
+      {
+        "uuid": "1156716c-b01e-4228-8136-7430be5bb9b8",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.2,
+        "modEnd": 0.8
+      },
+      {
+        "uuid": "037ea34c-e564-492e-b575-3e5aac5895e4",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.2,
+        "modEnd": 0.8
+      },
+      {
+        "uuid": "f68f87d6-1981-4c22-bed6-ce352922cb34",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.2,
+        "modEnd": 0.8
+      }
+    ],
+    "8cd317a3-df9b-4315-8ac3-0f1fca42dfd4|FRAME": [
+      {
+        "uuid": "1156716c-b01e-4228-8136-7430be5bb9b8",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.2,
+        "modEnd": 0.8
+      },
+      {
+        "uuid": "037ea34c-e564-492e-b575-3e5aac5895e4",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.2,
+        "modEnd": 0.8
+      },
+      {
+        "uuid": "f68f87d6-1981-4c22-bed6-ce352922cb34",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.2,
+        "modEnd": 0.8
+      }
+    ],
+    "86d00bd8-08f7-4231-b375-a609803fc46d|FRAME:": [
+      {
+        "uuid": "1156716c-b01e-4228-8136-7430be5bb9b8",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.4,
+        "modEnd": 0.6
+      },
+      {
+        "uuid": "037ea34c-e564-492e-b575-3e5aac5895e4",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.4,
+        "modEnd": 0.6
+      },
+      {
+        "uuid": "f68f87d6-1981-4c22-bed6-ce352922cb34",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.4,
+        "modEnd": 0.6
+      }
+    ],
+    "93c8b7df-d6ac-4b4f-a115-b0e3afc238b8|CONDUIT": [
+      {
+        "uuid": "551b651c-8a34-438f-9d19-93fdffe56246",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 0.88,
+        "modEnd": 1.12
+      }
+    ],
+    "75b37a54-45c9-4f27-ac09-9830f092dd86|FRAME": [
+      {
+        "uuid": "1156716c-b01e-4228-8136-7430be5bb9b8",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.2,
+        "modEnd": 0.8
+      },
+      {
+        "uuid": "037ea34c-e564-492e-b575-3e5aac5895e4",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.2,
+        "modEnd": 0.8
+      },
+      {
+        "uuid": "f68f87d6-1981-4c22-bed6-ce352922cb34",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.2,
+        "modEnd": 0.8
+      }
+    ],
+    "4a47cad8-0271-4048-b19b-d9b52521fc20|FRAME": [
+      {
+        "uuid": "1156716c-b01e-4228-8136-7430be5bb9b8",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.2,
+        "modEnd": 0.8
+      },
+      {
+        "uuid": "037ea34c-e564-492e-b575-3e5aac5895e4",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.2,
+        "modEnd": 0.8
+      },
+      {
+        "uuid": "f68f87d6-1981-4c22-bed6-ce352922cb34",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.2,
+        "modEnd": 0.8
+      }
+    ],
+    "86d00bd8-08f7-4231-b375-a609803fc46d|FRAME": [
+      {
+        "uuid": "1156716c-b01e-4228-8136-7430be5bb9b8",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.4,
+        "modEnd": 0.6
+      },
+      {
+        "uuid": "037ea34c-e564-492e-b575-3e5aac5895e4",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.4,
+        "modEnd": 0.6
+      },
+      {
+        "uuid": "f68f87d6-1981-4c22-bed6-ce352922cb34",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.4,
+        "modEnd": 0.6
+      }
+    ],
+    "06cafea0-49fe-4dce-b0f0-dc583316c66d|FRAME": [
+      {
+        "uuid": "1156716c-b01e-4228-8136-7430be5bb9b8",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.2,
+        "modEnd": 0.8
+      },
+      {
+        "uuid": "037ea34c-e564-492e-b575-3e5aac5895e4",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.2,
+        "modEnd": 0.8
+      },
+      {
+        "uuid": "f68f87d6-1981-4c22-bed6-ce352922cb34",
+        "startQuality": 0,
+        "endQuality": 1000,
+        "modStart": 1.2,
+        "modEnd": 0.8
+      }
+    ]
+  }
+}

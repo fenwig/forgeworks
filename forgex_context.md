@@ -233,13 +233,30 @@ Returns: ~1,044 blueprints (Armor / Weapon / Ammunition). Fetched 100/page (~11 
 
 ---
 
-## Recent Changes (2026-05-12)
+## Recent Changes (2026-05-13 — Session 3)
 
 ### Fixed
-- **Critical:** Module 06 order status corruption — removed conflicting code block that was setting status='ready' (invalid) instead of 'readytodeliver', causing crafted orders to disappear entirely
-- **Module 09:** Re-sync completed — `forgex-blueprints` rebuilt with corrected gem ingredient quantities
+- **Module 07 — Reports Consistency:** Unified weapon display format across both Crafting Availability and Owned Blueprints reports. Weapons now grouped by weapon name (base + weapon_type) with colors/finishes listed beside, matching armor display pattern (armor by slot, weapons by type).
 
 ### Enhanced
+- **Module 07 — Report Formatting (Compact Layout):**
+  - **Materials Available:** Reduced row padding, increased font sizes (mat-name 14px→15px, band-val 13px→14px) for better readability at smaller scale
+  - **Blueprint Availability:** Tightened column widths (35% | 40% | 25%), reduced padding, adjusted slot pill gaps
+  - **Crafted Items:** Removed "Crafted Impact" column (was placeholder), tightened overall layout for 3-column display (Item | Quality | Date)
+  - All tables: Reduced padding from 5px→4px/3px for more compact appearance while maintaining readability
+
+## Previous Changes (2026-05-12 — Session 2)
+
+### Fixed
+- **Module 04 — Mission Filter:** Fixed filter logic to properly distinguish mission vs non-mission blueprints. Changed condition from `!bp.has_mission` to `bp.has_mission!==true` to account for undefined values in default blueprints.
+- **Module 04 — NaN in Material Needs:** Fixed NaN display by adding safety checks in `getBands()` function and diff calculations. Now uses `(l.qty||0)` in reduce operations and explicit `isNaN()` guards on diff calculations.
+- **Module 04 — Material Needs Default Band:** Changed default filter from '700' to 'all' on page load.
+- **Module 09 — Mission Flag Logic:** Simplified `has_mission` calculation from `!is_available_by_default || (unlocking_missions_count > 0)` to `unlocking_missions_count > 0`. Now only blueprints with actual unlocking missions receive the mission flag.
+- **Module 04 — [DEFAULT] Badge UI:** Added CSS styling and display logic for [DEFAULT] badge (appears on default blueprints in both browser and tracker views). Styling uses neutral gray tone to distinguish from MISSION (yellow) and ORDER (blue) badges.
+
+### Previous Changes (2026-05-12 — Session 1)
+- **Critical:** Module 06 order status corruption — removed conflicting code block that was setting status='ready' (invalid) instead of 'readytodeliver', causing crafted orders to disappear entirely
+- **Module 09:** Re-sync completed — `forgex-blueprints` rebuilt with corrected gem ingredient quantities
 - **Module 05:** Blueprint search added ("BLUEPRINT KEYWORD" filter); ammunition blueprints filtered out; blueprints sorted alphabetically
 - **Module 06:** ORDER FULFILLMENT display redesigned with customer name and quality on separate lines; font size standardized to 14px
 
