@@ -652,7 +652,7 @@ function goToCraftWorkbench(orderId){
   localStorage.setItem('forgex-forge-preselect',order.bpId);
   localStorage.setItem('forgex-attach-order',orderId);
   // Navigate via parent dashboard postMessage
-  window.parent.postMessage({type:'forgex-navigate',src:'forgex_module06_crafting.html'},'*');
+  window.parent.postMessage({type:'forgex-navigate',src:'forgeworks_forge.html'},'*');
 }
 
 init();

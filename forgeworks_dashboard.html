@@ -417,7 +417,7 @@
       <span class="export-date" id="syncDate"></span>
       <span class="export-date" id="exportDate"></span>
       <button class="header-btn" onclick="openBackup()">IMPORT / EXPORT</button>
-      <button class="sync-btn" onclick="loadModule('forgex_module09_datasync.html','datasync')">SYNC DATA</button>
+      <button class="sync-btn" onclick="loadModule('forgeworks_datasync.html','datasync')">SYNC DATA</button>
     </div>
   </header>
 
@@ -437,7 +437,7 @@
       </div>
 
       <div class="nav-section-label">Resources</div>
-      <div class="nav-item" id="nav-materials" onclick="loadModule('forgex_module02_materials_v2.html','materials')">
+      <div class="nav-item" id="nav-materials" onclick="loadModule('forgeworks_materials.html','materials')">
         <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
           <path d="M2 13L8 3L14 13H2Z" stroke="currentColor" stroke-width="1.5"/>
           <line x1="5" y1="10" x2="11" y2="10" stroke="currentColor" stroke-width="1"/>
@@ -446,7 +446,7 @@
       </div>
 
       <div class="nav-section-label">Production</div>
-      <div class="nav-item" id="nav-blueprints" onclick="loadModule('forgex_module04_v2_full.html','blueprints')">
+      <div class="nav-item" id="nav-blueprints" onclick="loadModule('forgeworks_blueprints.html','blueprints')">
         <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
           <rect x="2" y="2" width="12" height="12" stroke="currentColor" stroke-width="1.5"/>
           <line x1="2" y1="6" x2="14" y2="6" stroke="currentColor" stroke-width="1"/>
@@ -454,13 +454,13 @@
         </svg>
         <span class="nav-label">Blueprints</span>
       </div>
-      <div class="nav-item" id="nav-forge" onclick="loadModule('forgex_module06_crafting.html','forge')">
+      <div class="nav-item" id="nav-forge" onclick="loadModule('forgeworks_forge.html','forge')">
         <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
           <path d="M8 2L10 6H14L11 9L12 13L8 11L4 13L5 9L2 6H6L8 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
         </svg>
         <span class="nav-label">The Forge</span>
       </div>
-      <div class="nav-item" id="nav-orders" onclick="loadModule('forgex_module05_orders.html','orders')">
+      <div class="nav-item" id="nav-orders" onclick="loadModule('forgeworks_orders.html','orders')">
         <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
           <rect x="2" y="3" width="12" height="10" stroke="currentColor" stroke-width="1.5"/>
           <line x1="5" y1="7" x2="11" y2="7" stroke="currentColor" stroke-width="1"/>
@@ -470,14 +470,14 @@
       </div>
 
       <div class="nav-section-label">Intelligence</div>
-      <div class="nav-item" id="nav-reports" onclick="loadModule('forgex_module07_reports.html','reports')">
+      <div class="nav-item" id="nav-reports" onclick="loadModule('forgeworks_reports.html','reports')">
         <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
           <polyline points="2,12 5,8 8,10 11,5 14,7" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
           <line x1="2" y1="14" x2="14" y2="14" stroke="currentColor" stroke-width="1"/>
         </svg>
         <span class="nav-label">Reports</span>
       </div>
-      <div class="nav-item" id="nav-codex" onclick="loadModule('forgex_module10_codex.html','codex')">
+      <div class="nav-item" id="nav-codex" onclick="loadModule('forgeworks_codex.html','codex')">
         <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
           <rect x="3" y="1" width="10" height="14" stroke="currentColor" stroke-width="1.5"/>
           <line x1="5" y1="5" x2="11" y2="5" stroke="currentColor" stroke-width="1"/>
@@ -528,32 +528,32 @@
             </div>
 
             <div class="module-grid">
-              <div class="module-card ready" onclick="loadModule('forgex_module02_materials_v2.html','materials')">
+              <div class="module-card ready" onclick="loadModule('forgeworks_materials.html','materials')">
                 <div class="module-name">Material Database</div>
                 <div class="module-desc">Manage ore and gem lots, quality tracking, storage locations and bulk imports.</div>
                 <div class="module-status"><span class="status-dot ready"></span>ONLINE</div>
               </div>
-              <div class="module-card ready" onclick="loadModule('forgex_module04_v2_full.html','blueprints')">
+              <div class="module-card ready" onclick="loadModule('forgeworks_blueprints.html','blueprints')">
                 <div class="module-name">Blueprint Database</div>
                 <div class="module-desc">Browse schematics, track owned blueprints and plan crafts by quality tier.</div>
                 <div class="module-status"><span class="status-dot ready"></span>ONLINE</div>
               </div>
-              <div class="module-card ready" onclick="loadModule('forgex_module06_crafting.html','forge')">
+              <div class="module-card ready" onclick="loadModule('forgeworks_forge.html','forge')">
                 <div class="module-name">The Forge</div>
                 <div class="module-desc">Execute crafting jobs, consume material lots and log output by quality tier.</div>
                 <div class="module-status"><span class="status-dot ready"></span>ONLINE</div>
               </div>
-              <div class="module-card ready" onclick="loadModule('forgex_module05_orders.html','orders')">
+              <div class="module-card ready" onclick="loadModule('forgeworks_orders.html','orders')">
                 <div class="module-name">Order Tracker</div>
                 <div class="module-desc">Manage customer orders, deadlines, delivery status and pricing agreements.</div>
                 <div class="module-status"><span class="status-dot ready"></span>ONLINE</div>
               </div>
-              <div class="module-card ready" onclick="loadModule('forgex_module07_reports.html','reports')">
+              <div class="module-card ready" onclick="loadModule('forgeworks_reports.html','reports')">
                 <div class="module-name">Reports</div>
                 <div class="module-desc">Activity summaries, revenue analytics, inventory snapshots and craft history.</div>
                 <div class="module-status"><span class="status-dot ready"></span>ONLINE</div>
               </div>
-              <div class="module-card ready" onclick="loadModule('forgex_module10_codex.html','codex')">
+              <div class="module-card ready" onclick="loadModule('forgeworks_codex.html','codex')">
                 <div class="module-name">Codex</div>
                 <div class="module-desc">Field manual and reference documentation for TI Forgeworks operations.</div>
                 <div class="module-status"><span class="status-dot ready"></span>ONLINE</div>
@@ -787,9 +787,9 @@ function closeBackup() { document.getElementById('backupModal').classList.remove
 window.addEventListener('message', e => {
   if(e.data?.type === 'forgex-navigate' && e.data?.src) {
     const navKeys = {
-      'forgex_module08_ocr.html':         'ocr',
-      'forgex_module03_acquisition.html': 'acquisition',
-      'forgex_module10_codex.html':       'codex',
+      'forgeworks_ocr.html':         'ocr',
+      'forgeworks_acquisition.html': 'acquisition',
+      'forgeworks_codex.html':       'codex',
     };
     loadModule(e.data.src, navKeys[e.data.src] || '');
   }
