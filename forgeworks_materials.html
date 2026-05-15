@@ -290,7 +290,7 @@
           <input class="form-input" id="f-quality" type="number" min="1" max="1000" placeholder="e.g. 875">
         </div>
         <div class="form-row">
-          <label class="form-lbl" id="f-qty-lbl">Quantity (cSCU)</label>
+          <label class="form-lbl" id="f-qty-lbl">Quantity (SCU)</label>
           <input class="form-input" id="f-qty" type="number" min="1" placeholder="e.g. 3">
         </div>
       </div>
@@ -478,9 +478,10 @@ function getQualityColor(q){
   return '#90806e';
 }
 
-function formatSCU(cSCU){
-  const whole=Math.floor(cSCU/100);
-  const decimal=String(cSCU%100).padStart(2,'0');
+function formatSCU(scu){
+  if(typeof scu!=='number'||scu===null||scu===undefined) return '<span class="scu-display"><span class="scu-whole">0</span><span class="scu-decimal">.00</span><span class="scu-unit">SCU</span></span>';
+  const whole=Math.floor(scu);
+  const decimal=String(Math.round((scu%1)*100)).padStart(2,'0');
   return `<span class="scu-display"><span class="scu-whole">${whole}</span><span class="scu-decimal">.${decimal}</span><span class="scu-unit">SCU</span></span>`;
 }
 
@@ -661,13 +662,13 @@ function updateFooter(filtered){
   document.getElementById('footer-total').textContent=lots.length;
   document.getElementById('footer-sort').textContent=sortCol.charAt(0).toUpperCase()+sortCol.slice(1)+' '+(sortDir===1?'↑':'↓');
   const visTotal=filtered.reduce((s,l)=>s+l.qty,0);
-  document.getElementById('footer-scu-display').innerHTML=formatSCU(visTotal)+` <span style="color:var(--tmi-text-dim);margin-left:8px;">(${visTotal.toLocaleString()} cSCU)</span>`;
+  document.getElementById('footer-scu-display').innerHTML=formatSCU(visTotal)+` <span style="color:var(--tmi-text-dim);margin-left:8px;">(${visTotal.toLocaleString()})</span>`;
   const selLots=lots.filter(l=>selectedIds.has(l.id));
   const selCount=selLots.length;
   const selQty=selLots.reduce((s,l)=>s+l.qty,0);
   document.getElementById('footer-sel').style.display=selCount>0?'block':'none';
   document.getElementById('footer-sel-count').textContent=selCount;
-  document.getElementById('footer-sel-scu-display').innerHTML=formatSCU(selQty)+` <span style="color:var(--tmi-text-dim);margin-left:4px;">(${selQty.toLocaleString()} cSCU)</span>`;
+  document.getElementById('footer-sel-scu-display').innerHTML=formatSCU(selQty)+` <span style="color:var(--tmi-text-dim);margin-left:4px;">(${selQty.toLocaleString()})</span>`;
 }
 
 // ── ADD LOT ──────────────────────────────────────────────────────────────────
@@ -676,7 +677,7 @@ function updateHMIndicator(){
   const ore=document.getElementById('f-ore').value;
   const isGem=GEM_NAMES.has(ore);
   document.getElementById('hm-indicator').style.display=isGem?'block':'none';
-  document.getElementById('f-qty-lbl').textContent=isGem?'Quantity (gems)':'Quantity (cSCU)';
+  document.getElementById('f-qty-lbl').textContent=isGem?'Quantity (gems)':'Quantity (SCU)';
 }
 
 function setOreFilter(type,btn){
