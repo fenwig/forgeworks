@@ -304,6 +304,14 @@ function bandQty(lots,band){const lo=band,hi=band===900?1001:band+100;return lot
 function tierLabel(q){if(!q&&q!==0)return'—';if(q>=900)return'900+';if(q>=800)return'800+';if(q>=700)return'700+';return'<700';}
 function tierClass(q){if(q>=900)return'rpt-tier-900';if(q>=800)return'rpt-tier-800';return'rpt-tier-700';}
 
+// ── Quantity formatter ──────────────────────────────────────────────────────────
+function formatQty(qty,isGem){
+  if(isGem) return `<span style="color:var(--rpt-gold);font-weight:700">${Math.round(qty)}</span>`;
+  const whole=Math.floor(qty);
+  const decimal=String(Math.round((qty%1)*100)).padStart(2,'0');
+  return `<span style="color:var(--rpt-gold);font-weight:700">${whole}</span><span style="color:var(--rpt-gold);font-weight:700;margin-left:3px">.${decimal}</span>`;
+}
+
 // ── Report brand strip ─────────────────────────────────────────────────────────
 function brandHTML(title,dateNote){
   return `<div class="rpt-brand">
@@ -341,16 +349,16 @@ function buildReport1(){
     (d.hand_mined?gems:ores).push({ore,lots:d.lots});
   });
   const dateNote=hasFilter?`filtered ${from||'…'} → ${to||'…'}`:'';
-  function tbl(items){
+  function tbl(items,isGem){
     if(!items.length)return'<div class="empty-state">No qualifying materials</div>';
     return`<table class="rpt-table"><thead><tr>
       <th>Material</th><th class="num">700+</th><th class="num">800+</th><th class="num">900+</th>
     </tr></thead><tbody>`+items.map(({ore,lots})=>{
       const t7=bandQty(lots,700),t8=bandQty(lots,800),t9=bandQty(lots,900);
       return`<tr><td><span class="mat-name">${ore}</span></td>
-        <td class="num"><span class="${t7>0?'band-val band-700':'band-nil'}">${t7>0?t7.toLocaleString():'—'}</span></td>
-        <td class="num"><span class="${t8>0?'band-val band-800':'band-nil'}">${t8>0?t8.toLocaleString():'—'}</span></td>
-        <td class="num"><span class="${t9>0?'band-val band-900':'band-nil'}">${t9>0?t9.toLocaleString():'—'}</span></td>
+        <td class="num"><span class="${t7>0?'band-val band-700':'band-nil'}">${t7>0?formatQty(t7,isGem):'—'}</span></td>
+        <td class="num"><span class="${t8>0?'band-val band-800':'band-nil'}">${t8>0?formatQty(t8,isGem):'—'}</span></td>
+        <td class="num"><span class="${t9>0?'band-val band-900':'band-nil'}">${t9>0?formatQty(t9,isGem):'—'}</span></td>
       </tr>`;
     }).join('')+'</tbody></table>';
   }
@@ -358,11 +366,11 @@ function buildReport1(){
     <div class="rpt-cols">
       <div class="rpt-card">
         <div class="rpt-card-header"><span class="rpt-card-title">Mined Ore</span><span class="rpt-card-count">${ores.length} material${ores.length!==1?'s':''}</span></div>
-        ${tbl(ores)}
+        ${tbl(ores,false)}
       </div>
       <div class="rpt-card">
         <div class="rpt-card-header"><span class="rpt-card-title">Hand-Mined Gems</span><span class="rpt-card-count">${gems.length} material${gems.length!==1?'s':''}</span></div>
-        ${tbl(gems)}
+        ${tbl(gems,true)}
       </div>
     </div>`;
 }
