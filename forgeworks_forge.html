@@ -327,22 +327,9 @@ const LS_ORDERS='forgex-active-orders';
 const LS_LOG='forgex-crafting-log';
 
 // ── DATA ──
-const HARDCODED_BLUEPRINTS=[
-  {id:1,base:'Aztalan',slot:'Helmet',type:'Armor',category:'Combat',weapon_type:null,finish:null,ingredients:[{name:'aslarite',qty:6},{name:'lindinium',qty:4},{name:'taranite',qty:3}]},
-  {id:2,base:'Aztalan',slot:'Core',type:'Armor',category:'Combat',weapon_type:null,finish:null,ingredients:[{name:'aslarite',qty:12},{name:'lindinium',qty:8},{name:'taranite',qty:6}]},
-  {id:3,base:'Aztalan',slot:'Legs',type:'Armor',category:'Combat',weapon_type:null,finish:null,ingredients:[{name:'aslarite',qty:10},{name:'lindinium',qty:6},{name:'taranite',qty:5}]},
-  {id:4,base:'Aztalan',slot:'Arms',type:'Armor',category:'Combat',weapon_type:null,finish:null,ingredients:[{name:'aslarite',qty:8},{name:'lindinium',qty:5},{name:'taranite',qty:4}]},
-  {id:5,base:'Corbel',slot:'Helmet',type:'Armor',category:'Combat',weapon_type:null,finish:null,ingredients:[{name:'laranite',qty:5},{name:'titanium',qty:6},{name:'aslarite',qty:4}]},
-  {id:6,base:'Corbel',slot:'Core',type:'Armor',category:'Combat',weapon_type:null,finish:null,ingredients:[{name:'laranite',qty:10},{name:'titanium',qty:12},{name:'aslarite',qty:8}]},
-  {id:7,base:'Corbel',slot:'Legs',type:'Armor',category:'Combat',weapon_type:null,finish:null,ingredients:[{name:'laranite',qty:8},{name:'titanium',qty:10},{name:'aslarite',qty:6}]},
-  {id:8,base:'Corbel',slot:'Arms',type:'Armor',category:'Combat',weapon_type:null,finish:null,ingredients:[{name:'laranite',qty:6},{name:'titanium',qty:8},{name:'aslarite',qty:5}]},
-  {id:9,base:'Demeco',slot:null,type:'Weapon',category:null,weapon_type:'LMG',finish:null,ingredients:[{name:'corundum',qty:14},{name:'copper',qty:10},{name:'hadanite',qty:5}]},
-  {id:10,base:'Demeco',slot:null,type:'Ammunition',category:null,weapon_type:'LMG',finish:null,ingredients:[{name:'copper',qty:6},{name:'corundum',qty:4}]},
-  {id:11,base:'Corbel',slot:'Arms',type:'Armor',category:'Combat',weapon_type:null,finish:'Mire',ingredients:[{name:'laranite',qty:6},{name:'titanium',qty:8},{name:'aslarite',qty:5}]},
-];
 function loadBlueprints(){
   try{const s=JSON.parse(localStorage.getItem('forgex-blueprints')||'null');if(s&&s.length)return s;}catch(e){}
-  return HARDCODED_BLUEPRINTS;
+  return [];
 }
 let blueprints=loadBlueprints();
 
