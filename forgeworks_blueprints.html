@@ -728,8 +728,7 @@ function renderNeeds(){
         const total=(t.personal?1:0)+bpOrders.reduce((s,o)=>s+o.qty,0);
         needs[ing.name].nAsl+=ing.qty*total;
       } else {
-        const isGem=GEM_NAMES.has(ing.name);
-        const tiers=isGem?[500]:(t.tiers||[700,800,900]);
+        const tiers=t.tiers||[700,800,900];
         if(t.personal){
           if(tiers.includes(500)) needs[ing.name].n500+=ing.qty;
           if(tiers.includes(700)) needs[ing.name].n700+=ing.qty;
@@ -759,8 +758,8 @@ function renderNeeds(){
       const cls=diff>=0?'need-ok':'need-short';
       return`<tr>
         <td class="ore-cell">${ore}<span class="asl-note" style="margin-left:6px;font-size:8px">500+</span></td>
-        <td class="band-cell">${formatQty(safeNeed,false)}</td>
-        <td class="band-cell ${cls}" style="color:var(--tmi-gold-bright);font-weight:700">${formatQty(safeHave,false)}</td>
+        <td class="band-cell" style="color:var(--tmi-gold-bright);font-weight:700">${formatQty(safeNeed,false)}</td>
+        <td class="band-cell ${cls}">${formatQty(safeHave,false)}</td>
         <td colspan="6"></td>
       </tr>`;
     }
@@ -772,7 +771,7 @@ function renderNeeds(){
       const diff=safeHave-safeNeed;
       const cls=diff>=0?'need-ok':'need-short';
       if(safeNeed===0) return`<td class="band-cell need-zero">—</td><td class="band-cell need-zero">—</td>`;
-      return`<td class="band-cell">${formatQty(safeNeed,info.isGem)}</td><td class="band-cell ${cls}" style="color:var(--tmi-gold-bright);font-weight:700">${formatQty(safeHave,info.isGem)}</td>`;
+      return`<td class="band-cell" style="color:var(--tmi-gold-bright);font-weight:700">${formatQty(safeNeed,info.isGem)}</td><td class="band-cell ${cls}">${formatQty(safeHave,info.isGem)}</td>`;
     }).join('');
 
     return`<tr>
