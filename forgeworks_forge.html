@@ -298,6 +298,7 @@
         </table>
         <div class="result-actions">
           <button class="btn btn-ghost" onclick="switchTab('log')">View Log</button>
+          <button class="btn btn-gold btn-sm" id="result-export-btn" onclick="exportComponentFromResult()" style="display:none">Export JSON</button>
         </div>
       </div>
 
@@ -826,6 +827,12 @@ function showResult(job){
       <td class="result-qual">${m.avgQuality||'—'}</td>
     </tr>`;
   }).join('');
+
+  // Show export button only for components
+  const bp=blueprints.find(b=>b.id===job.bpId);
+  const exportBtn=document.getElementById('result-export-btn');
+  exportBtn.style.display=bp&&bp.type==='ShipComponent'?'':'none';
+  exportBtn.onclick=()=>exportComponent(job.id);
 }
 
 // ── STATS ──
@@ -890,10 +897,14 @@ function renderLogRow(job){
     </div>`;
   }
 
+  const bp=blueprints.find(b=>b.id===job.bpId);
+  const isComponent=bp&&bp.type==='ShipComponent';
+  const exportBtn=isComponent?`<button class="btn btn-gold btn-sm" onclick="event.stopPropagation();exportComponent(${job.id})">Export JSON</button>`:'';
+
   const detailActions=job.orderId
     ?`<span class="log-detail-order-label">Linked to Order #${String(job.orderId).padStart(3,'0')}</span>
-       <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();detachLogOrder(${job.id})">Detach Order</button>`
-    :`<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openLogOrderPicker(${job.id})">Attach Order</button>${logPickerHtml}`;
+       <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();detachLogOrder(${job.id})">Detach Order</button>${exportBtn}`
+    :`<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openLogOrderPicker(${job.id})">Attach Order</button>${logPickerHtml}${exportBtn}`;
 
   return`<div class="log-row${job.orderId?' is-order':''}">
     <div class="log-header" onclick="toggleLogEntry(${job.id})">
@@ -944,6 +955,45 @@ function detachLogOrder(jobId){
   updateStats();
   renderLog();
   toast('ORDER DETACHED — ORDER REVERTED TO IN PROGRESS');
+}
+
+// ── COMPONENT EXPORT ──
+function exportComponent(jobId){
+  const job=craftingLog.find(j=>j.id===jobId);
+  if(!job) return;
+  const bp=blueprints.find(b=>b.id===job.bpId);
+  if(!bp||bp.type!=='ShipComponent') return;
+
+  const m=bp.meta||{};
+  const ingredientQualities=job.materials.map(mat=>mat.avgQuality).filter(q=>q!==null&&q!==undefined);
+
+  const exportData={
+    name:bp.base,
+    type:m.component_type||null,
+    size:m.component_size||null,
+    class:m.component_class||null,
+    grade:m.component_grade||null,
+    ingredientQualities
+  };
+
+  const jsonStr=JSON.stringify(exportData,null,2);
+  const blob=new Blob([jsonStr],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`${bp.base}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('COMPONENT EXPORT DOWNLOADED');
+}
+
+function exportComponentFromResult(){
+  // Called from result card - find the most recent job
+  if(craftingLog.length){
+    exportComponent(craftingLog[0].id);
+  }
 }
 
 // ── TOAST ──
