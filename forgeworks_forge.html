@@ -957,29 +957,6 @@ function detachLogOrder(jobId){
 }
 
 // ── COMPONENT EXPORT ──
-function formatComponentType(rawType){
-  if(!rawType) return null;
-  const typeMap={
-    'PowerPlant':'Power Plant',
-    'Cooler':'Cooler',
-    'Radar':'Radar',
-    'Shield':'Shield',
-    'QuantumDrive':'Quantum Drive',
-    'WeaponGun':'Weapon Gun',
-    'MiningLaser':'Mining Laser',
-    'Mininglaser':'Mining Laser',
-    'SalvageModifier':'Salvage Modifier',
-    'Salvage':'Salvage',
-    'TractorBeam':'Tractor Beam',
-    'Tractorbeam':'Tractor Beam',
-    'FuelIntake':'Fuel Intake',
-    'FuelTank':'Fuel Tank',
-    'Refuelling':'Refuelling',
-    'Shipweapon':'Ship Weapon'
-  };
-  return typeMap[rawType]||rawType;
-}
-
 function exportComponent(jobId){
   const job=craftingLog.find(j=>j.id===jobId);
   if(!job) return;
@@ -991,7 +968,7 @@ function exportComponent(jobId){
 
   const exportData={
     name:bp.base,
-    type:formatComponentType(m.component_type),
+    type:m.component_type||null,
     size:m.component_size||null,
     class:m.component_class||null,
     grade:m.component_grade||null,
