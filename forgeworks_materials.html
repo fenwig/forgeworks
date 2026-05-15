@@ -61,10 +61,10 @@
   .quality-val{font-family:'Share Tech Mono',monospace;font-size:14px;min-width:36px;font-weight:600;}
   .qty-val{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:600;}
   .scu-label{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-dim);margin-left:3px;}
-  .scu-display{font-family:'Share Tech Mono',monospace;font-size:15px;display:inline-flex;gap:2px;align-items:baseline;}
-  .scu-whole{color:var(--tmi-text-dim);font-weight:600;}
-  .scu-decimal{color:var(--tmi-gold-bright);font-weight:700;}
-  .scu-unit{color:var(--tmi-text-secondary);margin-left:2px;}
+  .scu-display{font-family:'Share Tech Mono',monospace;font-size:15px;display:inline-flex;gap:0;align-items:baseline;color:var(--tmi-text-primary);}
+  .scu-whole{font-weight:600;}
+  .scu-decimal{font-weight:600;margin-left:6px;}
+  .scu-unit{color:var(--tmi-text-secondary);margin-left:3px;}
   .loc-tag{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-steel);}
   .loc-default{color:var(--tmi-gold-dim);}
   .date-val{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-secondary);}
@@ -479,7 +479,7 @@ function getQualityColor(q){
 function formatSCU(cSCU){
   const whole=Math.floor(cSCU/100);
   const decimal=String(cSCU%100).padStart(2,'0');
-  return `<span class="scu-display"><span class="scu-whole">${whole}</span><span class="scu-decimal"> .${decimal}</span><span class="scu-unit">SCU</span></span>`;
+  return `<span class="scu-display"><span class="scu-whole">${whole}</span><span class="scu-decimal">.${decimal}</span><span class="scu-unit">SCU</span></span>`;
 }
 
 function setFilter(key,val,btn){
