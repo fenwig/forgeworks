@@ -5,12 +5,13 @@ Last updated: 2026-05-15 (Session 5 — 4.8 Live, Components Enabled)
 
 ## Where to Resume
 
-**Next session:** 4.8 COMPLETE. Ship components fully enabled. Awaiting user testing feedback.
+**Next session:** Component export feature implemented. App ready for testing.
 
 **Resume action items:**
 1. Pull from GitHub: `git pull origin main`
-2. Address any bugs found during testing
-3. Consider Module 06 owned IDs bug (reads `forgex-tracking.personal` instead of `forgex-owned`)
+2. Test component export from result card and crafting log
+3. Address any bugs found during testing
+4. Consider Module 06 owned IDs bug (reads `forgex-tracking.personal` instead of `forgex-owned`)
 
 ---
 
@@ -49,7 +50,21 @@ Last updated: 2026-05-15 (Session 5 — 4.8 Live, Components Enabled)
 
 ---
 
-**This session notes (2026-05-15 Session 5 — 4.8 Live: Components Enabled + Cleanup):**
+**This session notes (2026-05-15 Session 6 — Component Export Feature):**
+
+*Forge Module (forgeworks_forge.html):*
+- Added component export feature: JSON download of crafted components
+- Export button on post-craft result card (only for ShipComponent type)
+- Export button on each component entry in crafting log detail (only for ShipComponent type)
+- Export JSON structure: `{name, type, size, class, grade, ingredientQualities: [...]}`
+- File naming: ComponentName.json (e.g., LumaCore.json)
+- Ingredient qualities array auto-shortened if fewer than 3 ingredients
+- Export triggered per-item (one download per click)
+- Implementation: `exportComponent(jobId)` + `exportComponentFromResult()` functions
+
+---
+
+**Previous session notes (2026-05-15 Session 5 — 4.8 Live: Components Enabled + Cleanup):**
 
 *API Confirmed Live:*
 - Star Citizen Wiki API grew from 1,044 → 1,559 blueprints (+515 components)
