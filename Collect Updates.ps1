@@ -1,6 +1,6 @@
 $projectRoot  = Split-Path -Parent $MyInvocation.MyCommand.Path
 $outputFolder = Join-Path $projectRoot 'Updates to be sent'
-$appPatterns  = @('forgex_*.html', 'forgex_*.js', '*.png')
+$appPatterns  = @('forgeworks_*.html', 'forgeworks_*.js', 'legacy_*.md', '*.png')
 
 function Is-AppFile($filename) {
     foreach ($p in $appPatterns) { if ($filename -like $p) { return $true } }

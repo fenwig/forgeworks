@@ -99,6 +99,7 @@
   <a class="anchor-link" href="#" onclick="jumpTo('s07');return false;">Reports</a>
   <a class="anchor-link" href="#" onclick="jumpTo('s08');return false;">OCR Import</a>
   <a class="anchor-link" href="#" onclick="jumpTo('s09');return false;">Data Sync</a>
+  <a class="anchor-link" href="#" onclick="jumpTo('s10');return false;">Components</a>
 </div>
 
 <div class="sections">
@@ -463,6 +464,92 @@
 
       <div class="sub-heading">API Status</div>
       <p class="doc-p">The status card shows the Wiki API connectivity check on load. If it shows an error, your internet connection may be unavailable, or the Wiki API may be temporarily down. Syncing is blocked when the API is unreachable.</p>
+    </div>
+  </div>
+
+  <!-- ── 10 SHIP COMPONENTS ── -->
+  <div class="section" id="s10">
+    <button class="section-toggle" onclick="toggle(this)">
+      <span class="section-num">10</span>
+      <span class="section-title">Ship Components (4.8 Patch)</span>
+      <span class="section-arrow">▼</span>
+    </button>
+    <div class="section-body">
+      <p class="section-intro">Starting in the 4.8 patch, TI Forgeworks will support crafting of ship components alongside armor and weapons. Components are categorized by <strong>type</strong>, <strong>class</strong>, <strong>grade</strong>, and <strong>size</strong>, with their own crafting recipes and quality tier requirements.</p>
+
+      <div class="sub-heading">Component Types</div>
+      <p class="doc-p">Each component belongs to one of ten functional types:</p>
+      <table class="kv-table">
+        <thead><tr><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>Cooler</td><td>Thermal management systems. Higher quality reduces ship heat signature.</td></tr>
+          <tr><td>Mining Laser</td><td>Mining extraction tools. Quality affects extraction efficiency and yield.</td></tr>
+          <tr><td>Power Plant</td><td>Core energy generation. Quality improves power output and efficiency.</td></tr>
+          <tr><td>Quantum Drive</td><td>Jump drive systems. Quality affects jump range and charge speed.</td></tr>
+          <tr><td>Radar</td><td>Sensor and detection systems. Quality improves detection range and accuracy.</td></tr>
+          <tr><td>Refuelling Probe</td><td>In-flight refueling equipment. Quality affects transfer speed and range.</td></tr>
+          <tr><td>Salvage Equipment</td><td>Ship salvage extraction gear. Quality affects processing speed and yields.</td></tr>
+          <tr><td>Shield Generator</td><td>Protective energy barriers. Quality improves shield strength and recharge.</td></tr>
+          <tr><td>Ship Weapon</td><td>Mounted offensive systems. Quality affects damage output and fire rate.</td></tr>
+          <tr><td>Tractor Beam</td><td>Object manipulation systems. Quality affects lift capacity and range.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sub-heading">Component Classes</div>
+      <p class="doc-p">Each component is manufactured in one of five classes, reflecting power level and intended use:</p>
+      <table class="kv-table">
+        <thead><tr><th>Class</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>Civilian</td><td>Entry-level, everyday use. Lowest material costs.</td></tr>
+          <tr><td>Military</td><td>Combat and high-stress applications. Moderate material costs.</td></tr>
+          <tr><td>Industrial</td><td>Professional extraction and processing. Higher material costs.</td></tr>
+          <tr><td>Stealth</td><td>Signature reduction and specialized scanning. Premium material costs.</td></tr>
+          <tr><td>Competition</td><td>Racing and extreme performance. Highest material costs, rare ingredients.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sub-heading">Component Grades</div>
+      <p class="doc-p">Within each class, components are graded A through D (best to worst). Grades reflect material quality and manufacturing precision:</p>
+      <ul class="doc-list">
+        <li><strong>Grade A</strong> — Premium components. Requires highest-quality materials.</li>
+        <li><strong>Grade B</strong> — High-quality. Requires quality-tier materials.</li>
+        <li><strong>Grade C</strong> — Standard. Requires mid-tier materials.</li>
+        <li><strong>Grade D</strong> — Economic. Uses lower-quality materials.</li>
+      </ul>
+
+      <div class="sub-heading">Component Sizes</div>
+      <p class="doc-p">Ship components scale in size to fit different vessel classes. Size 0 is smallest; Size 4 is largest. A component size must match the ship's hardpoint size, or it will not fit.</p>
+      <ul class="doc-list">
+        <li><strong>Size 0</strong> — Aurora, Mustang, 100 series.</li>
+        <li><strong>Size 1</strong> — Drake Cutlass, Avenger, Reliant.</li>
+        <li><strong>Size 2</strong> — Constellation, Prospector, Sabre, Vanguard.</li>
+        <li><strong>Size 3</strong> — Carrack, Hammerhead, Reclaimer.</li>
+        <li><strong>Size 4</strong> — Bengal, Idris, capital-class ships.</li>
+      </ul>
+
+      <div class="sub-heading">Quality Tiers and Crafting</div>
+      <p class="doc-p">Component crafting follows the same quality tier system as armor and weapons:</p>
+      <ul class="doc-list">
+        <li><strong>500+ tier</strong> — Basic crafted components (new in 4.8).</li>
+        <li><strong>700+ tier</strong> — Refined components.</li>
+        <li><strong>800+ tier</strong> — High-quality components.</li>
+        <li><strong>900+ tier</strong> — Premium components.</li>
+      </ul>
+      <p class="doc-p">Higher tiers require more materials and rarer ingredients, but deliver superior performance stats in game.</p>
+
+      <div class="sub-heading">Tracking and Orders</div>
+      <p class="doc-p">Ship components integrate into all existing Forgeworks features. You can:</p>
+      <ul class="doc-list">
+        <li>Own and track component blueprints in Blueprint Database.</li>
+        <li>View component crafting availability in Reports (Crafting Availability).</li>
+        <li>Create orders for components in Orders module.</li>
+        <li>Log component crafting in Crafting Log.</li>
+        <li>Monitor component material requirements in Material Needs.</li>
+      </ul>
+      <div class="tip"><p><strong>Tip:</strong> Components often use the same core materials as armor and weapons, so building material reserves helps across all three crafting categories.</p></div>
+
+      <div class="sub-heading">Sync with 4.8 Patch</div>
+      <p class="doc-p">When the 4.8 patch releases, run a Data Sync to import all available component blueprints. The sync will populate component entries automatically — no manual configuration needed. You can then mark components as owned and start tracking them immediately.</p>
     </div>
   </div>
 

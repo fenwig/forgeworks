@@ -1,66 +1,47 @@
-Rework of page titles.
-Forgex_module01_dashboard_v4 to  forgeworks_dashboard
-Forgex_module02_materials_v2 to forgeworks_materials
-Forgex_module03_acquisition  to forgeworks_acquisition
-Forgex_module04_v2_full to forgeworks_blueprints
-Forgex_module05_orders to forgeworks_orders
-Forgex_module06_crafting to forgeworks_forge
-Forgex_module07_reports to forgeworks_reports
-forgex_module08_ocr to forgeworks_ocr
-Forgex_module09_datasync to forgeworks_datasync
-Forgex_module10_codex to forgeworks_codex
 
-create reference to the changes in the forgex_context.md file to prevent confusion. 
 
 Module 1 - Dashboard
-add ' blueprints owned' tally after Blueprints
-Change Crafts logged to builds logged 
+return to top doesn't work. 
 
 Module 2 - Materials
-How to manage larger quantities. 
-3200 would be largest amount in a lot. 
+ 
 
 Module 3 - Acquisitions 
 
 
 
 Module 4  - Blueprint database
-Should not be able to track blueprints I don't own. 
-Add a 500+ quality tracker.
+Need filter components by type
+
 Gems aren't tracking right on materials needed
-Blueprint browser: 
-Add type: Component. Below drop down filters for type, class, grade, size 
-Crafting checker - add a 500+ filter that is off by default. 
-material needs, add 500+ filter. 
-Increase size of text. 
-may need to adjust values   100 cSCU ups to 1 SCU
+Antium Helmet Jet Arms entry
+Antium Core Jet Helmet 
+
 
 Module 5 - Order
- add 500+ tier to filters 
+
 
 Module 6 - The Forge
-Component filter
-Need "back to top" button 
-blueprints in alpha order
+
 
 Module 7 - reports 
 Add flavor text to the reports 
 Add component filter to availability, owned  - include type, class, grade, size info
+
+
+Module 8 _ OCR import
+
+
+Module 9 - Data sync
+
+
+
+
+ADVERT REPORTS:
 Create Ad button on each report. 
 each ad has some assigned imagery. Standard size - can change the ads up changing image in folder. 
 De-select data items (ore, blueprints) from ads
 Filters for components like only military/ stealth, size, grade. 
-
-Module 8 _ OCR import
-left justify 
-
-Module 9 - Data sync
-DONE
-
-
-NEEDS A BACK TO TOP BUTTON
-Levski in drop downs
-
 
 
 

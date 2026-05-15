@@ -151,6 +151,7 @@
   .qual-select-row{display:flex;gap:8px;}
   .qual-opt{font-family:'Share Tech Mono',monospace;font-size:14px;padding:5px 18px;border:1px solid var(--tmi-border-dim);cursor:pointer;transition:all 0.15s;background:transparent;color:var(--tmi-text-dim);}
   .qual-opt:hover{border-color:var(--tmi-border);color:var(--tmi-text-secondary);}
+  .qual-opt.sel.q500{border-color:var(--tmi-border);color:var(--tmi-text-secondary);background:rgba(208,196,176,0.1);}
   .qual-opt.sel.q700{border-color:var(--tmi-gold-dark);color:var(--tmi-gold-dim);background:rgba(138,112,48,0.15);}
   .qual-opt.sel.q800{border-color:var(--tmi-border);color:var(--tmi-gold);background:var(--tmi-gold-glow);}
   .qual-opt.sel.q900{border-color:rgba(232,201,106,0.5);color:var(--tmi-gold-bright);background:rgba(232,201,106,0.1);}
@@ -236,6 +237,7 @@
       <div class="form-group">
         <label class="form-label">Quality Tier</label>
         <div class="qual-select-row">
+          <button class="qual-opt q500" id="qt-500" onclick="selectQuality(500)">500</button>
           <button class="qual-opt q700 sel" id="qt-700" onclick="selectQuality(700)">700</button>
           <button class="qual-opt q800" id="qt-800" onclick="selectQuality(800)">800</button>
           <button class="qual-opt q900" id="qt-900" onclick="selectQuality(900)">900</button>
