@@ -1,13 +1,145 @@
 # SESSION STATE — TI Forgeworks
-Last updated: 2026-05-13 (Session 3 — Reports formatting)
+Last updated: 2026-05-15 (Session 5 — 4.8 Live, Components Enabled)
 
 ---
 
 ## Where to Resume
 
-**Next session:** All bugs fixed for 4.8 drop. Reports formatting unified. 10 modules online and feature-complete. User will direct next priorities.
+**Next session:** 4.8 COMPLETE. Ship components fully enabled. Awaiting user testing feedback.
 
-**Outstanding action items:** None. All identified issues resolved. Ready for distribution.
+**Resume action items:**
+1. Pull from GitHub: `git pull origin main`
+2. Address any bugs found during testing
+3. Consider Module 06 owned IDs bug (reads `forgex-tracking.personal` instead of `forgex-owned`)
+
+---
+
+## Current Status Summary
+
+**Project:** TI Forgeworks — Star Citizen Crafting Tracker
+**Live Patch:** Star Citizen 4.8 — Ship Components Enabled
+**Phase:** 5 Complete — 4.8 Implementation Done, Testing In Progress
+
+**What's Done:**
+- ✅ All 10 modules renamed (forgex_module* → forgeworks_*)
+- ✅ 500+ quality tier integrated throughout app
+- ✅ Ship component blueprints fully implemented (parser, browser, forge, reports)
+- ✅ Component documentation complete (Codex Section 10)
+- ✅ Alphabetical sorting (Blueprints, Forge)
+- ✅ GitHub backup live (github.com/fenwig/Forgeworks, main branch)
+- ✅ Hardcoded seed data removed (Materials, Blueprints, Forge)
+- ✅ forgeworks_context.md consolidated and updated
+
+**Pending:**
+- ⏳ User testing of component workflow (track → order → craft → log)
+- ⏳ Unknown manufacturer codes may appear — stored as null in meta.component_class
+
+**Database Schema Status:**
+- Armor blueprints: ✅ Working
+- Weapon blueprints: ✅ Working
+- Ship component blueprints: ✅ Live (~515 components from 4.8 API)
+- Quality tiers: ✅ 500+/700+/800+/900+ all supported
+- localStorage: ✅ All keys stable and documented
+
+**Current Architecture:**
+- 10 HTML modules (no frameworks, vanilla JS)
+- Client-side only (no backend, no authentication)
+- 100% localStorage-based persistence
+- GitHub remote: github.com/fenwig/Forgeworks (main branch, pull at session start)
+
+---
+
+**This session notes (2026-05-15 Session 5 — 4.8 Live: Components Enabled + Cleanup):**
+
+*API Confirmed Live:*
+- Star Citizen Wiki API grew from 1,044 → 1,559 blueprints (+515 components)
+- API now has 52 pages (was ~11); component types confirmed: PowerPlant, Cooler, Radar, Shield, QuantumDrive, WeaponGun
+- Component schema: type from `output.type`; size from `output_class` (e.g. s01→1); grade numeric→letter via GRADE_MAP; class derived from manufacturer code
+
+*Data Sync (forgeworks_datasync.html):*
+- Added `COMPONENT_TYPES` set, `MANUFACTURER_CLASS` lookup (10 manufacturers), `GRADE_MAP` (1→A…5→E)
+- `resolveType()` now maps component API types to 'ShipComponent'
+- Added `resolveComponentMeta()` — parses type/class/grade/size/manufacturer from blueprint record
+- `mapBlueprint()` populates `meta` for ShipComponent; `(ing.quantity_scu||0)` null guard added
+- `parseName()` null guard: `(rawName||'').trim()` — fixed sync crash on null output_name
+- Results panel now shows Component count; sync log history shows Component breakdown
+- Hint updated to ~1,559 blueprints · ~16 API requests; About text updated
+
+*Blueprints (forgeworks_blueprints.html):*
+- Component filter button enabled (removed disabled + opacity)
+- Browser/Tracker label format: `"LumaCore — Power Plant, Size 1, Competition, Grade A"`
+- Manufacturer code shown as tag (e.g. ACOM)
+- Search string extended to include component_type and component_class
+- Hardcoded HARDCODED_BLUEPRINTS array removed; `loadBlueprints()` returns `[]` on empty
+
+*Forge (forgeworks_forge.html):*
+- Component filter button enabled
+- `getBpLabel()` and `getBpTag()` updated for ShipComponent type
+- Hardcoded HARDCODED_BLUEPRINTS array removed; `loadBlueprints()` returns `[]` on empty
+
+*Reports (forgeworks_reports.html):*
+- Both Component buttons enabled; disabled guards removed from setR2View/setR3View
+- Fixed pre-existing syntax bug: `if/else/else` → proper `if/else if/else` in buildReport2
+- Report 2 Components: table of owned components craftable at selected quality tiers
+- Report 3 Components: owned component list with type/size/class/grade detail
+
+*Materials (forgeworks_materials.html):*
+- Removed SEED_LOTS array (8 fake Levski lots with 2954 dates)
+- `loadData()` now returns `{lots:[], nextId:1}` on empty — clean state after reset
+
+*Infrastructure:*
+- GitHub backup created: github.com/fenwig/Forgeworks (main branch)
+- Workflow established: `git pull origin main` at session start, push when done
+- forgeworks_context.md fully rewritten — consolidated from project_context.md, reflects 4.8 live state
+- Model: Claude Sonnet 4.6
+
+---
+
+**This session notes (2026-05-14 Session 4 — Phase 2b Complete: 500+ Tier + Components Infrastructure):**
+
+*Summary:* All Phase 2b tasks implemented. Infrastructure ready for 4.8 patch. Component filtering disabled/grayed until API live.
+
+*Blueprints Module (forgeworks_blueprints.html):*
+- Added 500+ quality filter to Crafting Tracker view (Quality Filter buttons: All, 500+, 700+, 800+, 900+)
+- State: `trackerQualityFilter = new Set([700,800,900])` tracks selected tiers; default is 700/800/900
+- Function: `setTrackerQualityFilter(tier, btn)` — handles "All" reset (sets to [700,800,900]) and individual tier toggles
+- Filter logic: blueprints only show if they have tracked tier(s) matching filter OR orders with quality in filter
+- Fixed gems tracking in Material Needs tracker detail rows (display GEM tag correctly)
+- Increased font sizes in Material Needs table: headers 12→13px, table cells 14→15px, ore names 15→16px, need cells 13→14px
+- Added ShipComponent type filter button to browser (disabled, with tooltip "Available in 4.8 patch")
+- Component filtering integrated into renderBrowser: if `filterType==='component'` show only type==='ShipComponent'
+- Added alphabetical sorting to all blueprint lists: `.sort((a,b)=>getBpLabel(a).localeCompare(getBpLabel(b)))`
+
+*Forge Module (forgeworks_forge.html):*
+- Added ShipComponent filter button to browser filter bar (disabled, opacity:0.5, cursor:not-allowed)
+- Updated `setBrowserFilter(type, btn)` to block component selection: `if(type==='ShipComponent'&&btn.disabled) return;`
+- Added alphabetical sorting to filtered blueprint list in renderBrowser
+
+*Reports Module (forgeworks_reports.html):*
+- Added Component buttons to Report 2 (Crafting Availability) and Report 3 (Owned Blueprints) filter bars (disabled)
+- Updated `setR2View()` and `setR3View()` with safety checks: `if(view==='component'&&btn.disabled) return;`
+- Updated button selectors to scope correctly: `#report-2 .toggle-btn` and `#report-3 .toggle-btn`
+- Added component handling in buildReport2: else clause shows placeholder "Ship components will be available in the 4.8 patch"
+- Added component handling in buildReport3: r3View==='component' shows empty state with patch message
+
+*Codex Module (forgeworks_codex.html):*
+- Added Section 10: "Ship Components (4.8 Patch)" with comprehensive documentation:
+  - 10 component types (Cooler, Mining Laser, Power Plant, Quantum Drive, Radar, Refuelling, Salvage, Shield, Ship Weapon, Tractor Beam)
+  - 5 classes (Civilian, Military, Industrial, Stealth, Competition)
+  - 4 grades (A, B, C, D) with descriptions
+  - 5 sizes (0-4) with ship examples
+  - Quality tier system (500+/700+/800+/900+) integrated with crafting discussion
+  - Tracking, orders, and integration with existing features
+  - Sync guidance for 4.8 patch launch
+- Added navigation anchor link: `<a class="anchor-link" href="#" onclick="jumpTo('s10');return false;">Components</a>`
+
+*Distribution Scripts:*
+- Updated `Collect Updates.ps1` file patterns:
+  - `'forgex_*.html'` → `'forgeworks_*.html'`
+  - `'forgex_*.js'` → `'forgeworks_*.js'`
+  - Added `'legacy_*.md'` pattern (for reference documentation)
+
+---
 
 **This session notes (2026-05-13 Session 3 — Reports formatting & compaction):**
 
@@ -154,6 +286,49 @@ Last updated: 2026-05-13 (Session 3 — Reports formatting)
 
 ---
 
+## Outstanding TODOs for 4.8 Patch Integration
+
+### Critical (Blocking API Integration)
+- [ ] **Data Sync Parser:** Update to handle ShipComponent type and component attributes (component_type, component_class, component_grade, component_size)
+- [ ] **Component Blueprint Schema:** Verify Wiki API returns stable component fields; update blueprint structure if needed
+- [ ] **Enable Component Buttons:** Remove `disabled` attribute and `opacity:0.5` styling from all Component filter buttons (Blueprints, Forge, Reports ×2)
+- [ ] **Component Display Formatting:** Implement report display format: `"name — type, Size, Class, Grade"` (e.g., "Sparkpack V4 — cooler, Size 2, Military, Grade B")
+
+### High Priority (Workflow Testing)
+- [ ] **Component Crafting Test:** Track → Order → Craft → Log full workflow with real component data
+- [ ] **Material Needs Aggregation:** Test with component ingredients; verify 500+ tier calculations
+- [ ] **Report Generation:** Test Reports 2 & 3 with component blueprints; verify display formatting
+- [ ] **Crafting Log:** Verify component entries record correctly with quality tier and materials
+- [ ] **Cross-Module Validation:** Test component data consistency across all 10 modules
+
+### Medium Priority (Polish)
+- [ ] **Component Sourcing Guide:** Add location recommendations for component-specific materials
+- [ ] **Performance Testing:** Test with 1500+ total blueprints (armor + weapons + components); benchmark filtering/sorting
+- [ ] **Advanced Filters:** Consider "Show only owned blueprints" option in Reports
+
+### Optional (Post-Launch)
+- [ ] **Return to Top Button:** Add to remaining modules (Materials, Acquisition, Orders, Forge, Reports)
+- [ ] **Virtual Scrolling:** Implement if performance issues arise with 1500+ blueprints
+- [ ] **Component Material Sourcing:** Add component-specific acquisition guides
+
+---
+
+## 4.8 Patch Preparation Checklist
+
+- [x] Database schema designed (component_type, component_class, component_grade, component_size)
+- [x] UI filtering infrastructure in place (disabled buttons with messaging)
+- [x] 500+ quality tier fully integrated throughout app
+- [x] Component documentation complete (Codex Section 10)
+- [x] Alphabetical sorting implemented (Blueprints, Forge)
+- [x] Font size improvements applied (Material Needs)
+- [x] Gems tracking fixed (Material Needs detail rows)
+- [ ] API data arrives (waiting for 4.8 patch)
+- [ ] Data Sync parser updated (pending API structure)
+- [ ] Component buttons enabled (pending API)
+- [ ] Full end-to-end testing completed (pending data)
+
+---
+
 ## Known Bugs / Open Items
 
 ### NOTED — Project-wide
@@ -184,26 +359,45 @@ Last updated: 2026-05-13 (Session 3 — Reports formatting)
 
 ## File Inventory
 
-| File | Status |
-|---|---|
-| `forgex_module01_dashboard_v4.html` | ✓ Done |
-| `forgex_module02_materials_v2.html` | ✓ Done |
-| `forgex_module03_acquisition.html` | ✓ Done |
-| `forgex_module04_v2_full.html` | ✓ Done |
-| `forgex_module05_orders.html` | ✓ Done |
-| `forgex_module06_crafting.html` | ✓ Done — note: owned IDs bug (see Known Bugs #4) |
-| `forgex_crafting_properties.js` | ✓ Done — ballistic only; energy weapons pending |
-| `forgex_module07_reports.html` | ✓ Done — Reports 2 & 3 formatting unified (Session 3) |
-| `forgex_module08_ocr.html` | ✓ Done |
-| `forgex_module09_datasync.html` | ✓ Done — gem qty fix this session; re-sync required |
-| `forgex_module10_codex.html` | ✓ Done — In-app documentation with collapsible sections |
-| `forgexcontext 1.md` | ✓ Current |
-| `SESSION_STATE.md` | ✓ This file |
-| `large logo.png` | Hero logo |
-| `small logo.png` | Header corner logo |
-| `Collect Updates.ps1` | Distribution script — collects changed app files |
-| `Clear Updates.ps1` | Distribution script — clears folder, advances baseline tag |
-| `Updates to be sent\` | Staging folder for friend distribution |
+### Module Files (Renamed in Session 4)
+
+| File | Status | Phase 2b Changes |
+|---|---|---|
+| `forgeworks_dashboard.html` | ✓ Done | — |
+| `forgeworks_materials.html` | ✓ Done | — |
+| `forgeworks_acquisition.html` | ✓ Done | — |
+| `forgeworks_blueprints.html` | ✓ Done | ✓ 500+ tier filter, component filtering, gems fix, font size |
+| `forgeworks_orders.html` | ✓ Done | — |
+| `forgeworks_forge.html` | ✓ Done | ✓ Component filter button, alphabetical sorting |
+| `forgeworks_reports.html` | ✓ Done | ✓ Component filter buttons, placeholder sections |
+| `forgeworks_ocr.html` | ✓ Done | — |
+| `forgeworks_datasync.html` | ✓ Done | — |
+| `forgeworks_codex.html` | ✓ Done | ✓ Component documentation (Section 10) |
+
+### Supporting Files
+
+| File | Status | Notes |
+|---|---|---|
+| `legacy_context.md` | ✓ Reference | Pre-4.8 system state documentation |
+| `SESSION_STATE.md` | ✓ This file | Updated 2026-05-14 with Phase 2b completion |
+| `large logo.png` | ✓ Hero logo | — |
+| `small logo.png` | ✓ Header logo | — |
+| `Collect Updates.ps1` | ✓ Updated | File patterns updated for new names |
+| `Clear Updates.ps1` | ✓ Done | No changes needed |
+| `Updates to be sent\` | ✓ Folder | Distribution staging |
+
+### Old Files (Deprecated)
+- `forgex_module01_dashboard_v4.html` (renamed → forgeworks_dashboard.html)
+- `forgex_module02_materials_v2.html` (renamed → forgeworks_materials.html)
+- `forgex_module03_acquisition.html` (renamed → forgeworks_acquisition.html)
+- `forgex_module04_v2_full.html` (renamed → forgeworks_blueprints.html)
+- `forgex_module05_orders.html` (renamed → forgeworks_orders.html)
+- `forgex_module06_crafting.html` (renamed → forgeworks_forge.html)
+- `forgex_module07_reports.html` (renamed → forgeworks_reports.html)
+- `forgex_module08_ocr.html` (renamed → forgeworks_ocr.html)
+- `forgex_module09_datasync.html` (renamed → forgeworks_datasync.html)
+- `forgex_module10_codex.html` (renamed → forgeworks_codex.html)
+- `forgex_crafting_properties.js` (no longer used)
 
 ---
 
@@ -235,16 +429,21 @@ Last updated: 2026-05-13 (Session 3 — Reports formatting)
 | Page width | **1200px** max-width |
 | Min font size | **14px** floor (exceptions: badges/pills 9–11px, eyebrow 10px) |
 | Text colors | **#ffffff** primary / **#d0c4b0** secondary / **#90806e** dim |
-| Quality tier labels | **700+ / 800+ / 900+** (not 700s/800s/900s) |
-| Quality tier colors | <500 dim / 500–699 secondary / 700–799 gold / 800–899 brighter gold / 900+ green (#5a9955) |
-| Blueprint labels | `Base Slot Finish` (armor) / `Base WeaponType Finish` (weapon) |
+| Quality tier labels | **500+ / 700+ / 800+ / 900+** (not 500s/700s/etc.) |
+| Quality tier colors | 500–599 secondary / 700–799 gold / 800–899 brighter gold / 900+ green (#5a9955) |
+| Quality tier 500+ | New in Phase 2b; display as "500+ cSCU"; personal tracking defaults to [700,800,900] but user can toggle 500 on |
+| Blueprint labels | `Base Slot Finish` (armor) / `Base WeaponType Finish` (weapon) / `Base — Type, Size, Class, Grade` (component) |
 | forgex-lots format | Always `{lots:[...], nextId:N}` — never write a flat array |
 | Gem quantities | Stored and displayed as individual gem counts (not cSCU). Blueprint ingredients use `ing.quantity` from API when `quantity_scu` is null. |
 | Ammo in browser | Hidden from "All" view — only shows when AMMO filter active |
 | No ammo in reports | Exclude type:'Ammunition' from all reports |
+| Component buttons | Initially disabled with tooltip "Available in 4.8 patch"; enable when API provides data |
+| Component filtering | Only show blueprints with type='ShipComponent' when component filter active; disable button if feature not ready |
 | Hand-mined | Read-only indicator badge, never a toggle |
 | Locations | Shared via `forgex-locations` localStorage |
 | No sr-only h2 | Remove whenever found |
 | No module numbers in UI | Never show "Module 07" etc. |
 | Future blueprint types | Park type-specific API fields in `meta: {}` on the blueprint record |
 | Flavor text | Add in a single pass at the end, after structure is confirmed |
+| Tracker quality filter | State: `trackerQualityFilter = new Set([700,800,900])` tracks selected tiers; "All" button resets to default [700,800,900] |
+| Alphabetical sorting | All blueprint lists sorted by label (armor/weapon) or name (components) using `localeCompare()` |
