@@ -335,9 +335,10 @@ function mapBlueprint(record, newId) {
     ingredients: (ingredients || []).map(ing => {
       const name = ing.name.toLowerCase();
       const isGem = GEM_NAMES.has(name);
+      const forceQuantity = name === 'dolivine'; // API provides quantity_scu for Dolivine, not quantity
       return {
         name,
-        qty: isGem ? (ing.quantity || 0) : (ing.quantity_scu || 0)
+        qty: (isGem || forceQuantity) ? (ing.quantity || 0) : (ing.quantity_scu || 0)
       };
     })
   };
