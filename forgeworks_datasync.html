@@ -170,7 +170,7 @@
         Blueprint data is sourced from the <strong>Star Citizen Wiki</strong> community API at <code>api.star-citizen.wiki</code>.
         <ul>
           <li><strong>Armor, weapon, ammunition, and ship component</strong> blueprints are imported. Weapon attachments, liveries, and other non-craftable types are excluded.</li>
-          <li>Ingredient quantities are converted from SCU to <strong>cSCU</strong> (0.01 SCU) to match the app's internal format.</li>
+          <li>Ingredient quantities are stored and displayed in <strong>SCU</strong> (StandardCargoUnit) as provided by the API.</li>
           <li><strong>Armor category</strong> (Combat, Cosmonaut, Engineer, etc.) is not available from the API — set it manually in Blueprint Database after syncing.</li>
           <li>After a sync, open <strong>Blueprint Database</strong> to review imported blueprints and mark items as owned.</li>
           <li>Owned and tracked flags are preserved across re-syncs. Each blueprint is matched by its stable Wiki UUID, so a patch-day refresh will not lose your ownership data. Only blueprints removed entirely from the game will lose their flags.</li>
@@ -332,7 +332,7 @@ function mapBlueprint(record, newId) {
     meta,
     ingredients: (ingredients || []).map(ing => ({
       name: ing.name.toLowerCase(),
-      qty:  Math.round((ing.quantity_scu || 0) * 100)
+      qty:  ing.quantity_scu || 0
     }))
   };
 }
