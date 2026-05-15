@@ -433,6 +433,13 @@ function allSlotsFilled(){
   return bp.ingredients.every((ing,si)=>getSlotFilled(si)>=ing.qty);
 }
 
+function formatQty(qty,isGem){
+  if(isGem) return `<span style="color:var(--tmi-gold-bright);font-weight:700">${Math.round(qty)}</span>`;
+  const whole=Math.floor(qty);
+  const decimal=String(Math.round((qty%1)*100)).padStart(2,'0');
+  return `<span style="color:var(--tmi-gold-bright);font-weight:700">${whole}</span><span style="color:var(--tmi-gold-bright);font-weight:700;margin-left:3px">.${decimal}</span>`;
+}
+
 // ── INIT ──
 function init(){
   craftingLog=readLog();
@@ -504,7 +511,7 @@ function renderBrowser(){
     const orderBadge=t.order?'<span class="order-track-badge">★ ORDER</span>':'';
     const ingHtml=bp.ingredients.map(i=>`<div class="ing-row">
       <span class="ing-name">${i.name}${GEM_NAMES.has(i.name)?'<span class="ing-gem">GEM</span>':''}${i.name==='aslarite'?'<span class="ing-asl">500+OK</span>':''}</span>
-      <span class="ing-qty">${i.qty} cSCU</span>
+      <span class="ing-qty">${formatQty(i.qty,GEM_NAMES.has(i.name))}</span>
     </div>`).join('');
     return`<div class="bp-card">
       <div class="bp-card-header" onclick="toggleBrowserExp(${bp.id})">
@@ -654,7 +661,8 @@ function renderSlotHtml(bp,ing,si){
   const usedLotIds=new Set(sel.map(e=>e.lotId));
   const pickerOpen=openPickerSlot===si;
   const fillClass=isFull?'ok':filled>0?'partial':'empty';
-  const fillText=isFull?`✓ ${filled} / ${req} cSCU`:`${filled} / ${req} cSCU`;
+  const isGem=GEM_NAMES.has(ing.name);
+  const fillText=isFull?`✓ ${formatQty(filled,isGem)} / ${formatQty(req,isGem)}`:`${formatQty(filled,isGem)} / ${formatQty(req,isGem)}`;
 
   const selectionsHtml=sel.map((e,idx)=>{
     const lot=lots.find(l=>l.id===e.lotId);
@@ -662,7 +670,7 @@ function renderSlotHtml(bp,ing,si){
       <span class="slot-lot-idx">${idx+1}.</span>
       <span style="color:var(--tmi-gold)">${e.quality}</span>
       <span style="color:var(--tmi-text-dim)">qual ·</span>
-      <span style="color:var(--tmi-text-secondary)">${e.qty_taken} cSCU</span>
+      <span style="color:var(--tmi-gold-bright);font-weight:700">${formatQty(e.qty_taken,isAsl?false:GEM_NAMES.has(ing.name))}</span>
       <span style="color:var(--tmi-text-dim)">${lot?' from '+lot.location:''}</span>
     </div>`;
   }).join('');
@@ -676,7 +684,7 @@ function renderSlotHtml(bp,ing,si){
     ?availLots.map(l=>`<div class="lot-row">
         <span class="lot-qual">${l.quality}</span>
         <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();selectLot(${si},${l.id})">Select</button>
-        <span class="lot-qty">${l.qty} cSCU</span>
+        <span class="lot-qty">${formatQty(l.qty,GEM_NAMES.has(ing.name))}</span>
         <span class="lot-loc">${l.location}</span>
       </div>`).join('')
     :'<div class="lot-none">No available lots</div>';
@@ -684,7 +692,7 @@ function renderSlotHtml(bp,ing,si){
   return`<div class="wb-slot${isFull?' filled':''}" id="slot-${si}">
     <div class="slot-header">
       <span class="slot-name">${ing.name}${isAsl?'<span class="asl-note">500+</span>':''}</span>
-      <span class="slot-req">${req} cSCU required</span>
+      <span class="slot-req">${formatQty(req,isGem)} required</span>
       <span class="slot-fill"><span class="${fillClass}">${fillText}</span></span>
       ${avgQ!==null?`<span class="slot-avg">avg <span style="color:var(--tmi-gold)">${avgQ}</span></span>`:''}
     </div>
