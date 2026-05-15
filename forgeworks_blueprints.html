@@ -155,6 +155,7 @@
   .th-700{color:var(--tmi-gold-dim);}
   .th-800{color:var(--tmi-gold);}
   .th-900{color:var(--tmi-gold-bright);}
+  .band-sub{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--tmi-text-dim);font-weight:400;padding:4px 8px;}
 </style>
 </head>
 <body>
@@ -270,11 +271,21 @@
     <table id="needs-table" style="display:none">
       <thead>
         <tr>
-          <th>Ore / Material</th>
-          <th class="band th-500" id="th-500">500+ cSCU</th>
-          <th class="band th-700" id="th-700">700+ cSCU</th>
-          <th class="band th-800" id="th-800">800+ cSCU</th>
-          <th class="band th-900" id="th-900">900+ cSCU</th>
+          <th rowspan="2">Ore / Material</th>
+          <th colspan="2" class="band th-500" id="th-500">500+</th>
+          <th colspan="2" class="band th-700" id="th-700">700+</th>
+          <th colspan="2" class="band th-800" id="th-800">800+</th>
+          <th colspan="2" class="band th-900" id="th-900">900+</th>
+        </tr>
+        <tr>
+          <th class="band-sub">Need</th>
+          <th class="band-sub">Have</th>
+          <th class="band-sub">Need</th>
+          <th class="band-sub">Have</th>
+          <th class="band-sub">Need</th>
+          <th class="band-sub">Have</th>
+          <th class="band-sub">Need</th>
+          <th class="band-sub">Have</th>
         </tr>
       </thead>
       <tbody id="needs-body"></tbody>
