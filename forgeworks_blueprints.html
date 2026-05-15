@@ -328,7 +328,7 @@ let filterType='all';
 let filterSlot='all';
 let filterWeight='all';
 let needsBand='all';
-let trackerQualityFilter=new Set([700,800,900]);
+let trackerQualityFilter=new Set([500,700,800,900]);
 let currentTab='browser';
 
 function switchTab(tab){
@@ -393,7 +393,7 @@ function setNeedsBand(band,btn){
 
 function setTrackerQualityFilter(tier,btn){
   if(tier==='all'){
-    trackerQualityFilter=new Set([700,800,900]);
+    trackerQualityFilter=new Set([500,700,800,900]);
     document.getElementById('tq-all').classList.add('active');
     document.getElementById('tq-500').classList.remove('active');
     document.getElementById('tq-700').classList.add('active');
