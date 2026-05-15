@@ -515,9 +515,9 @@ function renderBrowser(){
       <div class="bp-ingredients${isExp?' open':''}">
         <div class="ing-title">Ingredients</div>
         ${bp.ingredients.map(i=>{
-          const isGem=GEM_NAMES.has(i.name);
+          const isGem=GEM_NAMES.has(i.name.toLowerCase());
           return `<div class="ing-row">
-          <span class="ing-name">${i.name}${isGem?'<span class="ing-gem">GEM</span>':''}${i.name==='aslarite'?'<span class="ing-asl">500+OK</span>':''}</span>
+          <span class="ing-name">${i.name}${isGem?'<span class="ing-gem">GEM</span>':''}${i.name.toLowerCase()==='aslarite'?'<span class="ing-asl">500+OK</span>':''}</span>
           <span class="ing-qty">${formatQty(i.qty,isGem)}<span style="margin-left:3px;font-size:11px;color:var(--tmi-text-dim)">${isGem?'':'SCU'}</span></span>
         </div>`;
         }).join('')}
