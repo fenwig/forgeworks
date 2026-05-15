@@ -230,6 +230,8 @@ const MANUFACTURER_CLASS = {
 
 const GRADE_MAP = {'1':'A','2':'B','3':'C','4':'D','5':'E'};
 
+const GEM_NAMES = new Set(['aphorite','beradom','carinite','dolivine','feynmaline','glacosite','hadanite','jaclium','janalite','sadaryx','saldynium']);
+
 function resolveType(apiType, subType) {
   if (!apiType) return null;
   if (apiType in ARMOR_SLOT_MAP) return 'Armor';
@@ -330,10 +332,14 @@ function mapBlueprint(record, newId) {
     capacity:    null,
     has_mission: unlocking_missions_count > 0,
     meta,
-    ingredients: (ingredients || []).map(ing => ({
-      name: ing.name.toLowerCase(),
-      qty:  ing.quantity_scu || 0
-    }))
+    ingredients: (ingredients || []).map(ing => {
+      const name = ing.name.toLowerCase();
+      const isGem = GEM_NAMES.has(name);
+      return {
+        name,
+        qty: isGem ? (ing.quantity || 0) : (ing.quantity_scu || 0)
+      };
+    })
   };
 }
 
