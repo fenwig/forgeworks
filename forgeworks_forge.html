@@ -250,7 +250,7 @@
 
       <div style="padding:12px 14px;border-bottom:1px solid var(--tmi-border-dim);display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap">
         <div>
-          <label style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-dim);text-transform:uppercase;display:block;margin-bottom:6px;letter-spacing:1px">Gathering Location</label>
+          <label style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tmi-text-dim);text-transform:uppercase;display:block;margin-bottom:6px;letter-spacing:1px">Crafting Location</label>
           <select id="crafting-location-select" onchange="setCraftingLocation(this.value)" style="background:var(--tmi-bg-card);border:1px solid var(--tmi-border-dim);color:var(--tmi-text-primary);font-family:'Share Tech Mono',monospace;font-size:14px;padding:8px 10px;outline:none;min-width:180px;cursor:pointer"></select>
         </div>
       </div>
@@ -532,9 +532,8 @@ function buildCraftingLocOptions(){
   const allLocs=[...new Set(lots.map(l=>l.location||FALLBACK_LOC))];
   if(!allLocs.includes(FALLBACK_LOC)) allLocs.push(FALLBACK_LOC);
   allLocs.sort();
-  sel.innerHTML=allLocs.map(loc=>`<option value="${loc}">${loc}</option>`).join('');
-  const toSelect=craftingLocation||DEFAULT_LOC;
-  sel.value=toSelect;
+  sel.innerHTML='<option value="">SELECT LOCATION</option>'+allLocs.map(loc=>`<option value="${loc}">${loc}</option>`).join('');
+  if(craftingLocation) sel.value=craftingLocation;
 }
 
 function setCraftingLocation(location){
