@@ -356,7 +356,7 @@ function writeLots(){
 
 // ── DEFAULT LOCATION ──
 const DEFAULT_LOC_KEY='forgex-default-location';
-const FALLBACK_LOC='Lesvki';
+const FALLBACK_LOC='Levski';
 let DEFAULT_LOC=localStorage.getItem(DEFAULT_LOC_KEY)||FALLBACK_LOC;
 
 // ── STATE ──
@@ -532,7 +532,7 @@ function buildCraftingLocOptions(){
   const allLocs=[...new Set(lots.map(l=>l.location||FALLBACK_LOC))];
   if(!allLocs.includes(FALLBACK_LOC)) allLocs.push(FALLBACK_LOC);
   allLocs.sort();
-  sel.innerHTML='<option value="">SELECT LOCATION</option>'+allLocs.map(loc=>`<option value="${loc}">${loc}</option>`).join('');
+  sel.innerHTML='<option value="" selected>SELECT LOCATION</option>'+allLocs.map(loc=>`<option value="${loc}">${loc}</option>`).join('');
   if(craftingLocation) sel.value=craftingLocation;
 }
 
