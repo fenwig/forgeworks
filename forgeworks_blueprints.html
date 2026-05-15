@@ -143,11 +143,11 @@
   tbody tr{border-bottom:1px solid var(--tmi-border-dim);transition:background 0.1s;}
   tbody tr:hover{background:var(--tmi-bg-hover);}
   td{padding:10px 14px;font-size:15px;vertical-align:middle;}
-  td.band-cell{text-align:center;}
+  td.band-cell{text-align:center;padding:8px 6px;width:60px;}
   .ore-cell{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:600;letter-spacing:1px;text-transform:capitalize;color:var(--tmi-text-primary);}
   .need-cell{font-family:'Share Tech Mono',monospace;font-size:14px;}
-  .need-ok{color:var(--tmi-success);}
-  .need-short{color:var(--tmi-danger);}
+  .need-ok{background:rgba(90,153,85,0.15);border-left:3px solid var(--tmi-success);}
+  .need-short{background:rgba(204,51,51,0.15);border-left:3px solid var(--tmi-danger);}
   .need-zero{color:var(--tmi-text-dim);}
   .need-asl{color:var(--tmi-warning);}
   .needs-empty{padding:30px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-text-dim);letter-spacing:1px;}
@@ -514,10 +514,13 @@ function renderBrowser(){
       </div>
       <div class="bp-ingredients${isExp?' open':''}">
         <div class="ing-title">Ingredients</div>
-        ${bp.ingredients.map(i=>`<div class="ing-row">
-          <span class="ing-name">${i.name}${GEM_NAMES.has(i.name)?'<span class="ing-gem">GEM</span>':''}${i.name==='aslarite'?'<span class="ing-asl">500+OK</span>':''}</span>
-          <span class="ing-qty">${formatQty(i.qty,GEM_NAMES.has(i.name))}</span>
-        </div>`).join('')}
+        ${bp.ingredients.map(i=>{
+          const isGem=GEM_NAMES.has(i.name);
+          return `<div class="ing-row">
+          <span class="ing-name">${i.name}${isGem?'<span class="ing-gem">GEM</span>':''}${i.name==='aslarite'?'<span class="ing-asl">500+OK</span>':''}</span>
+          <span class="ing-qty">${formatQty(i.qty,isGem)}<span style="margin-left:3px;font-size:11px;color:var(--tmi-text-dim)">${isGem?'':'SCU'}</span></span>
+        </div>`;
+        }).join('')}
       </div>
     </div>`;
   }).join('');
@@ -628,8 +631,8 @@ function renderTracker(){
         const suf=b.total500plus>=need;
         return`<div class="detail-ing-row">
           <span class="detail-ing-name">${ing.name}<span class="asl-note">500+OK</span></span>
-          <span class="detail-needed">Need ${formatQty(need,false)}</span>
-          <div class="band-pills"><span class="bp-pill pasl${suf?' suf':''}">${formatQty(b.total500plus,false)}${suf?' ✓':''}</span></div>
+          <span class="detail-needed">Need ${formatQty(need,false)} <span style="font-size:10px;color:var(--tmi-text-dim)">SCU</span></span>
+          <div class="band-pills"><span class="bp-pill pasl${suf?' suf':''}">${formatQty(b.total500plus,false)} <span style="font-size:10px;color:var(--tmi-text-dim)">SCU</span>${suf?' ✓':''}</span></div>
         </div>`;
       }
       const b=getBands(ing.name);
@@ -725,7 +728,8 @@ function renderNeeds(){
         const total=(t.personal?1:0)+bpOrders.reduce((s,o)=>s+o.qty,0);
         needs[ing.name].nAsl+=ing.qty*total;
       } else {
-        const tiers=t.tiers||[700,800,900];
+        const isGem=GEM_NAMES.has(ing.name);
+        const tiers=isGem?[500]:(t.tiers||[700,800,900]);
         if(t.personal){
           if(tiers.includes(500)) needs[ing.name].n500+=ing.qty;
           if(tiers.includes(700)) needs[ing.name].n700+=ing.qty;
@@ -755,8 +759,8 @@ function renderNeeds(){
       const cls=diff>=0?'need-ok':'need-short';
       return`<tr>
         <td class="ore-cell">${ore}<span class="asl-note" style="margin-left:6px;font-size:8px">500+</span></td>
-        <td class="band-cell" style="text-align:center">${formatQty(safeNeed,false)}</td>
-        <td class="band-cell" style="text-align:center"><span class="${cls}">${formatQty(safeHave,false)}</span></td>
+        <td class="band-cell">${formatQty(safeNeed,false)}</td>
+        <td class="band-cell ${cls}" style="color:var(--tmi-gold-bright);font-weight:700">${formatQty(safeHave,false)}</td>
         <td colspan="6"></td>
       </tr>`;
     }
@@ -767,8 +771,8 @@ function renderNeeds(){
       const safeHave=isNaN(have)?0:(have||0);
       const diff=safeHave-safeNeed;
       const cls=diff>=0?'need-ok':'need-short';
-      if(safeNeed===0) return`<td class="band-cell need-zero" style="text-align:center">—</td><td class="band-cell need-zero" style="text-align:center">—</td>`;
-      return`<td class="band-cell" style="text-align:center">${formatQty(safeNeed,info.isGem)}</td><td class="band-cell" style="text-align:center"><span class="${cls}">${formatQty(safeHave,info.isGem)}</span></td>`;
+      if(safeNeed===0) return`<td class="band-cell need-zero">—</td><td class="band-cell need-zero">—</td>`;
+      return`<td class="band-cell">${formatQty(safeNeed,info.isGem)}</td><td class="band-cell ${cls}" style="color:var(--tmi-gold-bright);font-weight:700">${formatQty(safeHave,info.isGem)}</td>`;
     }).join('');
 
     return`<tr>
