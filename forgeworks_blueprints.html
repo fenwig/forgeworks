@@ -237,16 +237,16 @@
       <span class="filter-label">Component Type</span>
       <select class="form-select" id="f-component-type" onchange="renderBrowser()">
         <option value="all">All Types</option>
-        <option value="Cooler">Cooler</option>
-        <option value="Mininglaser">Mininglaser</option>
-        <option value="PowerPlant">PowerPlant</option>
-        <option value="Quantumdrive">Quantumdrive</option>
-        <option value="Radar">Radar</option>
-        <option value="Refuelling">Refuelling</option>
-        <option value="Salvage">Salvage</option>
-        <option value="Shield">Shield</option>
-        <option value="Shipweapon">Shipweapon</option>
-        <option value="Tractorbeam">Tractorbeam</option>
+        <option value="cooler">Cooler</option>
+        <option value="mining laser">Mining Laser</option>
+        <option value="power plant">Power Plant</option>
+        <option value="quantum drive">Quantum Drive</option>
+        <option value="radar">Radar</option>
+        <option value="refuelling">Refuelling</option>
+        <option value="salvage modifier">Salvage Modifier</option>
+        <option value="shield">Shield</option>
+        <option value="tractor beam">Tractor Beam</option>
+        <option value="weapon gun">Ship Weapon</option>
       </select>
       <div class="filter-sep"></div>
       <span class="filter-label">Size</span>
@@ -499,7 +499,7 @@ function renderBrowser(){
     }
     if(filterType==='weapon'&&wepF!=='all'&&(bp.weapon_type||'')!==wepF) return false;
     if(filterType==='component'){
-      if(cmpTypeF!=='all'&&!(bp.meta?.component_type||'').includes(cmpTypeF)) return false;
+      if(cmpTypeF!=='all'&&(bp.meta?.component_type||'').toLowerCase()!==cmpTypeF) return false;
       if(cmpSizeF!=='all'&&bp.meta?.component_size!==parseInt(cmpSizeF)) return false;
     }
     const searchStr=(bp.base+(bp.slot?' '+bp.slot:'')+(bp.finish?' '+bp.finish:'')+(bp.weapon_type?' '+bp.weapon_type:'')+(bp.meta?.component_type?' '+bp.meta.component_type:'')+(bp.meta?.component_class?' '+bp.meta.component_class:'')).toLowerCase();
