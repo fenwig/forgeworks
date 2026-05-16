@@ -221,11 +221,11 @@ const COMPONENT_TYPES = new Set([
 ]);
 
 const MANUFACTURER_CLASS = {
-  'ACOM':'Competition','ACAS':'Competition',
-  'AEG':'Military','AEGS':'Military','AMRS':'Military','GRNP':'Military','WETK':'Military',
-  'JUST':'Industrial',
-  'RACO':'Stealth',
-  'RSI':'Civilian','TARS':'Civilian',
+  'ACOM':'Competition','ACAS':'Competition','NAVE':'Competition','YORM':'Competition',
+  'AEG':'Military','AEGS':'Military','AMRS':'Military','GRNP':'Military','WETK':'Military','GODI':'Military',
+  'JUST':'Industrial','BASL':'Industrial','CHCO':'Industrial','ORIG':'Industrial',
+  'RACO':'Stealth','ASAS':'Stealth','BLTR':'Stealth','TYDT':'Stealth',
+  'RSI':'Civilian','TARS':'Civilian','ARCC':'Civilian','BEH':'Civilian','JSPN':'Civilian','LPLT':'Civilian','SASU':'Civilian','WCPR':'Civilian','WLOP':'Civilian',
 };
 
 const GRADE_MAP = {'1':'A','2':'B','3':'C','4':'D','5':'E'};
@@ -260,9 +260,16 @@ function resolveComponentMeta(record) {
   const parts = cls.split('_');                          // 'powr_acom_s01_lumacore_scitem'
   const mfr   = (parts[1] || '').toUpperCase();
   const szMatch = (parts[2] || '').match(/^s(\d+)$/i);
+
+  let componentClass = MANUFACTURER_CLASS[mfr] || null;
+  // Exception: ELSEN cooler by AEG is Civilian, not Military
+  if (mfr === 'AEG' && (record.output_name || '').toUpperCase().includes('ELSEN')) {
+    componentClass = 'Civilian';
+  }
+
   return {
     component_type:  record.output?.type_label || record.output?.type || null,
-    component_class: record.output?.classification_label || record.output?.class_name || null,
+    component_class: componentClass,
     component_grade: GRADE_MAP[record.output?.grade] || record.output?.grade || null,
     component_size:  szMatch ? parseInt(szMatch[1]) : null,
     manufacturer:    mfr || null,
