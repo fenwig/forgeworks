@@ -238,15 +238,15 @@
       <select class="form-select" id="f-component-type" onchange="renderBrowser()">
         <option value="all">All Types</option>
         <option value="Cooler">Cooler</option>
-        <option value="Mininglaser">Mining Laser</option>
-        <option value="PowerPlant">Power Plant</option>
-        <option value="Quantumdrive">Quantum Drive</option>
+        <option value="Mininglaser">Mininglaser</option>
+        <option value="PowerPlant">PowerPlant</option>
+        <option value="Quantumdrive">Quantumdrive</option>
         <option value="Radar">Radar</option>
         <option value="Refuelling">Refuelling</option>
         <option value="Salvage">Salvage</option>
-        <option value="Shields">Shields</option>
-        <option value="Shipweapon">Ship Weapon</option>
-        <option value="Tractorbeam">Tractor Beam</option>
+        <option value="Shield">Shield</option>
+        <option value="Shipweapon">Shipweapon</option>
+        <option value="Tractorbeam">Tractorbeam</option>
       </select>
       <div class="filter-sep"></div>
       <span class="filter-label">Size</span>
@@ -525,10 +525,11 @@ function renderBrowser(){
     const isTracked=t.personal||t.order;
     const isExp=expandedBrowser.has(bp.id);
     const cmpMeta=bp.meta||{};
+    const cmpDetail=[cmpMeta.component_type,cmpMeta.component_size!=null?'Size '+cmpMeta.component_size:null,cmpMeta.component_class,cmpMeta.component_grade?'Grade '+cmpMeta.component_grade:null].filter(Boolean).join(', ');
     const label=bp.type==='Weapon'
       ?`${bp.base}${bp.weapon_type?' '+bp.weapon_type:''}${bp.finish?' '+bp.finish:''}`
       :bp.type==='Ammunition'?`${bp.base}${bp.ammo_type?' '+bp.ammo_type:''}`
-      :bp.type==='ShipComponent'?`${bp.base}`
+      :bp.type==='ShipComponent'?`${bp.base}${cmpDetail?' — '+cmpDetail:''}`
       :bp.slot?`${bp.base} ${bp.slot}${bp.finish?' '+bp.finish:''}`:
       `${bp.base}${bp.finish?' '+bp.finish:''}`;
     const tags=[];
