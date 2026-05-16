@@ -1,17 +1,19 @@
 # SESSION STATE — TI Forgeworks
-Last updated: 2026-05-15 (Session 5 — 4.8 Live, Components Enabled)
+Last updated: 2026-05-16 (Session 7 — Blueprint Browser Refinement & Bug Fixes)
 
 ---
 
 ## Where to Resume
 
-**Next session:** Component export feature implemented. App ready for testing.
+**Next session:** Blueprint browser fully functional with component filters, deduplication, and proper manufacturer-to-class mapping. App ready for testing with real data.
 
 **Resume action items:**
 1. Pull from GitHub: `git pull origin main`
-2. Test component export from result card and crafting log
-3. Address any bugs found during testing
-4. Consider Module 06 owned IDs bug (reads `forgex-tracking.personal` instead of `forgex-owned`)
+2. Run data sync to refresh blueprints with updated component class mappings
+3. Test component filtering by type and size in blueprint browser
+4. Verify Material Needs colors display correctly (red/green for NEED column)
+5. Test Return to Top button in all modules with iframe content
+6. Consider Module 06 owned IDs bug (reads `forgex-tracking.personal` instead of `forgex-owned`)
 
 ---
 
@@ -50,7 +52,41 @@ Last updated: 2026-05-15 (Session 5 — 4.8 Live, Components Enabled)
 
 ---
 
-**This session notes (2026-05-15 Session 6 — Component Export Feature):**
+**This session notes (2026-05-16 Session 7 — Blueprint Browser Refinement & Fixes):**
+
+*Blueprint Browser (forgeworks_blueprints.html):*
+- Added component type & size filter dropdown controls (10 types: Cooler, Mininglaser, PowerPlant, Quantumdrive, Radar, Refuelling, Salvage, Shield, Shipweapon, Tractorbeam)
+- Implemented deduplication logic: filter by UUID to show only first occurrence of each blueprint
+- Removed component detail text from display (was showing "PowerPlant, Size 1, Military, Grade A" between name and MISSION badge)
+- Added Class badge display for ShipComponent blueprints (gold styling, shows component_class)
+- Changed "weapon gun" display to "Ship Weapon" in both filter dropdown and component detail
+- Updated Material Needs colors: moved color indicators from HAVE column to NEED column; NEED shows red when short, green when sufficient; HAVE stays gold
+
+*Forge Module (forgeworks_forge.html):*
+- Fixed "weapon gun" → "ship weapon" conversion in getBpLabel() function
+
+*Data Sync (forgeworks_datasync.html):*
+- Expanded MANUFACTURER_CLASS mapping from 10 to 27 manufacturers across 5 classes:
+  - Competition: ACOM, ACAS, NAVE, YORM
+  - Military: AEG, AEGS, AMRS, GODI, GRNP, WETK
+  - Industrial: BASL, CHCO, JUST, ORIG
+  - Stealth: ASAS, BLTR, RACO, TYDT
+  - Civilian: ARCC, BEH, JSPN, LPLT, RSI, SASU, TARS, WCPR, WLOP
+- Added exception: AEG (military) + "ELSEN" cooler name → forces Civilian class
+- Attempted to use API `classification_label` / `class_name` fields; reverted to manufacturer mapping as fallback (API fields appear not to exist or return nulls)
+
+*Dashboard (forgeworks_dashboard.html):*
+- Fixed "Return to Top" button to scroll iframe content when a module is loaded (checks if contentFrame is visible and scrolls its contentWindow)
+- Falls back to scrolling main window when on home view
+
+*Bug Fixes:*
+- Fixed Dolivine not displaying as gem count (was showing as SCU): root cause was GEM_NAMES typo 'dolvine' → 'dolivine' in blueprints module
+- Fixed ingredient name casing in blueprint display: now lowercases names before checking GEM_NAMES set (line 517/520)
+- Fixed component type filter matching: uses exact lowercase equality instead of substring includes (for accurate filtering)
+
+---
+
+**Previous session notes (2026-05-15 Session 6 — Component Export Feature):**
 
 *Forge Module (forgeworks_forge.html):*
 - Added component export feature: JSON download of crafted components

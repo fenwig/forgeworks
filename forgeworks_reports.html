@@ -274,6 +274,12 @@ function genDate(){return new Date().toISOString().slice(0,10);}
 
 // ── BP helpers ─────────────────────────────────────────────────────────────────
 function getBpLabel(bp){
+  if(bp.type==='ShipComponent'){
+    const m=bp.meta||{};
+    const sizeGrade=m.component_size!=null && m.component_grade?`${m.component_size}${m.component_grade}`:'';
+    const detail=[m.component_type,m.component_class,sizeGrade].filter(Boolean).join(', ');
+    return bp.base+(detail?' — '+detail:'');
+  }
   if(bp.type==='Armor') return [bp.base,bp.finish].filter(Boolean).join(' ')+' Armor';
   return [bp.base,bp.finish,bp.weapon_type].filter(Boolean).join(' ');
 }
@@ -488,7 +494,8 @@ function buildReport2(){
         <th>Component</th><th>Details</th><th>Ready At</th>
       </tr></thead><tbody>`+compList.map(({bp,avail})=>{
         const m=bp.meta||{};
-        const detail=[m.component_type,m.component_size!=null?'Size '+m.component_size:null,m.component_class,m.component_grade?'Grade '+m.component_grade:null].filter(Boolean).join(', ');
+        const sizeGrade=m.component_size!=null && m.component_grade?`${m.component_size}${m.component_grade}`:'';
+        const detail=[m.component_type,m.component_class,sizeGrade].filter(Boolean).join(', ');
         const badges=[
           show700&&avail[700]?'<span class="avail-badge avail-700">700+</span>':'',
           show800&&avail[800]?'<span class="avail-badge avail-800">800+</span>':'',
@@ -575,7 +582,8 @@ function buildReport3(){
       if(!compList.length) return'<div class="empty-state">No component blueprints owned</div>';
       return`<table class="rpt-table"><tbody>`+compList.map(bp=>{
         const m=bp.meta||{};
-        const detail=[m.component_type,m.component_size!=null?'Size '+m.component_size:null,m.component_class,m.component_grade?'Grade '+m.component_grade:null].filter(Boolean).join(', ');
+        const sizeGrade=m.component_size!=null && m.component_grade?`${m.component_size}${m.component_grade}`:'';
+        const detail=[m.component_type,m.component_class,sizeGrade].filter(Boolean).join(', ');
         return`<tr>
           <td><span class="bp-name">${bp.base}</span></td>
           <td><span class="bp-slots">${detail}</span></td>

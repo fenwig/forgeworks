@@ -189,14 +189,31 @@ D:\Support Files\Crafting App\
 |---|---|---|
 | ACOM | Acom Corp | Competition |
 | ACAS | Ace Astrogation | Competition |
+| NAVE | Navis Dynamics | Competition |
+| YORM | Yormun Ltd | Competition |
 | AEG / AEGS | Aegis Dynamics | Military |
 | AMRS | Amon & Reese | Military |
+| GODI | Godresson | Military |
 | GRNP | Groupe Nouveau Paradigme | Military |
 | WETK | Wei-Tek | Military |
+| BASL | Baseline | Industrial |
+| CHCO | Chariot Motors | Industrial |
 | JUST | Juno Starwerk | Industrial |
+| ORIG | Origin Jumpworks | Industrial |
+| ASAS | Ascent Aerospace | Stealth |
+| BLTR | Balter Arms | Stealth |
 | RACO | RAMP Corporation | Stealth |
+| TYDT | Typ Detection | Stealth |
+| ARCC | Arclight | Civilian |
+| BEH | Behring | Civilian |
+| JSPN | Janus Systems | Civilian |
+| LPLT | Laplander | Civilian |
 | RSI | Roberts Space Industries | Civilian |
+| SASU | Saurus Tech | Civilian |
 | TARS | Tarrus | Civilian |
+| WCPR | Winckler | Civilian |
+| WLOP | Wolford | Civilian |
+| **AEG** | **Aegis (ELSEN cooler only)** | **Civilian** |
 
 **Grade mapping** (API returns numeric, stored as letter):
 `1→A, 2→B, 3→C, 4→D, 5→E`
@@ -204,6 +221,22 @@ D:\Support Files\Crafting App\
 **Display format:** `"LumaCore — Power Plant, Size 1, Competition, Grade A"`
 
 **Component types recognized:** PowerPlant, Cooler, Radar, Shield, QuantumDrive, WeaponGun, MiningLaser, SalvageModifier, TractorBeam, FuelIntake, FuelTank
+
+---
+
+## Recently Changed Files (2026-05-16 Session 6)
+
+**Component Blueprint Browser & Filters:**
+- `forgeworks_blueprints.html` — Added component type & size filters; deduplication by UUID; "weapon gun" → "ship weapon" display; Class badge for components; Material Needs color updates (NEED column colors based on sufficiency)
+- `forgeworks_forge.html` — Fixed "weapon gun" → "ship weapon" conversion in getBpLabel()
+- `forgeworks_datasync.html` — Complete MANUFACTURER_CLASS mapping (27 manufacturer codes); ELSEN exception (AEG cooler → Civilian)
+
+**Dashboard Navigation:**
+- `forgeworks_dashboard.html` — Fixed "Return to Top" button to scroll iframe content when modules are loaded
+
+**Gem & Unit Handling:**
+- Fixed Dolivine display (was showing as SCU, now shows as count)
+- Lowercased ingredient names before gem detection
 
 ---
 
@@ -280,9 +313,9 @@ TI Forgeworks — Custom Arms & Armor   ← eyebrow (10px, Share Tech Mono, gold
 
 - [ ] **Energy weapon crafting properties** — laser/plasma/electron pending game file extraction
 - [ ] **Past Orders not persisted** — delivered orders lost on page reload (low priority)
-- [ ] **Module 06 owned IDs** — reads `forgex-tracking.personal` instead of `forgex-owned`
+- [ ] **Module 06 owned IDs** — reads `forgex-tracking.personal` instead of `forgex-owned` (known bug, low priority)
 - [ ] **Component end-to-end testing** — track → order → craft → log with real 4.8 data
-- [ ] **Unknown manufacturer codes** — flag and log any codes not in MANUFACTURER_CLASS
+- [ ] **API field validation** — confirm `classification_label` / `class_name` fields exist; currently using manufacturer mapping as fallback
 
 ---
 
