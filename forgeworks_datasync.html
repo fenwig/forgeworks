@@ -262,7 +262,7 @@ function resolveComponentMeta(record) {
   const szMatch = (parts[2] || '').match(/^s(\d+)$/i);
   return {
     component_type:  record.output?.type_label || record.output?.type || null,
-    component_class: MANUFACTURER_CLASS[mfr] || null,
+    component_class: record.output?.classification_label || record.output?.class_name || null,
     component_grade: GRADE_MAP[record.output?.grade] || record.output?.grade || null,
     component_size:  szMatch ? parseInt(szMatch[1]) : null,
     manufacturer:    mfr || null,
