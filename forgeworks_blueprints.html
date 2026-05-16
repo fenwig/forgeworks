@@ -232,6 +232,27 @@
         <option value="Laser Shotgun">Laser Shotgun</option>
       </select>
     </div>
+    <!-- Row 2c: Component filters (hidden by default) -->
+    <div class="filter-row" id="component-filters" style="display:none">
+      <span class="filter-label">Component Type</span>
+      <select class="form-select" id="f-component-type" onchange="renderBrowser()">
+        <option value="all">All Types</option>
+        <option value="Power">Power Plant</option>
+        <option value="Cooler">Cooler</option>
+        <option value="Avionics">Avionics</option>
+        <option value="Weapon">Weapon Mount</option>
+      </select>
+      <div class="filter-sep"></div>
+      <span class="filter-label">Size</span>
+      <select class="form-select" id="f-component-size" onchange="renderBrowser()">
+        <option value="all">All Sizes</option>
+        <option value="1">Size 1</option>
+        <option value="2">Size 2</option>
+        <option value="3">Size 3</option>
+        <option value="4">Size 4</option>
+        <option value="5">Size 5</option>
+      </select>
+    </div>
   </div>
   <div class="bp-list" id="bp-list"></div>
   <div class="no-results" id="no-results" style="display:none">NO BLUEPRINTS MATCH YOUR FILTERS</div>
@@ -362,6 +383,7 @@ function setTypeFilter(type,btn){
   btn.classList.add('active');
   document.getElementById('armor-filters').style.display=type==='armor'?'flex':'none';
   document.getElementById('weapon-filters').style.display=type==='weapon'?'flex':'none';
+  document.getElementById('component-filters').style.display=type==='component'?'flex':'none';
   // reset sub-filters when type changes
   filterSlot='all';filterWeight='all';
   document.querySelectorAll('.slot-group .filter-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
@@ -452,7 +474,12 @@ function formatQty(qty,isGem){
 function renderBrowser(){
   const q=document.getElementById('search-input').value.toLowerCase().trim();
   const wepF=document.getElementById('f-weapon-type')?document.getElementById('f-weapon-type').value:'all';
+  const cmpTypeF=document.getElementById('f-component-type')?document.getElementById('f-component-type').value:'all';
+  const cmpSizeF=document.getElementById('f-component-size')?document.getElementById('f-component-size').value:'all';
+  const seen=new Set();
   const filtered=blueprints.filter(bp=>{
+    if(seen.has(bp.uuid)) return false;
+    seen.add(bp.uuid);
     if(showOwnedOnly&&!ownedIds.has(bp.id)) return false;
     if(showMissionOnly&&bp.has_mission!==true) return false;
     if(filterType==='all'&&bp.type==='Ammunition') return false;
@@ -465,6 +492,10 @@ function renderBrowser(){
       if(filterWeight!=='all'&&(bp.weight||'')!==filterWeight) return false;
     }
     if(filterType==='weapon'&&wepF!=='all'&&(bp.weapon_type||'')!==wepF) return false;
+    if(filterType==='component'){
+      if(cmpTypeF!=='all'&&!(bp.meta?.component_type||'').includes(cmpTypeF)) return false;
+      if(cmpSizeF!=='all'&&bp.meta?.component_size!==parseInt(cmpSizeF)) return false;
+    }
     const searchStr=(bp.base+(bp.slot?' '+bp.slot:'')+(bp.finish?' '+bp.finish:'')+(bp.weapon_type?' '+bp.weapon_type:'')+(bp.meta?.component_type?' '+bp.meta.component_type:'')+(bp.meta?.component_class?' '+bp.meta.component_class:'')).toLowerCase();
     return !q||searchStr.includes(q);
   });
@@ -488,17 +519,15 @@ function renderBrowser(){
     const isTracked=t.personal||t.order;
     const isExp=expandedBrowser.has(bp.id);
     const cmpMeta=bp.meta||{};
-    const cmpDetail=[cmpMeta.component_type,cmpMeta.component_size!=null?'Size '+cmpMeta.component_size:null,cmpMeta.component_class,cmpMeta.component_grade?'Grade '+cmpMeta.component_grade:null].filter(Boolean).join(', ');
     const label=bp.type==='Weapon'
       ?`${bp.base}${bp.weapon_type?' '+bp.weapon_type:''}${bp.finish?' '+bp.finish:''}`
       :bp.type==='Ammunition'?`${bp.base}${bp.ammo_type?' '+bp.ammo_type:''}`
-      :bp.type==='ShipComponent'?`${bp.base}${cmpDetail?' — '+cmpDetail:''}`
+      :bp.type==='ShipComponent'?`${bp.base}`
       :bp.slot?`${bp.base} ${bp.slot}${bp.finish?' '+bp.finish:''}`:
       `${bp.base}${bp.finish?' '+bp.finish:''}`;
     const tags=[];
     if(bp.type==='Armor'&&bp.category) tags.push(bp.category);
     if(bp.type==='Ammunition'&&bp.capacity) tags.push('×'+bp.capacity);
-    if(bp.type==='ShipComponent'&&cmpMeta.manufacturer) tags.push(cmpMeta.manufacturer);
     return`<div class="bp-card${isOwned?' owned':''}">
       <div class="bp-card-header" onclick="toggleExpBrowser(${bp.id})">
         <span class="bp-name">${label}</span>
@@ -535,9 +564,16 @@ function toggleOwned(id){
 }
 
 function togglePersonal(id){
-  if(!tracking[id]) tracking[id]={personal:false,order:false,tiers:[700,800,900]};
+  if(!tracking[id]){
+    const bp=blueprints.find(b=>b.id===id);
+    const defTiers=bp&&bp.type==='ShipComponent'?[500]:[700,800,900];
+    tracking[id]={personal:false,order:false,tiers:defTiers};
+  }
   tracking[id].personal=!tracking[id].personal;
-  if(tracking[id].personal&&!tracking[id].tiers) tracking[id].tiers=[700,800,900];
+  if(tracking[id].personal&&!tracking[id].tiers){
+    const bp=blueprints.find(b=>b.id===id);
+    tracking[id].tiers=bp&&bp.type==='ShipComponent'?[500]:[700,800,900];
+  }
   if(!tracking[id].personal&&!tracking[id].order) delete tracking[id];
   writeTracking(tracking);
   updateTrackerCount();
@@ -755,11 +791,11 @@ function renderNeeds(){
       const safeNeed=isNaN(need)?0:need;
       const safeHave=isNaN(have)?0:have;
       const diff=safeHave-safeNeed;
-      const cls=diff>=0?'need-ok':'need-short';
+      const needCls=diff>=0?'need-ok':'need-short';
       return`<tr>
         <td class="ore-cell">${ore}<span class="asl-note" style="margin-left:6px;font-size:8px">500+</span></td>
-        <td class="band-cell" style="color:var(--tmi-gold-bright);font-weight:700">${formatQty(safeNeed,false)}</td>
-        <td class="band-cell ${cls}">${formatQty(safeHave,false)}</td>
+        <td class="band-cell ${needCls}" style="font-weight:700">${formatQty(safeNeed,false)}</td>
+        <td class="band-cell" style="color:var(--tmi-gold);font-weight:700">${formatQty(safeHave,false)}</td>
         <td colspan="6"></td>
       </tr>`;
     }
@@ -769,9 +805,9 @@ function renderNeeds(){
       const safeNeed=isNaN(need)?0:(need||0);
       const safeHave=isNaN(have)?0:(have||0);
       const diff=safeHave-safeNeed;
-      const cls=diff>=0?'need-ok':'need-short';
+      const needCls=diff>=0?'need-ok':'need-short';
       if(safeNeed===0) return`<td class="band-cell need-zero">—</td><td class="band-cell need-zero">—</td>`;
-      return`<td class="band-cell" style="color:var(--tmi-gold-bright);font-weight:700">${formatQty(safeNeed,info.isGem)}</td><td class="band-cell ${cls}">${formatQty(safeHave,info.isGem)}</td>`;
+      return`<td class="band-cell ${needCls}" style="font-weight:700">${formatQty(safeNeed,info.isGem)}</td><td class="band-cell" style="color:var(--tmi-gold);font-weight:700">${formatQty(safeHave,info.isGem)}</td>`;
     }).join('');
 
     return`<tr>
