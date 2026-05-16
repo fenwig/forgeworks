@@ -526,7 +526,7 @@ function renderBrowser(){
     const isExp=expandedBrowser.has(bp.id);
     const cmpMeta=bp.meta||{};
     const sizeGrade=cmpMeta.component_size!=null && cmpMeta.component_grade?`${cmpMeta.component_size}${cmpMeta.component_grade}`:'';
-    const cmpDetail=[cmpMeta.component_type,cmpMeta.component_class,sizeGrade].filter(Boolean).join(', ');
+    const cmpDetail=[cmpMeta.component_type,sizeGrade].filter(Boolean).join(', ');
     const label=bp.type==='Weapon'
       ?`${bp.base}${bp.weapon_type?' '+bp.weapon_type:''}${bp.finish?' '+bp.finish:''}`
       :bp.type==='Ammunition'?`${bp.base}${bp.ammo_type?' '+bp.ammo_type:''}`
@@ -625,7 +625,7 @@ function renderTracker(){
 
     const tcmpMeta=bp.meta||{};
     const tcmpSizeGrade=tcmpMeta.component_size!=null && tcmpMeta.component_grade?`${tcmpMeta.component_size}${tcmpMeta.component_grade}`:'';
-    const tcmpDetail=[tcmpMeta.component_type,tcmpMeta.component_class,tcmpSizeGrade].filter(Boolean).join(', ');
+    const tcmpDetail=[tcmpMeta.component_type,tcmpSizeGrade].filter(Boolean).join(', ');
     const label=bp.type==='Weapon'
       ?`${bp.base}${bp.weapon_type?' '+bp.weapon_type:''}${bp.finish?' '+bp.finish:''}`
       :bp.type==='Ammunition'?`${bp.base}${bp.ammo_type?' '+bp.ammo_type:''}`

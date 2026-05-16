@@ -277,7 +277,7 @@ function getBpLabel(bp){
   if(bp.type==='ShipComponent'){
     const m=bp.meta||{};
     const sizeGrade=m.component_size!=null && m.component_grade?`${m.component_size}${m.component_grade}`:'';
-    const detail=[m.component_type,m.component_class,sizeGrade].filter(Boolean).join(', ');
+    const detail=[m.component_type,sizeGrade].filter(Boolean).join(', ');
     return bp.base+(detail?' — '+detail:'');
   }
   if(bp.type==='Armor') return [bp.base,bp.finish].filter(Boolean).join(' ')+' Armor';
@@ -495,7 +495,7 @@ function buildReport2(){
       </tr></thead><tbody>`+compList.map(({bp,avail})=>{
         const m=bp.meta||{};
         const sizeGrade=m.component_size!=null && m.component_grade?`${m.component_size}${m.component_grade}`:'';
-        const detail=[m.component_type,m.component_class,sizeGrade].filter(Boolean).join(', ');
+        const detail=[m.component_type,sizeGrade].filter(Boolean).join(', ');
         const badges=[
           show700&&avail[700]?'<span class="avail-badge avail-700">700+</span>':'',
           show800&&avail[800]?'<span class="avail-badge avail-800">800+</span>':'',
@@ -583,7 +583,7 @@ function buildReport3(){
       return`<table class="rpt-table"><tbody>`+compList.map(bp=>{
         const m=bp.meta||{};
         const sizeGrade=m.component_size!=null && m.component_grade?`${m.component_size}${m.component_grade}`:'';
-        const detail=[m.component_type,m.component_class,sizeGrade].filter(Boolean).join(', ');
+        const detail=[m.component_type,sizeGrade].filter(Boolean).join(', ');
         return`<tr>
           <td><span class="bp-name">${bp.base}</span></td>
           <td><span class="bp-slots">${detail}</span></td>

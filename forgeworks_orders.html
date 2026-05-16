@@ -348,7 +348,7 @@ function getBpLabel(bp){
   if(bp.type==='ShipComponent'){
     const m=bp.meta||{};
     const sizeGrade=m.component_size!=null && m.component_grade?`${m.component_size}${m.component_grade}`:'';
-    const detail=[m.component_type,m.component_class,sizeGrade].filter(Boolean).join(', ');
+    const detail=[m.component_type,sizeGrade].filter(Boolean).join(', ');
     return bp.base+(detail?' — '+detail:'');
   }
   if(bp.type==='Armor')
