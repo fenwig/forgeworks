@@ -505,7 +505,7 @@
         </svg>
         <span class="nav-label">Codex</span>
       </div>
-      <button class="return-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑ Return to Top</button>
+      <button class="return-to-top" onclick="returnToTop()">↑ Return to Top</button>
     </nav>
 
     <!-- Main -->
@@ -809,6 +809,15 @@ function openBackup() {
   document.getElementById('backupModal').classList.add('open');
 }
 function closeBackup() { document.getElementById('backupModal').classList.remove('open'); }
+
+function returnToTop() {
+  const frame = document.getElementById('contentFrame');
+  if(frame && frame.style.display !== 'none' && frame.contentWindow) {
+    frame.contentWindow.scrollTo({top: 0, behavior: 'smooth'});
+  } else {
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+}
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 window.addEventListener('message', e => {
