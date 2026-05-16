@@ -525,7 +525,8 @@ function renderBrowser(){
     const isTracked=t.personal||t.order;
     const isExp=expandedBrowser.has(bp.id);
     const cmpMeta=bp.meta||{};
-    const cmpDetail=[cmpMeta.component_type,cmpMeta.component_size!=null?'Size '+cmpMeta.component_size:null,cmpMeta.component_class,cmpMeta.component_grade?'Grade '+cmpMeta.component_grade:null].filter(Boolean).join(', ');
+    const cmpType=cmpMeta.component_type==='weapon gun'?'ship weapon':cmpMeta.component_type;
+    const cmpDetail=[cmpType,cmpMeta.component_size!=null?'Size '+cmpMeta.component_size:null,cmpMeta.component_class,cmpMeta.component_grade?'Grade '+cmpMeta.component_grade:null].filter(Boolean).join(', ');
     const label=bp.type==='Weapon'
       ?`${bp.base}${bp.weapon_type?' '+bp.weapon_type:''}${bp.finish?' '+bp.finish:''}`
       :bp.type==='Ammunition'?`${bp.base}${bp.ammo_type?' '+bp.ammo_type:''}`
