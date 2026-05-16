@@ -385,7 +385,8 @@ function writeLog(){localStorage.setItem(LS_LOG,JSON.stringify(craftingLog));}
 function getBpLabel(bp){
   if(bp.type==='ShipComponent'){
     const m=bp.meta||{};
-    const detail=[m.component_type,m.component_size!=null?'Size '+m.component_size:null,m.component_class,m.component_grade?'Grade '+m.component_grade:null].filter(Boolean).join(', ');
+    const cmpType=m.component_type==='weapon gun'?'ship weapon':m.component_type;
+    const detail=[cmpType,m.component_size!=null?'Size '+m.component_size:null,m.component_class,m.component_grade?'Grade '+m.component_grade:null].filter(Boolean).join(', ');
     return bp.base+(detail?' — '+detail:'');
   }
   const parts=[bp.base];

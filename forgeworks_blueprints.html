@@ -540,6 +540,7 @@ function renderBrowser(){
       <div class="bp-card-header" onclick="toggleExpBrowser(${bp.id})">
         <span class="bp-name">${label}</span>
         <span class="bp-tag">${tags.filter(Boolean).join(' · ')}</span>
+        ${bp.type==='ShipComponent'&&cmpMeta.component_class?'<span class="bp-tag" style="background:var(--tmi-gold-glow);border-color:var(--tmi-gold-dim);color:var(--tmi-gold)">' + cmpMeta.component_class + '</span>':''}
         ${DEFAULT_BLUEPRINT_NAMES.has(label.toLowerCase())?'<span class="bp-default">[DEFAULT]</span>':''}
         ${bp.has_mission?'<span class="bp-mission">MISSION</span>':''}
         ${t.order?'<span class="bp-order-badge">★ ORDER</span>':''}
