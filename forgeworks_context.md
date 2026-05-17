@@ -1,8 +1,8 @@
 # TI Forgeworks — Project Context
 
-**Last updated:** 2026-05-15
-**Status:** 4.8 Live — Ship Components Enabled
-**GitHub:** github.com/fenwig/Forgeworks
+**Last updated:** 2026-05-17
+**Status:** 4.8 Live — Ship Components Enabled (Public GitHub)
+**GitHub:** github.com/fenwig/Forgeworks (Public — clone and open HTML files directly)
 
 ---
 
@@ -29,21 +29,25 @@ The app is **100% client-side, no backend**. All data lives in browser localStor
 
 ## How to Run It
 
-**For end-users:**
-1. Open `forgeworks_dashboard.html` in a modern browser (Chrome/Edge recommended)
-2. The app loads from localStorage; first time will show empty state
-3. Run **Data Sync** to pull ~1,559 blueprints from Wiki API (~16 requests)
-4. Populate material lots (Module 02), track blueprints (Module 04), place orders (Module 05), craft (Module 06)
+**For everyone (Public GitHub):**
+1. Clone: `git clone https://github.com/fenwig/Forgeworks.git`
+2. Open `forgeworks_dashboard.html` directly in browser (Chrome/Edge recommended)
+3. No server needed — app runs 100% client-side
+4. First run: empty state. Run **Data Sync** (Module 09) to pull ~1,559 blueprints from Wiki API
+5. All data lives in browser localStorage (persists across reloads)
 
-**For developers:**
-1. Clone repo: `git clone https://github.com/fenwig/Forgeworks.git`
-2. Open any `.html` file directly in browser — no server needed
-3. All 10 modules are standalone; Module 01 (Dashboard) is the iframe shell
-4. localStorage persists across page reloads
-5. To extract/update crafting properties from game files:
-   - Extract SC LIVE data to `D:\RSI\StarCitizen\LIVE\data\Libs\Foundry\Records\crafting\blueprints\crafting\fpsgear`
-   - Run: `node extract-blueprint-parts.js` → outputs JSON mappings
-   - Note: Currently ballistic weapons only; laser/plasma pending game extraction
+**Getting started workflow:**
+1. Data Sync → populate blueprint database
+2. Materials (Module 02) → track ore/gem inventory
+3. Blueprints (Module 04) → browse and track items you can craft
+4. Orders (Module 05) → log customer requests
+5. Forge (Module 06) → craft and log completed builds
+
+**For developers (advanced):**
+- To extract/update weapon crafting properties from Star Citizen game files:
+  - Extract SC LIVE data to `D:\RSI\StarCitizen\LIVE\data\Libs\Foundry\Records\crafting\blueprints\crafting\fpsgear`
+  - Run: `node extract-blueprint-parts.js` → outputs JSON mappings to `blueprint-parts-mapping.json`
+  - Note: Currently ballistic weapons only; laser/plasma pending game extraction
 
 ---
 
@@ -224,19 +228,22 @@ D:\Support Files\Crafting App\
 
 ---
 
-## Recently Changed Files (2026-05-16 Session 6)
+## Recently Changed Files (2026-05-17 Session 8)
 
-**Component Blueprint Browser & Filters:**
-- `forgeworks_blueprints.html` — Added component type & size filters; deduplication by UUID; "weapon gun" → "ship weapon" display; Class badge for components; Material Needs color updates (NEED column colors based on sufficiency)
-- `forgeworks_forge.html` — Fixed "weapon gun" → "ship weapon" conversion in getBpLabel()
-- `forgeworks_datasync.html` — Complete MANUFACTURER_CLASS mapping (27 manufacturer codes); ELSEN exception (AEG cooler → Civilian)
+**Component Blueprint Display Format:**
+- `forgeworks_blueprints.html` — Simplified component label format; removed unnecessary transformations; removed duplicate class display (class shows only in badge now)
+- `forgeworks_forge.html` — Updated getBpLabel() to use simplified format
+- `forgeworks_orders.html` — Updated getBpLabel() for consistent component display
+- `forgeworks_reports.html` — Updated component detail rendering across 3 display contexts (getBpLabel, Crafting Availability, Components report)
 
-**Dashboard Navigation:**
-- `forgeworks_dashboard.html` — Fixed "Return to Top" button to scroll iframe content when modules are loaded
+**GitHub Distribution:**
+- Made repository public on GitHub — users clone and open HTML files directly (no local server)
+- Removed local server files (`start_server.bat`, `README.txt`) — no longer needed
 
-**Gem & Unit Handling:**
-- Fixed Dolivine display (was showing as SCU, now shows as count)
-- Lowercased ingredient names before gem detection
+**Code Cleanup:**
+- Removed all `normCmpType()` functions (unnecessary component type transformations)
+- Component format now: `BaseItem — component_type SizeGrade` + [Class] badge
+- Example: "Allegro — quantum drive 4A" + [Industrial] badge
 
 ---
 
