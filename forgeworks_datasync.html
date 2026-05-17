@@ -412,6 +412,19 @@ async function startSync() {
 
   const blueprints   = [];
   const skippedTypes = {};
+  const blockedUUIDs = new Set([
+    "a80d62fb-6742-408b-9328-0d833511f4c1",
+    "bf79619f-f10b-4f57-bd79-59f308e85e0f",
+    "ea73da29-d597-4930-91ac-846310561bb0",
+    "fce03855-b03a-490b-8d33-017ad86ef6c7",
+    "95462935-01f4-433e-ba74-05ab58884667",
+    "0db54db1-d325-48b1-94e3-e110f1fd724a",
+    "ac477c55-78c8-4f7b-acc8-b9b6a6df2837",
+    "d0d47aec-82ae-4a0b-866c-df86f5fba6d3",
+    "0ebb9a7a-cc06-4f34-913c-3be7e4237374",
+    "fa5951a5-5063-49c8-8f4c-a6b341801aea",
+    "bb511044-6590-4e19-b077-a347cad104fa"
+  ]);
   let skipped        = 0;
   let gameVersion    = '—';
 
@@ -431,7 +444,8 @@ async function startSync() {
     for (const rec of firstData.data) {
       if (rec.game_version) gameVersion = rec.game_version;
       const mapped = mapBlueprint(rec, blueprints.length + 1);
-      if (mapped) blueprints.push(mapped);
+      if (mapped && !blockedUUIDs.has(mapped.uuid)) blueprints.push(mapped);
+      else if (mapped) { skipped++; log(`Skipped blocked duplicate: ${mapped.base}`, 'warn'); }
       else { skipped++; const t=rec.output?.type||'unknown'; skippedTypes[t]=(skippedTypes[t]||0)+1; }
     }
     setProgress(Math.round(100 / totalPages), `Page 1 / ${totalPages} — ${blueprints.length} imported`);
@@ -445,7 +459,8 @@ async function startSync() {
       for (const rec of data.data) {
         if (rec.game_version) gameVersion = rec.game_version;
         const mapped = mapBlueprint(rec, blueprints.length + 1);
-        if (mapped) blueprints.push(mapped);
+        if (mapped && !blockedUUIDs.has(mapped.uuid)) blueprints.push(mapped);
+        else if (mapped) skipped++;
         else skipped++;
       }
 
