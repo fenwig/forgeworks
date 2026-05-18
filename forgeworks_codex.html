@@ -144,9 +144,9 @@
       <div class="sub-heading">Adding a Lot</div>
       <p class="doc-p">Click <strong>+ Add Lot</strong> to open the entry form. Select the ore or gem, enter a quality value (1–1000) and a quantity, then choose a storage location.</p>
       <ul class="doc-list">
-        <li>Ore quantities are entered in <strong>cSCU</strong> (centri-SCU). One SCU = 100 cSCU.</li>
+        <li>Ore quantities are <strong>displayed in SCU</strong> throughout the app, but <strong>entered in cSCU</strong> (centri-SCU). One SCU = 100 cSCU. The form label shows "Quantity (cSCU)" as a reminder.</li>
         <li>Hand-mined gems (Hadanite, Janalite, Dolivine, etc.) are entered as individual <strong>gem counts</strong>, not cSCU. The form label updates automatically when a gem is selected.</li>
-        <li>The location defaults to <strong>Levsky</strong>. Type a custom location or select one you have saved previously.</li>
+        <li>The location defaults to <strong>Levski</strong>. Type a custom location or select one you have saved previously.</li>
       </ul>
       <div class="tip"><p><strong>Shortcut:</strong> Use <strong>OCR Input</strong> to import refinery yields directly from a screenshot, or <strong>Add Bulk Material</strong> to enter many lots of the same ore in rapid sequence.</p></div>
 
@@ -169,7 +169,7 @@
 
       <div class="sub-heading">Managing Locations</div>
       <p class="doc-p">The location dropdown in both the Add Lot form and the Move dialog includes a <strong>Custom...</strong> option and an <strong>— Edit List —</strong> option. Custom locations you add are saved and shared across all modules. A location that still has lots assigned to it cannot be removed.</p>
-      <p class="doc-p">Open <strong>Edit List</strong> to set your default storage location. The current default is marked with a gold <strong>DEFAULT</strong> badge. Click <strong>Set Default</strong> on any location — including Levsky — to make it the new default. The change applies immediately across all modules. If the default location is removed, it resets to Levsky automatically.</p>
+      <p class="doc-p">Open <strong>Edit List</strong> to set your default storage location. The current default is marked with a gold <strong>DEFAULT</strong> badge. Click <strong>Set Default</strong> on any location — including Levski — to make it the new default. The change applies immediately across all modules. If the default location is removed, it resets to Levski automatically.</p>
 
       <div class="sub-heading">Statistics Footer</div>
       <p class="doc-p">The header shows total lot count, total cSCU across all lots, and gem vs ore subtotals. The footer shows how many lots are currently visible vs total, the cSCU sum of visible lots, and the quantity of any selected rows.</p>
@@ -195,7 +195,7 @@
         <li style="font-size:15px;color:var(--tmi-text-secondary);line-height:1.6;"><strong style="color:var(--tmi-text-primary)">Commit to Inventory</strong> — click the gold button to write all queued lots to the Material Database. The queue clears and a confirmation toast appears.</li>
       </ol>
 
-      <div class="callout"><p><strong>Format:</strong> quality / quantity &nbsp;·&nbsp; Example: <strong>875 / 45</strong> = quality 875, 45 cSCU. For gems, quantity is a gem count, not cSCU.</p></div>
+      <div class="callout"><p><strong>Format:</strong> Quality / Quantity cSCU or Gems &nbsp;·&nbsp; Example: <strong>875 / 45</strong> = quality 875, 45 cSCU. For gems, quantity is a gem count, not cSCU. The input field placeholder reminds you of the format.</p></div>
 
       <div class="sub-heading">Notes</div>
       <ul class="doc-list">
@@ -235,7 +235,7 @@
       <div class="sub-heading">Crafting Tracker</div>
       <p class="doc-p">Shows all blueprints you have personally tracked, plus any that have an active order attached. Each row displays your selected quality tier badges and whether your current inventory can cover them.</p>
       <ul class="doc-list">
-        <li><strong>Tier badges (700+ / 800+ / 900+)</strong> — click to toggle which tiers you are planning to craft. A ✓ appears when your inventory has sufficient materials at that quality band.</li>
+        <li><strong>Tier badges (BASE / 700+ / 800+ / 900+)</strong> — click to toggle which tiers you are planning to craft. A ✓ appears when your inventory has sufficient materials at that quality band. <strong>BASE</strong> tracks quality 500–699 materials (for lower-tier crafts). If you specify <strong>no tiers at all</strong>, the blueprint accepts any quality material — material readiness checks are disabled.</li>
         <li><strong>Order pills</strong> — shown automatically for any blueprint with an active order. Turn green when materials are sufficient for the order's quality tier.</li>
         <li><strong>FORGE →</strong> — appears when at least one tier is ready. Clicking it opens The Forge with that blueprint pre-selected on the workbench.</li>
         <li><strong>Expand row</strong> — shows a per-ingredient breakdown: how much you need vs. how much you have in each quality band.</li>
@@ -244,11 +244,21 @@
       <div class="callout"><p><strong>Aslarite rule:</strong> Aslarite is a universal ingredient. Any aslarite at quality <strong>500 or above</strong> counts toward requirements — it is not band-locked like other materials.</p></div>
 
       <div class="sub-heading">Material Needs</div>
-      <p class="doc-p">Aggregates ingredient requirements across all tracked blueprints and active orders. Shows what you need per quality band vs. what you currently have, color-coded green (sufficient) or red (shortage).</p>
+      <p class="doc-p">Aggregates ingredient requirements across all tracked blueprints and active orders. Shows what you need per quality band vs. what you currently have in inventory.</p>
       <ul class="doc-list">
-        <li>Use the <strong>Target Tier</strong> filter (All / 700+ / 800+ / 900+) to focus on a single band and reduce table clutter.</li>
-        <li>Personal tracking contributes to whichever tiers you have selected on that blueprint in the Tracker tab.</li>
-        <li>Orders contribute only to their specific quality band.</li>
+        <li><strong>NEED column</strong> — the quantity required per ingredient per quality tier, based on blueprints you are tracking at that tier.</li>
+        <li><strong>HAVE column</strong> — your current inventory, color-coded: <strong>green</strong> = sufficient materials to fulfill the need, <strong>red</strong> = shortage.</li>
+        <li>Personal tracking contributes to whichever tiers you have selected on that blueprint in the Tracker tab. Orders contribute only to their specific quality band.</li>
+        <li>You can toggle quality tiers in the Tracker tab to focus the Material Needs display on specific bands (e.g., tracking only 800+ and 900+ will show needs only for those tiers).</li>
+      </ul>
+
+      <div class="sub-heading">Ship Components (4.8+)</div>
+      <p class="doc-p">Components work identically to armor and weapons in the tracker and material needs view. To focus on components:</p>
+      <ul class="doc-list">
+        <li>Use the <strong>Type filter</strong> in the Blueprint Browser to select Components and show only component blueprints.</li>
+        <li>Track components the same way as armor/weapons — click TRACK and toggle your desired quality tiers (BASE / 700+ / 800+ / 900+).</li>
+        <li>Component tracking contributes to the Material Needs aggregation just like any other blueprint.</li>
+        <li>All material needs calculations include component ingredients alongside armor and weapon materials.</li>
       </ul>
     </div>
   </div>
@@ -442,12 +452,15 @@
 
       <div class="sub-heading">What Gets Imported</div>
       <ul class="doc-list">
-        <li>Armor, weapon, and ammunition blueprints — approximately 1,144 items after filtering.</li>
+        <li>Armor, weapon, ammunition, and ship component blueprints — approximately 1,548 items after filtering and deduplication.</li>
         <li>Ingredient names and quantities (converted to cSCU).</li>
         <li>Mission unlock flags.</li>
-        <li>Weapon type and armor slot information.</li>
+        <li>Weapon type, armor slot information, and component metadata (type, class, grade, size).</li>
       </ul>
-      <div class="callout"><p>Excluded types: weapon attachments, ship components, liveries, and other non-craftable entries. These are filtered automatically and counted in the sync log as skipped.</p></div>
+      <div class="callout"><p>Excluded types: weapon attachments, liveries, and other non-craftable entries. These are filtered automatically and counted in the sync log as skipped.</p></div>
+
+      <div class="sub-heading">Duplicate Prevention</div>
+      <p class="doc-p">The Star Citizen Wiki API contains 11 known duplicate blueprint entries. TI Forgeworks automatically blocks these duplicates on every sync to prevent them from reappearing after game patches or re-syncs. Your owned and tracked flags are preserved even when duplicates are filtered out, so you never lose your crafting data.</p>
 
       <div class="sub-heading">What Is NOT Imported</div>
       <ul class="doc-list">
