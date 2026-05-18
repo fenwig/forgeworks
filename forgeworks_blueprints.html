@@ -750,6 +750,10 @@ function renderNeeds(){
     const hasOrder=activeOrders.some(o=>o.bpId===bp.id);
     return t.personal||hasOrder;
   });
+  console.log('DEBUG renderNeeds - Tracked blueprints:', tracked.length);
+  tracked.slice(0,3).forEach(bp=>{
+    console.log(`  ${bp.name}: ingredients=${bp.ingredients?.length || 0}, tiers=${JSON.stringify(tracking[bp.id].tiers)}`);
+  });
   document.getElementById('needs-bp-count').textContent=tracked.length;
   const tbl=document.getElementById('needs-table');
   const empty=document.getElementById('needs-empty');
