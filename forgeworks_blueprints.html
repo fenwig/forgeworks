@@ -289,7 +289,13 @@
 <!-- VIEW C -->
 <div class="view" id="view-needs">
   <div class="needs-bar">
+    <span class="needs-label">Target Tier</span>
     <button class="filter-btn active" id="nb-all" onclick="setNeedsBand('all',this)">All</button>
+    <button class="filter-btn" id="nb-500" onclick="setNeedsBand('500',this)">500+</button>
+    <button class="filter-btn" id="nb-700" onclick="setNeedsBand('700',this)">700+</button>
+    <button class="filter-btn" id="nb-800" onclick="setNeedsBand('800',this)">800+</button>
+    <button class="filter-btn" id="nb-900" onclick="setNeedsBand('900',this)">900+</button>
+    <span class="needs-info">Aggregated across <span id="needs-bp-count">0</span> tracked blueprints</span>
   </div>
   <div class="needs-table-wrap">
     <table id="needs-table" style="display:none">
