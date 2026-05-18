@@ -573,6 +573,7 @@ function togglePersonal(id){
     const bp=blueprints.find(b=>b.id===id);
     tracking[id].tiers=bp&&bp.type==='ShipComponent'?['BASE']:['700','800','900'];
   }
+  if(tracking[id].tiers) tracking[id].tiers=tracking[id].tiers.map(t=>String(t));
   if(!tracking[id].personal&&!tracking[id].order) delete tracking[id];
   writeTracking(tracking);
   updateTrackerCount();
@@ -727,9 +728,10 @@ function untrack(id){
 
 function toggleTier(bpId,tier){
   if(!tracking[bpId]) return;
-  const tiers=tracking[bpId].tiers||['BASE','700','800','900'];
-  const idx=tiers.indexOf(tier);
-  if(idx>=0) tiers.splice(idx,1); else tiers.push(tier);
+  let tiers=tracking[bpId].tiers||['BASE','700','800','900'];
+  tiers=tiers.map(t=>String(t));
+  const idx=tiers.indexOf(String(tier));
+  if(idx>=0) tiers.splice(idx,1); else tiers.push(String(tier));
   tracking[bpId].tiers=tiers;
   writeTracking(tracking);
   renderTracker();
@@ -750,10 +752,6 @@ function renderNeeds(){
     const hasOrder=activeOrders.some(o=>o.bpId===bp.id);
     return t.personal||hasOrder;
   });
-  console.log('DEBUG renderNeeds - Tracked blueprints:', tracked.length);
-  tracked.slice(0,3).forEach(bp=>{
-    console.log(`  ${bp.name}: ingredients=${bp.ingredients?.length || 0}, tiers=${JSON.stringify(tracking[bp.id].tiers)}`);
-  });
   document.getElementById('needs-bp-count').textContent=tracked.length;
   const tbl=document.getElementById('needs-table');
   const empty=document.getElementById('needs-empty');
@@ -772,7 +770,8 @@ function renderNeeds(){
         const total=(t.personal?1:0)+bpOrders.reduce((s,o)=>s+o.qty,0);
         needs[ing.name].nAsl+=ing.qty*total;
       } else {
-        const tiers=t.tiers||['700','800','900'];
+        let tiers=t.tiers||['700','800','900'];
+        tiers=tiers.map(tier=>String(tier));
         if(t.personal){
           if(tiers.includes('BASE')) needs[ing.name].n500+=ing.qty;
           if(tiers.includes('700')) needs[ing.name].n700+=ing.qty;
