@@ -76,6 +76,7 @@
   .bp-card-header{padding:9px 14px;display:flex;align-items:center;gap:8px;cursor:pointer;}
   .bp-name{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:1.5px;color:var(--tmi-text-primary);text-transform:uppercase;}
   .bp-tag{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;padding:2px 7px;border:1px solid var(--tmi-border-dim);color:var(--tmi-text-secondary);}
+  .bp-cmp-detail{font-size:13px;font-weight:400;color:var(--tmi-gold-bright);text-transform:none;margin-left:8px;}
   .bp-actions{margin-left:auto;display:flex;gap:6px;align-items:center;}
   .expand-arrow{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--tmi-text-dim);}
   .bp-ingredients{display:none;padding:0 14px 10px;border-top:1px solid var(--tmi-border-dim);}
@@ -386,7 +387,7 @@ function getBpLabel(bp){
   if(bp.type==='ShipComponent'){
     const m=bp.meta||{};
     const sizeGrade=m.component_size!=null && m.component_grade?`${m.component_size}${m.component_grade}`:'';
-    const detail=[m.component_type,sizeGrade].filter(Boolean).join(', ');
+    const detail=[m.component_type,m.component_class,sizeGrade].filter(Boolean).join(' ');
     return bp.base+(detail?' — '+detail:'');
   }
   const parts=[bp.base];

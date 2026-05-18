@@ -74,6 +74,9 @@
   .qual-800{border-color:var(--tmi-border);color:var(--tmi-gold);}
   .qual-900{border-color:rgba(232,201,106,0.5);color:var(--tmi-gold-bright);}
 
+  /* COMPONENT DETAIL */
+  .bp-cmp-detail{font-size:13px;font-weight:400;color:var(--tmi-gold-bright);text-transform:none;margin-left:8px;}
+
   /* MAT READY BADGE */
   .mat-ready{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--tmi-success);border:1px solid rgba(90,153,85,0.35);padding:2px 9px;background:rgba(90,153,85,0.06);}
 
@@ -348,7 +351,7 @@ function getBpLabel(bp){
   if(bp.type==='ShipComponent'){
     const m=bp.meta||{};
     const sizeGrade=m.component_size!=null && m.component_grade?`${m.component_size}${m.component_grade}`:'';
-    const detail=[m.component_type,sizeGrade].filter(Boolean).join(', ');
+    const detail=[m.component_type,m.component_class,sizeGrade].filter(Boolean).join(' ');
     return bp.base+(detail?' — '+detail:'');
   }
   if(bp.type==='Armor')

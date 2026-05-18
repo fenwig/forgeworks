@@ -54,6 +54,7 @@
   .bp-card.owned{border-left-color:var(--tmi-success);}
   .bp-card-header{padding:9px 14px;display:flex;align-items:center;gap:8px;cursor:pointer;}
   .bp-name{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;letter-spacing:1.5px;color:var(--tmi-text-primary);text-transform:uppercase;}
+  .bp-cmp-detail{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:400;letter-spacing:0.5px;color:var(--tmi-gold-bright);text-transform:none;margin-left:8px;}
   .bp-tag{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;padding:2px 7px;border:1px solid var(--tmi-border-dim);color:var(--tmi-text-secondary);}
   .bp-mission{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--tmi-warning);border:1px solid rgba(204,136,0,0.3);background:rgba(204,136,0,0.08);padding:2px 6px;}
   .bp-default{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--tmi-text-dim);border:1px solid rgba(150,150,150,0.35);background:rgba(150,150,150,0.08);padding:2px 6px;}
@@ -188,7 +189,7 @@
       </div>
       <div class="filter-sep"></div>
       <button class="filter-btn active" id="owned-filter" onclick="toggleOwnedFilter()">All Blueprints</button>
-      <button class="filter-btn" id="mission-filter" onclick="toggleMissionFilter()">Mission Only</button>
+      <button class="filter-btn active" id="mission-filter" onclick="toggleMissionFilter()">Mission Only</button>
       <div class="filter-sep"></div>
       <input class="search-input" id="search-input" placeholder="Search by name or finish..." oninput="renderBrowser()">
     </div>
@@ -526,11 +527,11 @@ function renderBrowser(){
     const isExp=expandedBrowser.has(bp.id);
     const cmpMeta=bp.meta||{};
     const sizeGrade=cmpMeta.component_size!=null && cmpMeta.component_grade?`${cmpMeta.component_size}${cmpMeta.component_grade}`:'';
-    const cmpDetail=[cmpMeta.component_type,sizeGrade].filter(Boolean).join(', ');
+    const cmpDetail=bp.type==='ShipComponent'?[cmpMeta.component_type,cmpMeta.component_class,sizeGrade].filter(Boolean).join(' '):'';
     const label=bp.type==='Weapon'
       ?`${bp.base}${bp.weapon_type?' '+bp.weapon_type:''}${bp.finish?' '+bp.finish:''}`
       :bp.type==='Ammunition'?`${bp.base}${bp.ammo_type?' '+bp.ammo_type:''}`
-      :bp.type==='ShipComponent'?`${bp.base}${cmpDetail?' — '+cmpDetail:''}`
+      :bp.type==='ShipComponent'?`${bp.base}`
       :bp.slot?`${bp.base} ${bp.slot}${bp.finish?' '+bp.finish:''}`:
       `${bp.base}${bp.finish?' '+bp.finish:''}`;
     const tags=[];
@@ -538,9 +539,8 @@ function renderBrowser(){
     if(bp.type==='Ammunition'&&bp.capacity) tags.push('×'+bp.capacity);
     return`<div class="bp-card${isOwned?' owned':''}">
       <div class="bp-card-header" onclick="toggleExpBrowser(${bp.id})">
-        <span class="bp-name">${label}</span>
+        <span class="bp-name">${label}${cmpDetail?'<span class="bp-cmp-detail">'+cmpDetail+'</span>':''}</span>
         <span class="bp-tag">${tags.filter(Boolean).join(' · ')}</span>
-        ${bp.type==='ShipComponent'&&cmpMeta.component_class?'<span class="bp-tag" style="background:var(--tmi-gold-glow);border-color:var(--tmi-gold-dim);color:var(--tmi-gold)">' + cmpMeta.component_class + '</span>':''}
         ${DEFAULT_BLUEPRINT_NAMES.has(label.toLowerCase())?'<span class="bp-default">[DEFAULT]</span>':''}
         ${bp.has_mission?'<span class="bp-mission">MISSION</span>':''}
         ${t.order?'<span class="bp-order-badge">★ ORDER</span>':''}
@@ -625,11 +625,11 @@ function renderTracker(){
 
     const tcmpMeta=bp.meta||{};
     const tcmpSizeGrade=tcmpMeta.component_size!=null && tcmpMeta.component_grade?`${tcmpMeta.component_size}${tcmpMeta.component_grade}`:'';
-    const tcmpDetail=[tcmpMeta.component_type,tcmpSizeGrade].filter(Boolean).join(', ');
+    const tcmpDetail=bp.type==='ShipComponent'?[tcmpMeta.component_type,tcmpMeta.component_class,tcmpSizeGrade].filter(Boolean).join(' '):'';
     const label=bp.type==='Weapon'
       ?`${bp.base}${bp.weapon_type?' '+bp.weapon_type:''}${bp.finish?' '+bp.finish:''}`
       :bp.type==='Ammunition'?`${bp.base}${bp.ammo_type?' '+bp.ammo_type:''}`
-      :bp.type==='ShipComponent'?`${bp.base}${tcmpDetail?' — '+tcmpDetail:''}`
+      :bp.type==='ShipComponent'?`${bp.base}`
       :bp.slot?`${bp.base} ${bp.slot}${bp.finish?' '+bp.finish:''}`:
       `${bp.base}${bp.finish?' '+bp.finish:''}`;
     const tags=[];
