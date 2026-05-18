@@ -94,7 +94,11 @@
   .personal-dot{width:7px;height:7px;background:var(--tmi-gold);display:inline-block;margin-right:4px;}
   .readiness{display:flex;gap:5px;align-items:center;}
   .rb{font-family:'Share Tech Mono',monospace;font-size:12px;padding:3px 10px;border:1px solid;clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);cursor:pointer;transition:all 0.15s;}
-  .rb.r700,.rb.r800,.rb.r900{border-color:var(--tmi-border-dim);color:var(--tmi-text-dim);background:transparent;}
+  .rb.rBASE,.rb.r700,.rb.r800,.rb.r900{border-color:var(--tmi-border-dim);color:var(--tmi-text-dim);background:transparent;}
+  .rb.rBASE.sel{border-color:rgba(200,168,75,0.4);color:var(--tmi-gold-dim);}
+  .rb.r700.sel{border-color:rgba(200,168,75,0.5);color:var(--tmi-gold);}
+  .rb.r800.sel{border-color:rgba(232,201,106,0.5);color:var(--tmi-gold-bright);}
+  .rb.r900.sel{border-color:rgba(232,201,106,0.6);color:var(--tmi-gold-bright);font-weight:700;}
   .rb.sel{border-color:var(--tmi-gold);color:var(--tmi-gold);background:var(--tmi-gold-glow);}
   .forge-btn{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;color:var(--tmi-bg-deep);background:var(--tmi-gold);border:1px solid var(--tmi-gold);padding:3px 12px;cursor:pointer;text-transform:uppercase;clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);transition:all 0.15s;}
   .forge-btn:hover{background:var(--tmi-gold-bright);border-color:var(--tmi-gold-bright);}
@@ -270,10 +274,8 @@
   <div class="tracker-bar">
     <span class="filter-label">Quality Filter</span>
     <button class="filter-btn active" id="tq-all" onclick="setTrackerQualityFilter('all',this)">All</button>
-    <button class="filter-btn" id="tq-500" onclick="setTrackerQualityFilter('500',this)">500+</button>
-    <button class="filter-btn active" id="tq-700" onclick="setTrackerQualityFilter('700',this)">700+</button>
-    <button class="filter-btn active" id="tq-800" onclick="setTrackerQualityFilter('800',this)">800+</button>
-    <button class="filter-btn active" id="tq-900" onclick="setTrackerQualityFilter('900',this)">900+</button>
+    <button class="filter-btn" id="tq-base" onclick="setTrackerQualityFilter('base',this)">Base Grade</button>
+    <button class="filter-btn" id="tq-high" onclick="setTrackerQualityFilter('high',this)">High Grade</button>
     <div class="filter-sep" style="margin:0 12px;height:22px;"></div>
     <div class="tracker-legend">
       <div class="legend-item"><span style="font-size:12px;color:var(--tmi-text-dim)">Personal: Select quality tier(s) to track.&nbsp;&nbsp;<span style="color:var(--tmi-success)">✓</span> — ready when materials acquired.</span></div>
@@ -356,7 +358,7 @@ let filterType='all';
 let filterSlot='all';
 let filterWeight='all';
 let needsBand='all';
-let trackerQualityFilter=new Set([500,700,800,900]);
+let trackerQualityFilter='all';
 let currentTab='browser';
 
 function switchTab(tab){
@@ -420,23 +422,10 @@ function setNeedsBand(band,btn){
   renderNeeds();
 }
 
-function setTrackerQualityFilter(tier,btn){
-  if(tier==='all'){
-    trackerQualityFilter=new Set([500,700,800,900]);
-    document.getElementById('tq-all').classList.add('active');
-    document.getElementById('tq-500').classList.remove('active');
-    document.getElementById('tq-700').classList.add('active');
-    document.getElementById('tq-800').classList.add('active');
-    document.getElementById('tq-900').classList.add('active');
-  } else {
-    const t=Number(tier);
-    if(trackerQualityFilter.has(t)) trackerQualityFilter.delete(t);
-    else trackerQualityFilter.add(t);
-    btn.classList.toggle('active');
-    // Update "All" button state: active only if filter is exactly [700,800,900]
-    const isAll=trackerQualityFilter.size===3&&trackerQualityFilter.has(700)&&trackerQualityFilter.has(800)&&trackerQualityFilter.has(900);
-    document.getElementById('tq-all').classList.toggle('active',isAll);
-  }
+function setTrackerQualityFilter(filter,btn){
+  trackerQualityFilter=filter;
+  document.querySelectorAll('.tracker-bar .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
   renderTracker();
 }
 
@@ -461,13 +450,13 @@ function checkReady(bp,qty=1){
   const nonAsl=bp.ingredients.filter(i=>i.name!=='aslarite');
   const aslIng=bp.ingredients.find(i=>i.name==='aslarite');
   const aslOk=aslIng?(getBands('aslarite').total500plus>=(aslIng.qty*qty)):true;
-  if(!aslOk) return{r700:false,r800:false,r900:false};
+  if(!aslOk) return{rBASE:false,r700:false,r800:false,r900:false};
   const chk=band=>nonAsl.every(ing=>{
     const b=getBands(ing.name);
-    const av=band===700?b.b700:band===800?b.b800:b.b900;
+    const av=band==='BASE'?b.b500:band===700?b.b700:band===800?b.b800:b.b900;
     return av>=(ing.qty*qty);
   });
-  return{r700:chk(700),r800:chk(800),r900:chk(900)};
+  return{rBASE:chk('BASE'),r700:chk(700),r800:chk(800),r900:chk(900)};
 }
 
 function formatQty(qty,isGem){
@@ -608,12 +597,13 @@ function renderTracker(){
     // treat as active-order if actual orders exist (handles stale tracking.order flag)
     const hasOrder=allOrders.some(o=>o.bpId===bp.id);
     if(!(t.personal||hasOrder)) return false;
-    // Apply quality tier filter: show only if blueprint has tracked tier(s) matching filter
-    const userTiers=t.tiers||[700,800,900];
+    // Apply quality tier filter
+    const userTiers=t.tiers||['BASE',700,800,900];
     const bpOrders=allOrders.filter(o=>o.bpId===bp.id);
-    const orderQuals=new Set(bpOrders.map(o=>o.quality));
-    const matchesTierFilter=userTiers.some(tier=>trackerQualityFilter.has(tier))||orderQuals.size>0&&[...orderQuals].some(q=>trackerQualityFilter.has(q));
-    return matchesTierFilter;
+    if(trackerQualityFilter==='all') return true;
+    if(trackerQualityFilter==='base') return userTiers.includes('BASE');
+    if(trackerQualityFilter==='high') return userTiers.some(tier=>[700,800,900].includes(tier));
+    return false;
   });
   if(!tracked.length){list.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
@@ -637,13 +627,14 @@ function renderTracker(){
     if(bp.type==='Ammunition'&&bp.capacity) tags.push('×'+bp.capacity);
     if(bp.type==='ShipComponent'&&tcmpMeta.manufacturer) tags.push(tcmpMeta.manufacturer);
 
-    const ready=t.personal?checkReady(bp,1):{r700:false,r800:false,r900:false};
+    const ready=t.personal?(userTiers.length===0?{rBASE:true,r700:true,r800:true,r900:true}:checkReady(bp,1)):{rBASE:false,r700:false,r800:false,r900:false};
 
-    // Tier badges — user-controlled, all 3 shown dim/sel
-    const tierBadges=t.personal?[700,800,900].map(tier=>{
+    // Tier badges — user-controlled, all 4 shown dim/sel
+    const tierBadges=t.personal?['BASE',700,800,900].map(tier=>{
       const isSel=userTiers.includes(tier);
-      const isReady=isSel&&ready['r'+tier];
-      return`<span class="rb r${tier}${isSel?' sel':''}" onclick="event.stopPropagation();toggleTier(${bp.id},${tier})">${tier}+${isReady?' ✓':''}</span>`;
+      const isReady=isSel&&ready['r'+(tier==='BASE'?'BASE':tier)];
+      const label=tier==='BASE'?'BASE':tier+'+';
+      return`<span class="rb r${tier}${isSel?' sel':''}" onclick="event.stopPropagation();toggleTier(${bp.id},'${tier}')">${label}${isReady?' ✓':''}</span>`;
     }).join(''):'';
 
     // Order pills
@@ -651,7 +642,7 @@ function renderTracker(){
     const qualGroups={};
     bpOrders.forEach(o=>{qualGroups[o.quality]=(qualGroups[o.quality]||0)+(o.qty||1);});
     const orderPills=Object.entries(qualGroups).map(([qual,qty])=>{
-      const isReady=checkReady(bp,qty)['r'+qual];
+      const isReady=userTiers.length===0?true:checkReady(bp,qty)['r'+qual];
       return`<span class="order-pill${isReady?' ready':''}">${qual}+${qty>1?' ×'+qty:''} ORDER${isReady?' ✓':''}</span>`;
     }).join('');
 
@@ -659,8 +650,8 @@ function renderTracker(){
     const orderTiers=Object.keys(qualGroups).map(Number);
     const effectiveTiers=[...new Set([...userTiers,...orderTiers])].sort((a,b)=>a-b);
 
-    const anyTierReady=t.personal&&userTiers.some(tier=>ready['r'+tier]);
-    const anyOrderReady=Object.entries(qualGroups).some(([qual,qty])=>checkReady(bp,qty)['r'+qual]);
+    const anyTierReady=t.personal&&(userTiers.length===0||userTiers.some(tier=>ready['r'+(tier==='BASE'?'BASE':tier)]));
+    const anyOrderReady=userTiers.length===0?Object.entries(qualGroups).length>0:Object.entries(qualGroups).some(([qual,qty])=>checkReady(bp,qty)['r'+qual]);
     const showForge=anyTierReady||anyOrderReady;
 
     const hasOrder=bpOrders.length>0;
@@ -733,7 +724,7 @@ function untrack(id){
 
 function toggleTier(bpId,tier){
   if(!tracking[bpId]) return;
-  const tiers=tracking[bpId].tiers||[700,800,900];
+  const tiers=tracking[bpId].tiers||['BASE',700,800,900];
   const idx=tiers.indexOf(tier);
   if(idx>=0) tiers.splice(idx,1); else tiers.push(tier);
   tracking[bpId].tiers=tiers;
