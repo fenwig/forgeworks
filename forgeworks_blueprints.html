@@ -772,6 +772,10 @@ function renderNeeds(){
       } else {
         let tiers=t.tiers||['700','800','900'];
         tiers=tiers.map(tier=>String(tier));
+        if(!tracked.debugged){
+          console.log('DEBUG tiers normalized:',tiers,'types:',tiers.map(t=>typeof t));
+          tracked.debugged=true;
+        }
         if(t.personal){
           if(tiers.includes('BASE')) needs[ing.name].n500+=ing.qty;
           if(tiers.includes('700')) needs[ing.name].n700+=ing.qty;
