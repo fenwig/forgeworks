@@ -727,16 +727,16 @@ function untrack(id){
 }
 
 function toggleTier(bpId,tier){
-  console.log('toggleTier called:',bpId,tier);
   if(!tracking[bpId]) return;
   let tiers=tracking[bpId].tiers||['BASE','700','800','900'];
   tiers=tiers.map(t=>String(t));
+  tiers=[...new Set(tiers)];
   const idx=tiers.indexOf(String(tier));
   if(idx>=0) tiers.splice(idx,1); else tiers.push(String(tier));
-  console.log('Updated tiers:',tiers);
   tracking[bpId].tiers=tiers;
   writeTracking(tracking);
   renderTracker();
+  renderNeeds();
 }
 
 function forgeBlueprint(bpId){
