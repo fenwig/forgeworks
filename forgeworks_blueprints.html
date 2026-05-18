@@ -762,10 +762,13 @@ function renderNeeds(){
   tbl.style.display='table';empty.style.display='none';
 
   const needs={};
+  let debugCount=0;
   tracked.forEach(bp=>{
     const t=tracking[bp.id];
     const bpOrders=activeOrders.filter(o=>o.bpId===bp.id);
     bp.ingredients.forEach(ing=>{
+      if(debugCount<3) console.log(`DEBUG: bp ${bp.id} ing ${ing.name} qty=${ing.qty} personal=${t.personal} tiers=${JSON.stringify(t.tiers)}`);
+      debugCount++;
       const isAsl=ing.name==='aslarite';
       if(!needs[ing.name]) needs[ing.name]={isAsl,isGem:GEM_NAMES.has(ing.name),n500:0,n700:0,n800:0,n900:0,nAsl:0};
       if(isAsl){
@@ -774,10 +777,6 @@ function renderNeeds(){
       } else {
         let tiers=t.tiers||['700','800','900'];
         tiers=tiers.map(tier=>String(tier));
-        if(!tracked.debugged){
-          console.log('DEBUG tiers normalized:',tiers,'types:',tiers.map(t=>typeof t));
-          tracked.debugged=true;
-        }
         if(t.personal){
           if(tiers.includes('BASE')) needs[ing.name].n500+=ing.qty;
           if(tiers.includes('700')) needs[ing.name].n700+=ing.qty;
