@@ -761,6 +761,8 @@ function renderNeeds(){
 
   const needs={};
   console.log('DEBUG: Tracked blueprints:',tracked.map(bp=>({name:bp.name,id:bp.id,ingredients:bp.ingredients?.length,tiers:tracking[bp.id].tiers,personal:tracking[bp.id].personal})));
+  console.log('DEBUG: First blueprint object keys:',Object.keys(tracked[0]||{}));
+  console.log('DEBUG: First blueprint full:',tracked[0]);
   tracked.forEach(bp=>{
     const t=tracking[bp.id];
     const bpOrders=activeOrders.filter(o=>o.bpId===bp.id);
