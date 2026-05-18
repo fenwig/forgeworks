@@ -290,7 +290,7 @@
           <input class="form-input" id="f-quality" type="number" min="1" max="1000" placeholder="e.g. 875">
         </div>
         <div class="form-row">
-          <label class="form-lbl" id="f-qty-lbl">Quantity (SCU)</label>
+          <label class="form-lbl" id="f-qty-lbl">Quantity (cSCU)</label>
           <input class="form-input" id="f-qty" type="number" min="1" placeholder="e.g. 3">
         </div>
       </div>
@@ -678,7 +678,7 @@ function updateHMIndicator(){
   const ore=document.getElementById('f-ore').value;
   const isGem=GEM_NAMES.has(ore);
   document.getElementById('hm-indicator').style.display=isGem?'block':'none';
-  document.getElementById('f-qty-lbl').textContent=isGem?'Quantity (gems)':'Quantity (SCU)';
+  document.getElementById('f-qty-lbl').textContent=isGem?'Quantity (gems)':'Quantity (cSCU)';
 }
 
 function setOreFilter(type,btn){
