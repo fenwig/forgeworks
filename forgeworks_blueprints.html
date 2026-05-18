@@ -760,6 +760,7 @@ function renderNeeds(){
   tbl.style.display='table';empty.style.display='none';
 
   const needs={};
+  console.log('DEBUG: Tracked blueprints:',tracked.map(bp=>({name:bp.name,id:bp.id,ingredients:bp.ingredients?.length,tiers:tracking[bp.id].tiers,personal:tracking[bp.id].personal})));
   tracked.forEach(bp=>{
     const t=tracking[bp.id];
     const bpOrders=activeOrders.filter(o=>o.bpId===bp.id);
