@@ -1,7 +1,7 @@
 # TI Forgeworks — Project Context
 
-**Last updated:** 2026-05-17
-**Status:** 4.8 Live — Ship Components Enabled (Public GitHub)
+**Last updated:** 2026-05-17 (Session 9)
+**Status:** 4.8 Live — Ship Components Enabled, Duplicates Cleaned (Public GitHub)
 **GitHub:** github.com/fenwig/Forgeworks (Public — clone and open HTML files directly)
 
 ---
@@ -21,9 +21,47 @@ The app is **100% client-side, no backend**. All data lives in browser localStor
 | **Frontend** | Vanilla HTML / CSS / JavaScript (no framework) |
 | **Data source** | Star Citizen Wiki API (api.star-citizen.wiki/api/v2/blueprints) |
 | **Persistence** | Browser localStorage (all keys documented below) |
+| **Authentication** | None — 100% client-side, single-player use only |
 | **Game file extraction** | Node.js script (xml2js parser for SC game data XML) |
 | **Build/test** | None — files served directly, no build step |
 | **Version control** | Git (local + GitHub: github.com/fenwig/Forgeworks) |
+
+---
+
+## Frontend Architecture
+
+**Module Pattern (10 HTML files):**
+- Module 01 — Dashboard (navigation hub + iframe shell)
+- Modules 02–10 — Functional modules (materials, acquisitions, blueprints, orders, forge, reports, OCR, datasync, codex)
+
+**Navigation Model:**
+- Dashboard.html hosts all modules via iframe (postMessage for cross-module communication)
+- Each module is self-contained: can load independently or via iframe
+- Navigation via URL anchor or Dashboard nav buttons
+- No shared JavaScript; each module reads/writes localStorage independently
+
+**Data Flow:**
+1. **Module 09 (Data Sync)** → pulls blueprints from Wiki API → stores in `forgex-blueprints` localStorage
+2. **Module 04 (Blueprints)** → reads blueprints, users track/own items → stores in `forgex-tracking` + `forgex-owned`
+3. **Module 02 (Materials)** → user maintains material inventory → stores in `forgex-lots`
+4. **Module 05 (Orders)** → user creates customer orders → stores in `forgex-active-orders`
+5. **Module 06 (Forge)** → crafts items using tracked blueprints + materials → stores in `forgex-crafting-log`
+6. **Modules 03, 07, 08, 10** → read-only or specialized (acquisition queue, reports, OCR, documentation)
+
+**State Management:**
+- No centralized state manager (no Redux, Context API, etc.)
+- Single source of truth: browser localStorage
+- Each module hydrates on load: `JSON.parse(localStorage.getItem(key) || 'default')`
+- Writes are synchronous and immediate: `localStorage.setItem(key, JSON.stringify(data))`
+- Conflict resolution: last write wins (single-player use case)
+
+**Authentication:**
+- **Zero authentication** — app assumes single-player usage on a single browser
+- No user accounts, login, or multi-user support
+- Backup/restore via JSON export/import (Module 06 provides download; user can store elsewhere)
+- No cloud sync or remote backup
+
+---
 
 ---
 
@@ -47,7 +85,7 @@ The app is **100% client-side, no backend**. All data lives in browser localStor
 - To extract/update weapon crafting properties from Star Citizen game files:
   - Extract SC LIVE data to `D:\RSI\StarCitizen\LIVE\data\Libs\Foundry\Records\crafting\blueprints\crafting\fpsgear`
   - Run: `node extract-blueprint-parts.js` → outputs JSON mappings to `blueprint-parts-mapping.json`
-  - Note: Currently ballistic weapons only; laser/plasma pending game extraction
+  - Note: Currently ballistic weapons only
 
 ---
 
@@ -228,7 +266,29 @@ D:\Support Files\Crafting App\
 
 ---
 
-## Recently Changed Files (2026-05-17 Session 8)
+## Recently Changed Files (2026-05-17 Session 9)
+
+**Auto-Deduplication in Data Sync:**
+- `forgeworks_datasync.html` (Module 09) — Implemented UUID-based blocking to prevent duplicate blueprints from re-syncing
+  - Hard-coded 11 blocked UUIDs (deleted duplicates: 6CA BILA, Defiant×2, Broadspec-GO×4, Foxfire×2, Fullforce, Glacis)
+  - Check added on sync: any blueprint with blocked UUID is skipped and counted in sync stats
+  - Works across all users pulling from GitHub (UUIDs in source code, not localStorage-dependent)
+  - Commit: `c9e32fd` pushed to main
+
+**Duplicate Cleanup (Session 9):**
+- Deleted 11 duplicate blueprint entries from localStorage:
+  - 6CA 'BILA' (ID 1294)
+  - Defiant Power Plant (IDs 913, 939)
+  - Broadspec-GO Radar (IDs 1175, 1176, 1177, 1180)
+  - Foxfire Quantum Drive (IDs 966, 999)
+  - Fullforce Power Plant (ID 940)
+  - Glacis Shield (ID 1286)
+- Root cause: Star Citizen Wiki API contains native duplicates
+- Deduplication strategy: UUID-based blocking (prevents re-appearance on future syncs)
+
+---
+
+**Previously Changed Files (2026-05-17 Session 8)**
 
 **Component Blueprint Display Format:**
 - `forgeworks_blueprints.html` — Simplified component label format; removed unnecessary transformations; removed duplicate class display (class shows only in badge now)
@@ -257,7 +317,7 @@ D:\Support Files\Crafting App\
 
 **Output:** `blueprint-parts-mapping.json`
 
-**Status:** Ballistic weapons only. Laser/plasma pending game file extraction.
+**Status:** Ballistic weapons only.
 
 ---
 
@@ -318,7 +378,6 @@ TI Forgeworks — Custom Arms & Armor   ← eyebrow (10px, Share Tech Mono, gold
 
 ## Outstanding TODOs
 
-- [ ] **Energy weapon crafting properties** — laser/plasma/electron pending game file extraction
 - [ ] **Past Orders not persisted** — delivered orders lost on page reload (low priority)
 - [ ] **Module 06 owned IDs** — reads `forgex-tracking.personal` instead of `forgex-owned` (known bug, low priority)
 - [ ] **Component end-to-end testing** — track → order → craft → log with real 4.8 data

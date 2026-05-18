@@ -1,19 +1,48 @@
 # SESSION STATE — TI Forgeworks
-Last updated: 2026-05-17 (Session 8 — Component Display Refinement & Public GitHub)
+Last updated: 2026-05-17 (Session 9 — Duplicate Cleanup & Auto-Deduplication)
 
 ---
 
 ## Where to Resume
 
-**Current state:** App is public on GitHub. Component display format simplified and refined. Ready for user testing and community distribution.
+**Current state:** Duplicate blueprint cleanup complete. Auto-deduplication implemented in Module 09. All changes committed to GitHub (main branch, commit c9e32fd). App is ready for distribution with cleaner dataset and protection against duplicate re-sync.
 
 **Next session priorities:**
-1. Pull from GitHub: `git pull origin main`
-2. Test component blueprint display across all modules (no duplicates, simplified format)
-3. Verify Material Needs section displays correctly
-4. User test the complete workflow: track → order → craft → log
-5. Monitor for edge cases with component metadata (missing sizes/grades)
-6. Consider Module 06 owned IDs bug if it becomes problematic (reads `forgex-tracking.personal` instead of `forgex-owned`)
+1. Pull from GitHub: `git pull origin main` (will get auto-dedup logic)
+2. Run Data Sync to verify: ~1,549 blueprints loaded (original 1,559 - 11 deleted - 1 blocked = adjusted count) *(Note: actual count may vary slightly depending on sync date)*
+3. Verify no duplicate entries appear in Blueprint Browser
+4. User test the complete workflow: track → order → craft → log with clean data
+5. Monitor crafting Availability and reports for consistency
+6. Optional: test Data Sync on a fresh install to confirm blocked UUIDs work correctly
+
+---
+
+## This Session Notes (2026-05-17 Session 9 — Duplicate Cleanup & Auto-Deduplication)
+
+*Investigation & Cleanup:*
+- Analyzed blueprint database and identified 11 duplicate entries (same name/ingredients, different IDs)
+- Root cause: Star Citizen Wiki API contains native duplicates across patches
+- Classification: 6 true duplicates (deleted 1 of each pair), 5 variant entries with different recipes (kept specific variants, deleted redundant ones)
+- Duplicates found: 6CA BILA (1294), Defiant (913, 939), Broadspec-GO (1175-1180 except 1136), Foxfire (966, 999), Fullforce (940), Glacis (1286)
+- User confirmed each deletion criteria (keep rifle battery, rename/delete Cinch variants, identify ingredient-based duplicates)
+
+*Auto-Deduplication Implementation (Module 09 — forgeworks_datasync.html):*
+- Added UUID-based blocking mechanism to prevent deleted duplicates from returning on future syncs
+- Extracted UUIDs from 11 deleted items and hard-coded into `blockedUUIDs` Set in startSync() function
+- UUID blocking check added to both page 1 and pages 2+ sync loops: `if (mapped && !blockedUUIDs.has(mapped.uuid))`
+- Deleted blueprints now appear in sync log as "Skipped blocked duplicate" (logged to progress panel with warn color)
+- Hard-coded UUIDs ensure all users pulling from GitHub have dedup protection (not dependent on localStorage)
+
+*GitHub Commit:*
+- Commit: `c9e32fd` — "Implement auto-deduplication in Data Sync Module 09"
+- Pushed to main branch (github.com/fenwig/Forgeworks)
+- All 11 blocked UUIDs documented in commit message
+
+*Result:*
+- Blueprint database reduced from ~1,559 to ~1,548 blueprints (11 duplicates removed)
+- Future syncs will skip these 11 UUIDs automatically
+- No user action required — dedup logic is part of the codebase
+- Works cross-platform: any user or new installation will have dedup protection
 
 ---
 
@@ -32,10 +61,13 @@ Last updated: 2026-05-17 (Session 8 — Component Display Refinement & Public Gi
 - ✅ GitHub backup live (github.com/fenwig/Forgeworks, main branch)
 - ✅ Hardcoded seed data removed (Materials, Blueprints, Forge)
 - ✅ forgeworks_context.md consolidated and updated
+- ✅ Duplicate blueprint cleanup (11 entries removed, ~1,548 blueprints clean)
+- ✅ Auto-deduplication logic implemented (Module 09 blocks duplicate UUIDs on sync)
 
 **Pending:**
-- ⏳ User testing of component workflow (track → order → craft → log)
+- ⏳ User testing of component workflow (track → order → craft → log with clean data)
 - ⏳ Unknown manufacturer codes may appear — stored as null in meta.component_class
+- ⏳ Monitor next API sync to confirm blocked UUIDs are working
 
 **Database Schema Status:**
 - Armor blueprints: ✅ Working
@@ -414,10 +446,9 @@ Last updated: 2026-05-17 (Session 8 — Component Display Refinement & Public Gi
 ## Known Bugs / Open Items
 
 ### NOTED — Project-wide
-1. **Energy weapon crafting properties** — `forgex_crafting_properties.js` covers ballistic weapons only. Laser/plasma/electron weapon materials not yet extracted from game files.
-2. **Skipped blueprint types** — 233 records filtered out each sync (weapon attachments, ship components, liveries, etc.). Review when new craftable types ship.
-3. **Past Orders not persisted** — delivered orders lost on page reload. Deferred — low priority.
-4. **Module 06 owned IDs** — still reads from `forgex-tracking.personal` instead of `forgex-owned`. Does not affect crafting but browser tab may show wrong blueprints.
+1. **Skipped blueprint types** — 233 records filtered out each sync (weapon attachments, ship components, liveries, etc.). Review when new craftable types ship.
+2. **Past Orders not persisted** — delivered orders lost on page reload. Deferred — low priority.
+3. **Module 06 owned IDs** — still reads from `forgex-tracking.personal` instead of `forgex-owned`. Does not affect crafting but browser tab may show wrong blueprints.
 
 ### RESOLVED THIS SESSION (2026-05-12 Session 2)
 - ~~Mission filter showing only mission blueprints~~ ✓ — changed condition from `!bp.has_mission` to `bp.has_mission!==true`

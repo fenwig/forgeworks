@@ -480,8 +480,9 @@ function getQualityColor(q){
 
 function formatSCU(scu){
   if(typeof scu!=='number'||scu===null||scu===undefined) return '<span class="scu-display"><span class="scu-whole">0</span><span class="scu-decimal">.00</span><span class="scu-unit">SCU</span></span>';
-  const whole=Math.floor(scu);
-  const decimal=String(Math.round((scu%1)*100)).padStart(2,'0');
+  const val=scu/100;
+  const whole=Math.floor(val);
+  const decimal=String(Math.round((val%1)*100)).padStart(2,'0');
   return `<span class="scu-display"><span class="scu-whole">${whole}</span><span class="scu-decimal">.${decimal}</span><span class="scu-unit">SCU</span></span>`;
 }
 
