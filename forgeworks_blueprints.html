@@ -564,13 +564,13 @@ function toggleOwned(id){
 function togglePersonal(id){
   if(!tracking[id]){
     const bp=blueprints.find(b=>b.id===id);
-    const defTiers=bp&&bp.type==='ShipComponent'?[500]:[700,800,900];
+    const defTiers=bp&&bp.type==='ShipComponent'?['BASE']:['700','800','900'];
     tracking[id]={personal:false,order:false,tiers:defTiers};
   }
   tracking[id].personal=!tracking[id].personal;
   if(tracking[id].personal&&!tracking[id].tiers){
     const bp=blueprints.find(b=>b.id===id);
-    tracking[id].tiers=bp&&bp.type==='ShipComponent'?[500]:[700,800,900];
+    tracking[id].tiers=bp&&bp.type==='ShipComponent'?['BASE']:['700','800','900'];
   }
   if(!tracking[id].personal&&!tracking[id].order) delete tracking[id];
   writeTracking(tracking);
