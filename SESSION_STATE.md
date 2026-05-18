@@ -1,19 +1,89 @@
 # SESSION STATE — TI Forgeworks
-Last updated: 2026-05-17 (Session 9 — Duplicate Cleanup & Auto-Deduplication)
+Last updated: 2026-05-18 (Session 10 — Materials Needs Debugging & Fixes)
 
 ---
 
 ## Where to Resume
 
-**Current state:** Duplicate blueprint cleanup complete. Auto-deduplication implemented in Module 09. All changes committed to GitHub (main branch, commit c9e32fd). App is ready for distribution with cleaner dataset and protection against duplicate re-sync.
+**Current state:** Materials Needs display and tier filtering fully fixed. All issues from Session 10 resolved and tested. Changes committed to GitHub (main branch).
 
 **Next session priorities:**
-1. Pull from GitHub: `git pull origin main` (will get auto-dedup logic)
-2. Run Data Sync to verify: ~1,549 blueprints loaded (original 1,559 - 11 deleted - 1 blocked = adjusted count) *(Note: actual count may vary slightly depending on sync date)*
-3. Verify no duplicate entries appear in Blueprint Browser
-4. User test the complete workflow: track → order → craft → log with clean data
-5. Monitor crafting Availability and reports for consistency
-6. Optional: test Data Sync on a fresh install to confirm blocked UUIDs work correctly
+1. Pull from GitHub: `git pull origin main` (will get Materials Needs fixes)
+2. Verify Materials Needs displays correct quantities and colors in live folder
+3. Test tier toggle buttons (BASE/700/800/900) to confirm all tiers toggle independently
+4. Monitor Blueprint Tracker for any edge cases with tier filtering or color display
+5. Optional: test with fresh localStorage to verify tier normalization works on first load
+
+---
+
+## This Session Notes (2026-05-18 Session 10 — Materials Needs Debugging & Fixes)
+
+*Problem Summary:*
+- Materials Needs tab displaying incorrect quantities (0.32 SCU showing as 32 SCU)
+- Tier toggle buttons (700/800/900) not working; only BASE toggled correctly
+- Color coding not appearing on quantity text
+- Target Tier filter UI needed cleanup
+- User requested session closeout with updated documentation
+
+*Root Cause Analysis & Fixes:*
+
+**Issue 1: Quantities displaying as 32 instead of 0.32**
+- Root cause: Double conversion error in renderNeeds() function
+- Blueprint ingredient quantities come from API already in SCU format (0.04 SCU, not 4 cSCU)
+- Code was dividing by 100: `const safeNeed=need/100` → converted 0.04 to 0.0004
+- Material inventory is stored in cSCU, so HAVE column correctly divides by 100
+- Fix: Changed NEED display to `const safeNeed=isNaN(need)?0:need;` (no division)
+- Kept HAVE display with division: `const safeHave=(isNaN(have)?0:have)/100;`
+- Result: Quantities now display correctly (0.32 SCU, 1.50 SCU, etc.)
+
+**Issue 2: Tier toggle buttons not working (700/800/900 stuck off)**
+- Root cause: Corrupted tier array with mixed string and number types
+- localStorage tier arrays accumulated both `[700, 800, 900]` (numbers) and `['700', '800', '900']` (strings) from incremental toggles
+- `indexOf('700')` failed when array contained number `700`
+- Fix: Added string normalization in three key functions:
+  1. `toggleTier()`: `.map(t=>String(t))` to normalize all values, then `[...new Set(tiers)]` to deduplicate
+  2. `togglePersonal()`: Added same normalization logic
+  3. `renderNeeds()`: Added normalization before tier checks
+- Result: All tier toggles now work independently; array stays clean with only strings
+
+**Issue 3: Color coding not visible**
+- Root cause: `formatQty()` function hardcoded color inline style, overriding parent styles
+- Initial attempt to color NEED column text failed because formatQty() spans had `color:var(--tmi-gold-bright)` inline style
+- Fix: Modified `formatQty()` to accept optional `color` parameter:
+  ```javascript
+  function formatQty(qty,isGem,color){
+    const col=color||'var(--tmi-gold-bright)';
+    ...applies col to all spans...
+  }
+  ```
+- Moved color logic from NEED to HAVE column per user clarification
+- HAVE column now shows: green (#5a9955) for sufficient materials, red (#cc3333) for shortages
+- NEED column stays gold (#e8c96a)
+- Result: Color coding now visible and semantically correct
+
+**Issue 4: UI cleanup (Target Tier filter buttons)**
+- Initial approach: Removed HTML elements for filter buttons → broke filtering because JavaScript still referenced them
+- User reported: "I can't see anything on the blueprint database anymore"
+- Second approach (successful): Used CSS `display:none` instead of HTML removal
+- CSS added:
+  ```css
+  .needs-bar .needs-label{display:none;}
+  .needs-bar #nb-500,.needs-bar #nb-700,.needs-bar #nb-800,.needs-bar #nb-900{display:none;}
+  .needs-bar .needs-info{display:none;}
+  ```
+- Result: Buttons hidden from UI, JavaScript still works for tier filtering
+
+*Git Commits:*
+- `550f3fd`: "Revert 'Keep only ALL button in Materials Needs header'" — reverted HTML removal approach
+- `8b0fd31`: "Hide filter buttons and text in Materials Needs header via CSS" — CSS-only hiding approach
+
+*Testing Results:*
+- ✅ Quantities now display correctly (verified 0.32, 1.50, 3.00 SCU format)
+- ✅ All tier toggles working (BASE, 700, 800, 900 toggle independently)
+- ✅ Color coding visible on HAVE column (green for surplus, red for shortage)
+- ✅ UI shows only "ALL" button (other buttons hidden via CSS)
+- ✅ Blueprint filtering still works despite CSS hiding
+- ✅ Materials Needs aggregates correctly across tracked blueprints
 
 ---
 
@@ -63,11 +133,16 @@ Last updated: 2026-05-17 (Session 9 — Duplicate Cleanup & Auto-Deduplication)
 - ✅ forgeworks_context.md consolidated and updated
 - ✅ Duplicate blueprint cleanup (11 entries removed, ~1,548 blueprints clean)
 - ✅ Auto-deduplication logic implemented (Module 09 blocks duplicate UUIDs on sync)
+- ✅ Materials Needs display fixed (cSCU/SCU conversion corrected, tier toggles working)
+- ✅ Color coding implemented (HAVE column: green/red based on shortage/surplus)
+- ✅ Tier toggle buttons working (BASE/700/800/900 all toggle independently)
+- ✅ UI cleanup complete (filter buttons hidden via CSS, functionality preserved)
 
 **Pending:**
 - ⏳ User testing of component workflow (track → order → craft → log with clean data)
 - ⏳ Unknown manufacturer codes may appear — stored as null in meta.component_class
 - ⏳ Monitor next API sync to confirm blocked UUIDs are working
+- ⏳ Optional: Consider adding "Show" button to restore Target Tier filter buttons if user requests in future
 
 **Database Schema Status:**
 - Armor blueprints: ✅ Working
@@ -416,6 +491,7 @@ Last updated: 2026-05-17 (Session 9 — Duplicate Cleanup & Auto-Deduplication)
 - [ ] **Cross-Module Validation:** Test component data consistency across all 10 modules
 
 ### Medium Priority (Polish)
+- [ ] **Materials Needs Refinements:** Consider adding "Show" button to restore Target Tier filter visibility (currently CSS-hidden); add option to toggle color coding preferences
 - [ ] **Component Sourcing Guide:** Add location recommendations for component-specific materials
 - [ ] **Performance Testing:** Test with 1500+ total blueprints (armor + weapons + components); benchmark filtering/sorting
 - [ ] **Advanced Filters:** Consider "Show only owned blueprints" option in Reports
@@ -449,6 +525,12 @@ Last updated: 2026-05-17 (Session 9 — Duplicate Cleanup & Auto-Deduplication)
 1. **Skipped blueprint types** — 233 records filtered out each sync (weapon attachments, ship components, liveries, etc.). Review when new craftable types ship.
 2. **Past Orders not persisted** — delivered orders lost on page reload. Deferred — low priority.
 3. **Module 06 owned IDs** — still reads from `forgex-tracking.personal` instead of `forgex-owned`. Does not affect crafting but browser tab may show wrong blueprints.
+
+### RESOLVED THIS SESSION (2026-05-18 Session 10)
+- ~~Materials Needs quantities showing wrong values (32 instead of 0.32)~~ ✓ — removed incorrect `/100` division on NEED column; kept division only on HAVE column (inventory stored in cSCU)
+- ~~Tier toggle buttons not working (700/800/900 stuck off)~~ ✓ — added string normalization and deduplication in toggleTier(), togglePersonal(), and renderNeeds() functions
+- ~~Color coding not appearing on Materials Needs~~ ✓ — modified formatQty() to accept optional color parameter; moved color logic to HAVE column (green for surplus, red for shortage)
+- ~~Target Tier filter buttons causing UI clutter~~ ✓ — used CSS `display:none` to hide buttons while preserving JavaScript functionality
 
 ### RESOLVED THIS SESSION (2026-05-12 Session 2)
 - ~~Mission filter showing only mission blueprints~~ ✓ — changed condition from `!bp.has_mission` to `bp.has_mission!==true`

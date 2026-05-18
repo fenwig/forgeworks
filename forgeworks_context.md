@@ -1,7 +1,7 @@
 # TI Forgeworks — Project Context
 
-**Last updated:** 2026-05-17 (Session 9)
-**Status:** 4.8 Live — Ship Components Enabled, Duplicates Cleaned (Public GitHub)
+**Last updated:** 2026-05-18 (Session 10)
+**Status:** 4.8 Live — Ship Components Enabled, Materials Needs Fixed (Public GitHub)
 **GitHub:** github.com/fenwig/Forgeworks (Public — clone and open HTML files directly)
 
 ---
@@ -263,6 +263,27 @@ D:\Support Files\Crafting App\
 **Display format:** `"LumaCore — Power Plant, Size 1, Competition, Grade A"`
 
 **Component types recognized:** PowerPlant, Cooler, Radar, Shield, QuantumDrive, WeaponGun, MiningLaser, SalvageModifier, TractorBeam, FuelIntake, FuelTank
+
+---
+
+## Recently Changed Files (2026-05-18 Session 10)
+
+**Materials Needs Display & Tier Toggle Fixes:**
+- `forgeworks_blueprints.html` (Module 04) — Critical fixes to Materials Needs view and tier filtering
+  - **cSCU/SCU Conversion Fix:** Changed NEED display to NOT divide by 100 (ingredients already in SCU from API). Kept HAVE division by 100 (inventory stored in cSCU). This fixed quantities showing 32 instead of 0.32.
+  - **Tier Matching Fix:** Added string normalization in three functions to fix mixed-type tier arrays preventing 700/800/900 toggles from working
+    - `toggleTier()`: added `.map(t=>String(t))` and `[...new Set(tiers)]` deduplication
+    - `togglePersonal()`: added tier normalization
+    - `renderNeeds()`: added tier normalization
+  - **Color Coding Implementation:** Modified `formatQty()` to accept optional color parameter; moved color indicators from NEED to HAVE column showing green (#5a9955) for sufficient materials, red (#cc3333) for shortages
+  - **UI Cleanup:** Used CSS `display:none` to hide Target Tier filter buttons (500+/700/800/900) and blueprint count text while preserving JavaScript functionality
+  - Commits: `550f3fd` (revert), `8b0fd31` (CSS hiding approach)
+
+**Key Technical Details:**
+- **Ingredient quantities:** Blueprint API provides ingredients already in SCU format (e.g., 0.04 SCU, not 4 cSCU)
+- **Inventory storage:** Materials module stores quantities in cSCU; must divide by 100 for display as SCU
+- **Tier array type safety:** All tier values MUST be strings to ensure `indexOf()` matching works; mixed string/number arrays cause toggle failures
+- **Blueprint naming:** Blueprint objects use `base` property for name, not `name` (important for debug logging and UI display)
 
 ---
 
