@@ -767,9 +767,9 @@ function renderNeeds(){
         const total=(t.personal?1:0)+bpOrders.reduce((s,o)=>s+o.qty,0);
         needs[ing.name].nAsl+=ing.qty*total;
       } else {
-        const tiers=t.tiers||[700,800,900];
+        const tiers=t.tiers||['700','800','900'];
         if(t.personal){
-          if(tiers.includes(500)) needs[ing.name].n500+=ing.qty;
+          if(tiers.includes('500')) needs[ing.name].n500+=ing.qty;
           if(tiers.includes(700)) needs[ing.name].n700+=ing.qty;
           if(tiers.includes(800)) needs[ing.name].n800+=ing.qty;
           if(tiers.includes(900)) needs[ing.name].n900+=ing.qty;
@@ -791,13 +791,14 @@ function renderNeeds(){
     if(info.isAsl){
       const have=b.total500plus||0;
       const need=info.nAsl||0;
-      const safeNeed=isNaN(need)?0:need;
-      const safeHave=isNaN(have)?0:have;
+      const safeNeed=(isNaN(need)?0:need)/100;
+      const safeHave=(isNaN(have)?0:have)/100;
       const diff=safeHave-safeNeed;
       const needCls=diff>=0?'need-ok':'need-short';
+      const needColor=needCls==='need-ok'?'var(--tmi-success)':'var(--tmi-danger)';
       return`<tr>
         <td class="ore-cell">${ore}<span class="asl-note" style="margin-left:6px;font-size:8px">500+</span></td>
-        <td class="band-cell ${needCls}" style="font-weight:700">${formatQty(safeNeed,false)}</td>
+        <td class="band-cell ${needCls}" style="font-weight:700"><span style="color:${needColor}">${formatQty(safeNeed,false)}</span></td>
         <td class="band-cell" style="color:var(--tmi-gold);font-weight:700">${formatQty(safeHave,false)}</td>
         <td colspan="6"></td>
       </tr>`;
@@ -805,12 +806,13 @@ function renderNeeds(){
 
     const bandData=[['500',info.n500,b.b500],['700',info.n700,b.b700],['800',info.n800,b.b800],['900',info.n900,b.b900]];
     const cells=bandData.map(([band,need,have])=>{
-      const safeNeed=isNaN(need)?0:(need||0);
-      const safeHave=isNaN(have)?0:(have||0);
+      const safeNeed=(isNaN(need)?0:(need||0))/100;
+      const safeHave=(isNaN(have)?0:(have||0))/100;
       const diff=safeHave-safeNeed;
       const needCls=diff>=0?'need-ok':'need-short';
+      const needColor=needCls==='need-ok'?'var(--tmi-success)':'var(--tmi-danger)';
       if(safeNeed===0) return`<td class="band-cell need-zero">—</td><td class="band-cell need-zero">—</td>`;
-      return`<td class="band-cell ${needCls}" style="font-weight:700">${formatQty(safeNeed,info.isGem)}</td><td class="band-cell" style="color:var(--tmi-gold);font-weight:700">${formatQty(safeHave,info.isGem)}</td>`;
+      return`<td class="band-cell ${needCls}" style="font-weight:700"><span style="color:${needColor}">${formatQty(safeNeed,info.isGem)}</span></td><td class="band-cell" style="color:var(--tmi-gold);font-weight:700">${formatQty(safeHave,info.isGem)}</td>`;
     }).join('');
 
     return`<tr>
