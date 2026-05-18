@@ -762,13 +762,10 @@ function renderNeeds(){
   tbl.style.display='table';empty.style.display='none';
 
   const needs={};
-  let debugCount=0;
   tracked.forEach(bp=>{
     const t=tracking[bp.id];
     const bpOrders=activeOrders.filter(o=>o.bpId===bp.id);
     bp.ingredients.forEach(ing=>{
-      if(debugCount<3) console.log(`DEBUG: bp ${bp.id} ing ${ing.name} qty=${ing.qty} personal=${t.personal} tiers=${JSON.stringify(t.tiers)}`);
-      debugCount++;
       const isAsl=ing.name==='aslarite';
       if(!needs[ing.name]) needs[ing.name]={isAsl,isGem:GEM_NAMES.has(ing.name),n500:0,n700:0,n800:0,n900:0,nAsl:0};
       if(isAsl){
@@ -800,7 +797,7 @@ function renderNeeds(){
     if(info.isAsl){
       const have=b.total500plus||0;
       const need=info.nAsl||0;
-      const safeNeed=(isNaN(need)?0:need)/100;
+      const safeNeed=isNaN(need)?0:need;
       const safeHave=(isNaN(have)?0:have)/100;
       const diff=safeHave-safeNeed;
       const haveCls=diff>=0?'need-ok':'need-short';
@@ -815,7 +812,7 @@ function renderNeeds(){
 
     const bandData=[['500',info.n500,b.b500],['700',info.n700,b.b700],['800',info.n800,b.b800],['900',info.n900,b.b900]];
     const cells=bandData.map(([band,need,have])=>{
-      const safeNeed=(isNaN(need)?0:(need||0))/100;
+      const safeNeed=isNaN(need)?0:(need||0);
       const safeHave=(isNaN(have)?0:(have||0))/100;
       const diff=safeHave-safeNeed;
       const haveCls=diff>=0?'need-ok':'need-short';
