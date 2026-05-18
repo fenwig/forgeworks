@@ -161,6 +161,22 @@
   .th-800{color:var(--tmi-gold);}
   .th-900{color:var(--tmi-gold-bright);}
   .band-sub{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--tmi-text-dim);font-weight:400;padding:4px 8px;}
+
+  /* Band filtering */
+  #needs-table.band-filter-500 .th-700,#needs-table.band-filter-500 .th-800,#needs-table.band-filter-500 .th-900{display:none;}
+  #needs-table.band-filter-500 tbody td:nth-child(n+4){display:none;}
+  #needs-table.band-filter-700 .th-500,#needs-table.band-filter-700 .th-800,#needs-table.band-filter-700 .th-900{display:none;}
+  #needs-table.band-filter-700 tbody td:nth-child(1){display:table-cell;}
+  #needs-table.band-filter-700 tbody td:nth-child(n+4):nth-child(-n+5){display:table-cell;}
+  #needs-table.band-filter-700 tbody td:not(:nth-child(1)):not(:nth-child(n+4)):not(:nth-child(-n+5)){display:none;}
+  #needs-table.band-filter-800 .th-500,#needs-table.band-filter-800 .th-700,#needs-table.band-filter-800 .th-900{display:none;}
+  #needs-table.band-filter-800 tbody td:nth-child(1){display:table-cell;}
+  #needs-table.band-filter-800 tbody td:nth-child(n+6):nth-child(-n+7){display:table-cell;}
+  #needs-table.band-filter-800 tbody td:not(:nth-child(1)):not(:nth-child(n+6)):not(:nth-child(-n+7)){display:none;}
+  #needs-table.band-filter-900 .th-500,#needs-table.band-filter-900 .th-700,#needs-table.band-filter-900 .th-800{display:none;}
+  #needs-table.band-filter-900 tbody td:nth-child(1){display:table-cell;}
+  #needs-table.band-filter-900 tbody td:nth-child(n+8){display:table-cell;}
+  #needs-table.band-filter-900 tbody td:not(:nth-child(1)):not(:nth-child(n+8)){display:none;}
 </style>
 </head>
 <body>
@@ -291,7 +307,7 @@
   <div class="needs-bar">
     <span class="needs-label">Target Tier</span>
     <button class="filter-btn active" id="nb-all" onclick="setNeedsBand('all',this)">All</button>
-    <button class="filter-btn" id="nb-500" onclick="setNeedsBand('500',this)">500+</button>
+    <button class="filter-btn" id="nb-500" onclick="setNeedsBand('500',this)">Base</button>
     <button class="filter-btn" id="nb-700" onclick="setNeedsBand('700',this)">700+</button>
     <button class="filter-btn" id="nb-800" onclick="setNeedsBand('800',this)">800+</button>
     <button class="filter-btn" id="nb-900" onclick="setNeedsBand('900',this)">900+</button>
@@ -302,7 +318,7 @@
       <thead>
         <tr>
           <th rowspan="2">Ore / Material</th>
-          <th colspan="2" class="band th-500" id="th-500">500+</th>
+          <th colspan="2" class="band th-500" id="th-500">Base</th>
           <th colspan="2" class="band th-700" id="th-700">700+</th>
           <th colspan="2" class="band th-800" id="th-800">800+</th>
           <th colspan="2" class="band th-900" id="th-900">900+</th>
@@ -826,6 +842,10 @@ function renderNeeds(){
       ${cells}
     </tr>`;
   }).join('');
+
+  const tbl=document.getElementById('needs-table');
+  tbl.className='';
+  if(needsBand!=='all') tbl.classList.add(`band-filter-${needsBand}`);
 }
 
 updateTrackerCount();
