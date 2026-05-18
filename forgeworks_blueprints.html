@@ -453,10 +453,10 @@ function checkReady(bp,qty=1){
   if(!aslOk) return{rBASE:false,r700:false,r800:false,r900:false};
   const chk=band=>nonAsl.every(ing=>{
     const b=getBands(ing.name);
-    const av=band==='BASE'?b.b500:band===700?b.b700:band===800?b.b800:b.b900;
+    const av=band==='BASE'?b.b500:band==='700'?b.b700:band==='800'?b.b800:b.b900;
     return av>=(ing.qty*qty);
   });
-  return{rBASE:chk('BASE'),r700:chk(700),r800:chk(800),r900:chk(900)};
+  return{rBASE:chk('BASE'),r700:chk('700'),r800:chk('800'),r900:chk('900')};
 }
 
 function formatQty(qty,isGem){
@@ -598,11 +598,11 @@ function renderTracker(){
     const hasOrder=allOrders.some(o=>o.bpId===bp.id);
     if(!(t.personal||hasOrder)) return false;
     // Apply quality tier filter
-    const userTiers=t.tiers||['BASE',700,800,900];
+    const userTiers=t.tiers||['BASE','700','800','900'];
     const bpOrders=allOrders.filter(o=>o.bpId===bp.id);
     if(trackerQualityFilter==='all') return true;
     if(trackerQualityFilter==='base') return userTiers.includes('BASE');
-    if(trackerQualityFilter==='high') return userTiers.some(tier=>[700,800,900].includes(tier));
+    if(trackerQualityFilter==='high') return userTiers.some(tier=>['700','800','900'].includes(tier));
     return false;
   });
   if(!tracked.length){list.innerHTML='';empty.style.display='block';return;}
@@ -630,9 +630,9 @@ function renderTracker(){
     const ready=t.personal?(userTiers.length===0?{rBASE:true,r700:true,r800:true,r900:true}:checkReady(bp,1)):{rBASE:false,r700:false,r800:false,r900:false};
 
     // Tier badges — user-controlled, all 4 shown dim/sel
-    const tierBadges=t.personal?['BASE',700,800,900].map(tier=>{
+    const tierBadges=t.personal?['BASE','700','800','900'].map(tier=>{
       const isSel=userTiers.includes(tier);
-      const isReady=isSel&&ready['r'+(tier==='BASE'?'BASE':tier)];
+      const isReady=isSel&&ready['r'+tier];
       const label=tier==='BASE'?'BASE':tier+'+';
       return`<span class="rb r${tier}${isSel?' sel':''}" onclick="event.stopPropagation();toggleTier(${bp.id},'${tier}')">${label}${isReady?' ✓':''}</span>`;
     }).join(''):'';
@@ -650,7 +650,7 @@ function renderTracker(){
     const orderTiers=Object.keys(qualGroups).map(Number);
     const effectiveTiers=[...new Set([...userTiers,...orderTiers])].sort((a,b)=>a-b);
 
-    const anyTierReady=t.personal&&(userTiers.length===0||userTiers.some(tier=>ready['r'+(tier==='BASE'?'BASE':tier)]));
+    const anyTierReady=t.personal&&(userTiers.length===0||userTiers.some(tier=>ready['r'+tier]));
     const anyOrderReady=userTiers.length===0?Object.entries(qualGroups).length>0:Object.entries(qualGroups).some(([qual,qty])=>checkReady(bp,qty)['r'+qual]);
     const showForge=anyTierReady||anyOrderReady;
 
@@ -724,7 +724,7 @@ function untrack(id){
 
 function toggleTier(bpId,tier){
   if(!tracking[bpId]) return;
-  const tiers=tracking[bpId].tiers||['BASE',700,800,900];
+  const tiers=tracking[bpId].tiers||['BASE','700','800','900'];
   const idx=tiers.indexOf(tier);
   if(idx>=0) tiers.splice(idx,1); else tiers.push(tier);
   tracking[bpId].tiers=tiers;
