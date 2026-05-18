@@ -598,7 +598,8 @@ function renderTracker(){
     const hasOrder=allOrders.some(o=>o.bpId===bp.id);
     if(!(t.personal||hasOrder)) return false;
     // Apply quality tier filter
-    const userTiers=t.tiers||['BASE','700','800','900'];
+    const defaultTiers=bp.type==='ShipComponent'?['BASE']:['700','800','900'];
+    const userTiers=t.tiers||defaultTiers;
     const bpOrders=allOrders.filter(o=>o.bpId===bp.id);
     if(trackerQualityFilter==='all') return true;
     if(trackerQualityFilter==='base') return userTiers.includes('BASE');
@@ -610,7 +611,8 @@ function renderTracker(){
 
   list.innerHTML=tracked.map(bp=>{
     const t=tracking[bp.id];
-    const userTiers=t.tiers||[700,800,900];
+    const defaultTiers=bp.type==='ShipComponent'?['BASE']:['700','800','900'];
+    const userTiers=t.tiers||defaultTiers;
     const isExp=expandedTracker.has(bp.id);
 
     const tcmpMeta=bp.meta||{};
