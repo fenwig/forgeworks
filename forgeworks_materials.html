@@ -13,7 +13,7 @@
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{background:var(--tmi-bg-deep);color:var(--tmi-text-primary);font-family:'Exo 2',sans-serif;padding:0;}
-  .page-wrap{max-width:1200px;}
+  .page-wrap{max-width:1500px;}
 
   .mod-header{background:var(--tmi-bg-panel);border-bottom:1px solid var(--tmi-border-dim);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;}
   .mod-eyebrow{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--tmi-gold-dim);text-transform:uppercase;margin-bottom:2px;}
@@ -193,6 +193,7 @@
   <button class="op-btn" id="btn-combine" onclick="openCombine()" disabled>Combine</button>
   <button class="op-btn" id="btn-split" onclick="openSplit()" disabled>Split</button>
   <button class="op-btn" id="btn-move" onclick="openMove()" disabled>Move</button>
+  <button class="op-btn" id="btn-delete" onclick="openBulkDelete()" disabled style="color:var(--tmi-danger);">Delete</button>
 </div>
 
 <div class="table-wrap">
@@ -374,6 +375,24 @@
     <div class="form-footer">
       <button class="btn-cancel" onclick="closeOverlay('move-overlay')">Cancel</button>
       <button class="btn-save" onclick="executeMove()">Move</button>
+    </div>
+  </div>
+</div>
+
+<!-- BULK DELETE overlay -->
+<div class="form-overlay" id="bulkdelete-overlay">
+  <div class="form-panel">
+    <div class="form-header">
+      <span class="form-title">Delete Lots</span>
+      <button class="form-close" onclick="closeOverlay('bulkdelete-overlay')">✕</button>
+    </div>
+    <div class="form-body">
+      <div class="info-box" id="bulkdelete-info"></div>
+      <p style="font-size:14px;color:var(--tmi-text-secondary);margin-top:12px;">This action cannot be undone.</p>
+    </div>
+    <div class="form-footer">
+      <button class="btn-cancel" onclick="closeOverlay('bulkdelete-overlay')">Cancel</button>
+      <button class="btn-delete" onclick="executeBulkDelete()" style="background:var(--tmi-danger);color:#ffffff;">Delete All</button>
     </div>
   </div>
 </div>
@@ -625,6 +644,7 @@ function updateOpButtons(){
   document.getElementById('btn-combine').disabled=!(n>=2&&ores.length===1&&locs.length===1);
   document.getElementById('btn-split').disabled=n!==1;
   document.getElementById('btn-move').disabled=!(n>=1&&locs.length===1);
+  document.getElementById('btn-delete').disabled=!(n>=1);
 }
 
 function startQtyEdit(id){editingQtyId=id;renderTable();}
@@ -918,6 +938,26 @@ function executeMove(){
   selectedIds.clear();
   persist();
   closeOverlay('move-overlay');
+  renderTable();
+}
+
+// ── BULK DELETE ───────────────────────────────────────────────────────────────
+
+function openBulkDelete(){
+  const sel=lots.filter(l=>selectedIds.has(l.id));
+  if(sel.length<1) return;
+  const totalQty=sel.reduce((sum,l)=>sum+l.qty,0);
+  document.getElementById('bulkdelete-info').innerHTML=
+    `<div class="info-line warn-line">Delete <strong>${sel.length}</strong> lot${sel.length>1?'s':''} (<strong>${totalQty} cSCU</strong>)?</div>`+
+    sel.map(l=>`<div class="info-line" style="color:var(--tmi-text-dim)">${l.ore} — ${l.qty} cSCU @ ${l.location}</div>`).join('');
+  document.getElementById('bulkdelete-overlay').classList.add('open');
+}
+
+function executeBulkDelete(){
+  lots.splice(0,lots.length,...lots.filter(l=>!selectedIds.has(l.id)));
+  selectedIds.clear();
+  persist();
+  closeOverlay('bulkdelete-overlay');
   renderTable();
 }
 
