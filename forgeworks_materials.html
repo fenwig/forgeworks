@@ -392,7 +392,24 @@
     </div>
     <div class="form-footer">
       <button class="btn-cancel" onclick="closeOverlay('bulkdelete-overlay')">Cancel</button>
-      <button class="btn-delete" onclick="executeBulkDelete()" style="background:var(--tmi-danger);color:#ffffff;">Delete All</button>
+      <button class="btn-delete" onclick="showConfirmDialog('delete')" style="background:var(--tmi-danger);color:#ffffff;">Delete All</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRMATION DIALOG overlay -->
+<div class="form-overlay" id="confirm-dialog">
+  <div class="form-panel" style="width:340px;">
+    <div class="form-header">
+      <span class="form-title">Confirm Action</span>
+      <button class="form-close" onclick="closeConfirmDialog()">✕</button>
+    </div>
+    <div class="form-body">
+      <p style="font-size:15px;color:var(--tmi-text-secondary);line-height:1.6;" id="confirm-text"></p>
+    </div>
+    <div class="form-footer">
+      <button class="btn-cancel" onclick="closeConfirmDialog()">Cancel</button>
+      <button class="btn-save" onclick="executeConfirmedAction()" style="background:var(--tmi-gold);">CONFIRM</button>
     </div>
   </div>
 </div>
@@ -812,6 +829,42 @@ function saveLot(){
 
 function closeOverlay(id){document.getElementById(id).classList.remove('open');}
 
+// Confirmation dialog management
+let pendingAction=null;
+let pendingActionData=null;
+
+function showConfirmDialog(action,data=null){
+  pendingAction=action;
+  pendingActionData=data;
+  const messages={
+    'combine':'Combine selected lots? This cannot be undone.',
+    'split':'Split the selected lot? This cannot be undone.',
+    'move':'Move selected lots to the new location? This cannot be undone.',
+    'delete':'Permanently delete selected lots? This cannot be undone.'
+  };
+  document.getElementById('confirm-text').textContent=messages[action]||'Confirm this action?';
+  document.getElementById('confirm-dialog').classList.add('open');
+}
+
+function closeConfirmDialog(){
+  pendingAction=null;
+  pendingActionData=null;
+  document.getElementById('confirm-dialog').classList.remove('open');
+}
+
+function executeConfirmedAction(){
+  if(!pendingAction) return;
+  const action=pendingAction;
+  closeConfirmDialog();
+
+  switch(action){
+    case 'combine': doExecuteCombine(); break;
+    case 'split': doExecuteSplit(); break;
+    case 'move': doExecuteMove(); break;
+    case 'delete': doExecuteBulkDelete(); break;
+  }
+}
+
 // ── COMBINE ───────────────────────────────────────────────────────────────────
 
 function openCombine(){
@@ -844,6 +897,10 @@ function openCombine(){
 }
 
 function executeCombine(){
+  showConfirmDialog('combine');
+}
+
+function doExecuteCombine(){
   const sel=lots.filter(l=>selectedIds.has(l.id));
   const ores=[...new Set(sel.map(l=>l.ore))];
   if(ores.length>1) return;
@@ -892,6 +949,10 @@ function updateSplitPreview(){
 }
 
 function executeSplit(){
+  showConfirmDialog('split');
+}
+
+function doExecuteSplit(){
   const lot=lots.find(l=>l.id===splitLotId);
   if(!lot) return;
   const v=parseInt(document.getElementById('split-qty-input').value);
@@ -930,6 +991,10 @@ function openMove(){
 }
 
 function executeMove(){
+  showConfirmDialog('move');
+}
+
+function doExecuteMove(){
   const preset=document.getElementById('move-loc-preset').value;
   const custom=document.getElementById('move-loc-custom').value.trim();
   const newLoc=preset==='custom'?(custom||DEFAULT_LOC):preset;
@@ -954,6 +1019,10 @@ function openBulkDelete(){
 }
 
 function executeBulkDelete(){
+  showConfirmDialog('delete');
+}
+
+function doExecuteBulkDelete(){
   lots.splice(0,lots.length,...lots.filter(l=>!selectedIds.has(l.id)));
   selectedIds.clear();
   persist();
