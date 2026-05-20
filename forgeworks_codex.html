@@ -160,11 +160,12 @@
       </ul>
 
       <div class="sub-heading">Bulk Operations</div>
-      <p class="doc-p">Check the box on one or more rows to select them. Three operations become available:</p>
+      <p class="doc-p">Check the box on one or more rows to select them. Four operations become available:</p>
       <ul class="doc-list">
         <li><strong>Combine</strong> — merges two or more lots of the same ore at the same location into a single lot. The resulting quality is a weighted average by quantity. Requires all selected lots to share the same ore and location.</li>
         <li><strong>Split</strong> — divides one selected lot into two. Enter how many cSCU to split off; the remainder stays as a second lot. Both halves keep the original quality.</li>
         <li><strong>Move</strong> — reassigns all selected lots (at the same current location) to a new location.</li>
+        <li><strong>Combine Quality</strong> — (requires a specific location selected, not ALL) merges all lots at the selected location that share the same ore and quality into single lots. All like-quality pairs across every ore are combined in one operation. This is useful after importing refinery yields or when you have fragmented inventory.</li>
       </ul>
 
       <div class="sub-heading">Managing Locations</div>
@@ -201,7 +202,6 @@
       <ul class="doc-list">
         <li>You can switch between different ores mid-session by changing the material dropdown — each lot in the queue retains the ore it was entered with.</li>
         <li><strong>Clear Queue</strong> discards all staged entries without saving. Committed lots cannot be un-committed from this screen — use Material Database to delete them if needed.</li>
-        <li>For refinery box yields specifically, use <strong>OCR Import</strong> instead — it auto-splits yields into individual box lots.</li>
       </ul>
     </div>
   </div>
@@ -424,7 +424,7 @@
       <p class="doc-p">All fields remain editable regardless of match status. Fuzzy matching catches common OCR errors such as transposed or missing letters.</p>
 
       <div class="sub-heading">Reviewing Results</div>
-      <p class="doc-p">Check each row before committing. You can edit any field directly in the table or remove rows that should not be imported. The module automatically splits refinery yields into standard box sizes (3200 / 1600 / 800 / 400 / 200 / 100 cSCU), matching how the game fills boxes largest-first.</p>
+      <p class="doc-p">Check each row before committing. You can edit any field directly in the table or remove rows that should not be imported. After import, use the <strong>Combine Quality</strong> button in Material Database to merge fragments into organized inventory.</p>
 
       <div class="sub-heading">Committing</div>
       <p class="doc-p">Click <strong>Commit to Inventory</strong> to write the reviewed lots to Material Database. A success message confirms the count.</p>
