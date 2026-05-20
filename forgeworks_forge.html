@@ -686,7 +686,7 @@ function renderSlotHtml(bp,ing,si){
     ?availLots.map(l=>`<div class="lot-row">
         <span class="lot-qual">${l.quality}</span>
         <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();selectLot(${si},${l.id})">Select</button>
-        <span class="lot-qty">${formatQty(l.qty,GEM_NAMES.has(ing.name))}</span>
+        <span class="lot-qty">${formatQty(l.qty/100,GEM_NAMES.has(ing.name))}</span>
         <span class="lot-loc">${l.location}</span>
       </div>`).join('')
     :'<div class="lot-none">No available lots</div>';
