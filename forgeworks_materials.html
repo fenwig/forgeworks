@@ -177,10 +177,12 @@
   <div class="filter-sep"></div>
   <div class="filter-group">
     <span class="filter-label">Quality</span>
-    <button class="filter-btn active" onclick="setFilter('qual','all',this)">All</button>
-    <button class="filter-btn" onclick="setFilter('qual','700',this)">700s</button>
-    <button class="filter-btn" onclick="setFilter('qual','800',this)">800s</button>
-    <button class="filter-btn" onclick="setFilter('qual','900',this)">900s</button>
+    <select class="filter-select" id="qual-filter" onchange="setQualFilter(this.value)">
+      <option value="all">All</option>
+      <option value="700">700s</option>
+      <option value="800">800s</option>
+      <option value="900">900s</option>
+    </select>
   </div>
   <div class="filter-sep"></div>
   <div class="filter-group">
@@ -194,6 +196,7 @@
   <button class="op-btn" id="btn-split" onclick="openSplit()" disabled>Split</button>
   <button class="op-btn" id="btn-move" onclick="openMove()" disabled>Move</button>
   <button class="op-btn" id="btn-delete" onclick="openBulkDelete()" disabled style="color:var(--tmi-danger);">Delete</button>
+  <button class="op-btn" id="btn-combine-quality" onclick="openCombineQuality()" disabled>Combine Quality</button>
 </div>
 
 <div class="table-wrap">
@@ -448,6 +451,11 @@ function setFilter(key,val,btn){
   renderTable();
 }
 
+function setQualFilter(val){
+  filters.qual=val;
+  renderTable();
+}
+
 function setSort(col){
   if(sortCol===col) sortDir*=-1; else{sortCol=col;sortDir=-1;}
   renderTable();
@@ -581,6 +589,7 @@ function updateOpButtons(){
   document.getElementById('btn-split').disabled=n!==1;
   document.getElementById('btn-move').disabled=!(n>=1&&locs.length===1);
   document.getElementById('btn-delete').disabled=!(n>=1);
+  document.getElementById('btn-combine-quality').disabled=filterLoc==='all';
 }
 
 function startQtyEdit(id){editingQtyId=id;renderTable();}
@@ -794,6 +803,22 @@ function showConfirmDialog(action,data=null){
     document.getElementById('confirm-details').innerHTML=
       `<div class="info-line warn-line">Deleting <strong>${sel.length}</strong> lot${sel.length>1?'s':''} (<strong>${(totalQty/100).toFixed(2)} SCU</strong>)</div>`+
       sel.map(l=>`<div class="info-line" style="color:var(--tmi-text-dim);">${l.ore} — ${(l.qty/100).toFixed(2)} SCU @ ${l.location}</div>`).join('');
+  } else if(action==='combineQuality'){
+    const locLots=lots.filter(l=>(l.location||DEFAULT_LOC)===filterLoc);
+    const groups={};
+    locLots.forEach(l=>{
+      const key=`${l.ore}|${l.quality}`;
+      if(!groups[key]) groups[key]=[];
+      groups[key].push(l);
+    });
+    const toMerge=Object.values(groups).filter(g=>g.length>1);
+    document.getElementById('confirm-text').textContent='COMBINE ALL QUALITY ORE AT THIS LOCATION';
+    let detailsHtml=`<div class="info-line warn-line">Combining ${toMerge.length} group${toMerge.length>1?'s':''} at <strong>${filterLoc}</strong></div>`;
+    toMerge.forEach(group=>{
+      const totalQty=(group.reduce((s,l)=>s+l.qty,0)/100).toFixed(2);
+      detailsHtml+=`<div class="info-line" style="color:var(--tmi-text-dim);">${group[0].ore} quality ${group[0].quality} — ${group.length} lots → <strong>${totalQty} SCU</strong></div>`;
+    });
+    document.getElementById('confirm-details').innerHTML=detailsHtml;
   }
   document.getElementById('confirm-dialog').classList.add('open');
 }
@@ -823,6 +848,7 @@ function executeConfirmedAction(){
       break;
     }
     case 'delete': doExecuteBulkDelete(); break;
+    case 'combineQuality': doCombineQuality(); break;
   }
 }
 
@@ -950,6 +976,57 @@ function executeBulkDelete(){
 function doExecuteBulkDelete(){
   lots.splice(0,lots.length,...lots.filter(l=>!selectedIds.has(l.id)));
   selectedIds.clear();
+  persist();
+  renderTable();
+}
+
+// ── COMBINE QUALITY ───────────────────────────────────────────────────────────
+
+function openCombineQuality(){
+  if(filterLoc==='all'){
+    alert('Select a specific location first to combine qualities.');
+    return;
+  }
+  showConfirmDialog('combineQuality');
+}
+
+function doCombineQuality(){
+  // Group lots by (ore, quality) at the selected location
+  const locLots=lots.filter(l=>(l.location||DEFAULT_LOC)===filterLoc);
+  const groups={};
+  locLots.forEach(l=>{
+    const key=`${l.ore}|${l.quality}`;
+    if(!groups[key]) groups[key]=[];
+    groups[key].push(l);
+  });
+
+  // Combine groups with 2+ lots
+  const toRemove=new Set();
+  Object.values(groups).forEach(group=>{
+    if(group.length<2) return;
+    // Sum quantities and get earliest date
+    const totalQty=group.reduce((s,l)=>s+l.qty,0);
+    const earliestDate=group.reduce((earliest,l)=>l.date<earliest?l.date:earliest,group[0].date);
+    // Create combined lot using first lot's properties
+    const combined={
+      id:group[0].id,
+      ore:group[0].ore,
+      quality:group[0].quality,
+      qty:totalQty,
+      location:group[0].location,
+      hand_mined:group[0].hand_mined,
+      date:earliestDate
+    };
+    // Replace first lot and mark others for removal
+    const firstIdx=lots.indexOf(group[0]);
+    lots[firstIdx]=combined;
+    for(let i=1;i<group.length;i++){
+      toRemove.add(group[i].id);
+    }
+  });
+
+  // Remove old lots
+  lots=lots.filter(l=>!toRemove.has(l.id));
   persist();
   renderTable();
 }
