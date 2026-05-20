@@ -920,22 +920,6 @@ function matchOreName(raw) {
   return { name: cleaned, status: 'uncertain' };
 }
 
-// ── Box splitting ──────────────────────────────────────────────────────────
-const BOX_SIZES = [3200, 1600, 800, 400, 200, 100];
-
-function splitIntoBoxes(qty) {
-  const lots = [];
-  let remaining = qty;
-  for (const size of BOX_SIZES) {
-    while (remaining >= size) {
-      lots.push(size);
-      remaining -= size;
-    }
-  }
-  if (remaining > 0) lots.push(remaining);
-  return lots;
-}
-
 // ── Parse OCR text ─────────────────────────────────────────────────────────
 const SKIP = new Set([
   'MATERIALS','YIELDED','QUALITY','YIELD','WORK','ORDER','DETAILS',
@@ -976,13 +960,7 @@ function parseAndShow(raw) {
     setHintError('No material rows found. Try redefining the region to include only the data table.');
     return;
   }
-  const expanded = [];
-  for (const row of rows) {
-    for (const boxQty of splitIntoBoxes(row.qty)) {
-      expanded.push({ ...row, qty: boxQty });
-    }
-  }
-  renderTable(expanded);
+  renderTable(rows);
 }
 
 // ── Results table ──────────────────────────────────────────────────────────
