@@ -724,8 +724,8 @@ function selectLot(si,lotId){
   if(!lot||lot.qty<=0) return;
   const stillNeeded=ing.qty-getSlotFilled(si);
   if(stillNeeded<=0) return;
-  const take=Math.min(lot.qty,stillNeeded);
-  slotSelections[si].push({lotId,qty_taken:take,quality:lot.quality});
+  const take=Math.min(lot.qty/100,stillNeeded);
+  slotSelections[si].push({lotId,qty_taken:take*100,quality:lot.quality});
   if(getSlotFilled(si)>=ing.qty) openPickerSlot=-1;
   renderSlots();
   renderTierRow();
