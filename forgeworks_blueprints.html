@@ -437,11 +437,6 @@ function setTrackerQualityFilter(filter,btn){
 /* ── INVENTORY HELPERS ── */
 function getBands(ore){
   const lots=inventory.filter(l=>l.ore===ore);
-  const isGem=GEM_NAMES.has(ore);
-  if(isGem){
-    const total=lots.reduce((s,l)=>s+(l.qty||0),0);
-    return{b500:total,b700:0,b800:0,b900:0,total500plus:total};
-  }
   return{
     b500:lots.filter(l=>l.quality>=500&&l.quality<700).reduce((s,l)=>s+(l.qty||0),0),
     b700:lots.filter(l=>l.quality>=700&&l.quality<800).reduce((s,l)=>s+(l.qty||0),0),
@@ -818,7 +813,7 @@ function renderNeeds(){
     const bandData=[['500',info.n500,b.b500],['700',info.n700,b.b700],['800',info.n800,b.b800],['900',info.n900,b.b900]];
     const cells=bandData.map(([band,need,have])=>{
       const safeNeed=isNaN(need)?0:(need||0);
-      const safeHave=(isNaN(have)?0:(have||0))/100;
+      const safeHave=info.isGem?(isNaN(have)?0:(have||0)):(isNaN(have)?0:(have||0))/100;
       const diff=safeHave-safeNeed;
       const haveCls=diff>=0?'need-ok':'need-short';
       const haveColor=haveCls==='need-ok'?'var(--tmi-success)':'var(--tmi-danger)';
