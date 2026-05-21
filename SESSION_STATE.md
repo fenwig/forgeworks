@@ -1,18 +1,231 @@
 # SESSION STATE — TI Forgeworks
-Last updated: 2026-05-18 (Session 10 — Materials Needs Debugging & Fixes)
+Last updated: 2026-05-20 (Session 11+ — Gem Quality Tracking, COMBINE QUALITY, BASE Tier)
 
 ---
 
 ## Where to Resume
 
-**Current state:** Materials Needs display and tier filtering fully fixed. All issues from Session 10 resolved and tested. Changes committed to GitHub (main branch).
+**Current state:** Gem quality tracking fully fixed, COMBINE QUALITY feature implemented, BASE tier (500-699) added to blueprint tracker cards, OCR box-splitting removed, forgeworks_context.md and SESSION_STATE.md updated. All 7 Session 11+ commits pushed to GitHub (main branch).
 
 **Next session priorities:**
-1. Pull from GitHub: `git pull origin main` (will get Materials Needs fixes)
-2. Verify Materials Needs displays correct quantities and colors in live folder
-3. Test tier toggle buttons (BASE/700/800/900) to confirm all tiers toggle independently
-4. Monitor Blueprint Tracker for any edge cases with tier filtering or color display
-5. Optional: test with fresh localStorage to verify tier normalization works on first load
+1. Pull from GitHub: `git pull origin main` (will get all Session 11+ changes including gem fixes)
+2. Test gem quality tier display in Materials Needs tab (verify gems show in correct quality bands)
+3. Test COMBINE QUALITY button across different ores at same location
+4. Verify blueprint cards show BASE tier (500-699 quality) alongside 700+/800+/900+ tiers
+5. Optional: test width consistency across remaining modules (Reports, Orders, etc.)
+6. Optional: consider UI width increase to 1500px for other modules
+
+---
+
+## This Session Notes (2026-05-20 Session 11+ — Gem Quality Tracking, COMBINE QUALITY, BASE Tier)
+
+*Session Scope:*
+- Fix materials deduction in Forge workbench (materials were not disappearing from inventory)
+- Add COMBINE QUALITY button to Materials Database (combines all like-quality lots at selected location)
+- Change quality filter from buttons to dropdown
+- Remove automatic box-splitting from OCR module
+- Fix gem quality tracking in Materials Needs tab
+- Add BASE tier (500-699) tracking to blueprint cards
+- Update documentation with all changes
+
+*Root Cause Analysis & Fixes:*
+
+**Issue 1: Materials Not Deducting in Crafting (Forge Module - Line 727-728)**
+- Problem: User crafted items but materials didn't disappear from inventory; other crafts failed silently
+- Root cause: Unit mismatch in selectLot() function
+  - Line 689 had converted lot.qty (stored in cSCU) to SCU for display: `formatQty(l.qty/100,...)`
+  - But selectLot() was comparing lot.qty (cSCU) with stillNeeded (SCU) without conversion: `const take=Math.min(lot.qty,stillNeeded);`
+  - Then storing take (in SCU) as qty_taken: `slotSelections[si].push({lotId,qty_taken:take,...})`
+  - Result: makeItem() subtracted 180 cSCU -= 2.00 SCU instead of 180 cSCU -= 200 cSCU
+- Technical detail: All game info comes in SCU; inventory stored internally as cSCU (×100); selectLot must convert for comparison then convert back for storage
+- Fix:
+  - Line 727: `const take=Math.min(lot.qty/100,stillNeeded);` — convert to SCU for apples-to-apples comparison
+  - Line 728: `slotSelections[si].push({lotId,qty_taken:take*100,quality:lot.quality});` — store as cSCU
+- Commit: `1159caa`
+
+**Issue 2: Gems Not Showing in Materials Needs HAVE Column (Blueprints Module - getBands/renderNeeds)**
+- Problem: Aphorite and other gems showed 0 in HAVE column despite having inventory
+- Root cause: getBands() treated all gems as one blob in b500, leaving b700/b800/b900 empty
+- Technical detail: Gems have specific quality tiers (500-699, 700-799, etc.) just like ore, but are stored as whole numbers, not cSCU
+- Fix: Completely rewrote getBands() to group gems by quality bands:
+  - Old: `if(ore==='aphorite') { return {b500:total, b700:0, b800:0, b900:0, total500plus:total}; }`
+  - New: Filter lots by quality range (500–699 for b500, 700–799 for b700, etc.) for both ore and gems
+  - renderNeeds() line 816: `const safeHave=info.isGem?(isNaN(have)?0:(have||0)):(isNaN(have)?0:(have||0))/100;` — only divide by 100 for ore, not gems
+- Commit: `9f8d9dd`
+
+**Issue 3: Forge Lot Picker Showing Wrong Numbers (Forge Module - Line 689)**
+- Problem: User reported "Found another spot where the math is an issue" in lot picker display
+- Root cause: formatQty() was receiving l.qty directly without converting from cSCU to SCU for display
+- Fix: Line 689: `formatQty(l.qty/100,...)` instead of `formatQty(l.qty,...)` 
+- Note: This is display-only; selectLot() then does its own conversion logic
+- Commit: `0c90fc7`
+
+*Materials Database Enhancements (Module 02):*
+
+**Quality Filter: Buttons → Dropdown**
+- Replaced 4 filter buttons (All, 700, 800, 900) with single dropdown
+- New function setQualFilter() handles dropdown change
+- User can now select filter more cleanly without horizontal space
+
+**COMBINE QUALITY Button**
+- New button in bulk operations bar; disabled when filterLoc === 'all'
+- openCombineQuality() checks selected location exists, then opens confirmation dialog
+- doCombineQuality() function:
+  - Groups all lots at selected location by (ore, quality) pairs
+  - For groups with 2+ lots: combines into single lot with summed quantity
+  - Removes old lots, adds new combined lot
+  - Calls persist() and renderTable() to update display
+- Confirmation dialog shows preview: "These lots will combine: (ore, quality, count) ..."
+- One-click operation combines ALL like-qualities across every ore at location
+- Commit: `a593f1c`
+
+*OCR Module (Module 08) - Box-Splitting Removal:*
+
+**Removed:**
+- Lines 924-937: BOX_SIZES constant and splitIntoBoxes() function
+- Old parsing logic that split refinery yields into multiple box-sized lots
+
+**New:**
+- Direct renderTable(rows) — uses original yield as single lot
+- Users can now manually combine similar-quality lots using COMBINE QUALITY button if needed
+- Simplifies OCR workflow; users have full control over lot sizing
+- Commit: `826e923`
+
+*Blueprint Tracker BASE Tier Addition (Module 04 - renderTracker function):*
+
+**Problem:** Blueprint cards only showed 700+/800+/900+ tiers; BASE tier (500-699 quality) not displayed
+
+**Fixes:**
+- Line 655-656: Fixed effectiveTiers normalization
+  - Old: Mixed string/number types prevented tier matching
+  - New: `const normalizedUserTiers=userTiers.map(t=>t==='BASE'?500:Number(t));` — convert 'BASE' string to 500 for numeric comparison
+  - Then `const effectiveTiers=[...new Set([...normalizedUserTiers,...orderTiers])].sort((a,b)=>a-b);`
+  
+- Line 681: Added 500 to tierCols array
+  - Old: `const tierCols=[700,800,900].map(tier=>{`
+  - New: `const tierCols=[500,700,800,900].map(tier=>{`
+  
+- Line 683: Tier-specific band retrieval
+  - Old: All tiers used same getBand lookup
+  - New: `const bv=tier===500?b.b500:tier===700?b.b700:tier===800?b.b800:b.b900;`
+  
+- Line 686: Conditional tier label
+  - Old: All tiers showed as "700+" / "800+" / "900+"
+  - New: `const tierLbl=tier===500?'BASE':tier+'+';`
+  
+- Commit: `6496156`
+
+*Codex Documentation Updates (Module 10):*
+- Added COMBINE QUALITY button description to Bulk Operations section
+- Removed reference to auto-splitting in OCR Import notes
+- Updated Reviewing Results section to reference COMBINE QUALITY button instead of auto-split
+- Commit: `219f71b`
+
+*Git Commits (Session 11+ — 2026-05-20):*
+1. `0c90fc7` — Fix Forge lot picker display to show quantities in SCU (divide cSCU by 100)
+2. `1159caa` — Fix crafting material deduction: convert cSCU↔SCU in selectLot() for proper subtraction
+3. `a593f1c` — Add COMBINE QUALITY button + quality dropdown to Materials Database
+4. `826e923` — Remove OCR box-splitting logic; render yields as single lots
+5. `219f71b` — Update Codex documentation for COMBINE QUALITY and OCR changes
+6. `9f8d9dd` — Fix gem quality banding in getBands() and HAVE calculation in renderNeeds()
+7. `6496156` — Add BASE tier (500-699) to blueprint tracker cards with tier normalization
+
+*Testing Results:*
+- ✅ Materials deduct correctly when crafting (verified multiple crafts)
+- ✅ Gems show in correct quality bands in Materials Needs (b500 shows 500-699 gems, b700 shows 700-799, etc.)
+- ✅ COMBINE QUALITY button combines all like-quality lots at selected location in one operation
+- ✅ Quality filter dropdown working (ALL, 700, 800, 900 selections)
+- ✅ OCR import creates single lots without auto-splitting
+- ✅ Blueprint cards display BASE, 700+, 800+, 900+ tiers correctly
+- ✅ All documents updated and pushed to GitHub
+
+*Edge Cases & Known Behavior:*
+- COMBINE QUALITY disabled when "All" location selected (must choose specific location)
+- Unit conversions strict: game provides SCU; inventory stores cSCU; display always converts back to SCU
+- Gem quantities stored as whole numbers, never cSCU
+- Tier arrays must be normalized to strings for localStorage reliability
+
+---
+
+## This Session Notes (2026-05-18 Session 10+ — Materials UI & Bulk Operations Refactor)
+
+*Session Scope:*
+- Materials Database UI enhancements (width, bulk operations)
+- Simplified confirmation workflows (2-step instead of 3+)
+- SCU display consistency (all quantities shown in SCU, not cSCU)
+- Codex documentation updates for all changes
+
+*Materials Database (Module 02) - Major Refactor:*
+
+**Width Increase:**
+- Increased page max-width from 1200px to 1500px
+- More spacious layout for Materials table and operations
+
+**Bulk Operations Simplification:**
+- Removed intermediate overlays (combine-overlay, split-overlay, move-overlay, bulkdelete-overlay)
+- Unified single confirmation dialog for all operations (COMBINE, SPLIT, MOVE, DELETE)
+- New 2-step workflow: Click action button → Confirmation dialog → Click CONFIRM
+  - Before: Click button → overlay with details → click button → confirmation dialog → execute (3+ steps)
+  - After: Click button → confirmation dialog with details/inputs → execute (2 steps)
+
+**New Bulk DELETE Operation:**
+- Added DELETE button alongside COMBINE, SPLIT, MOVE in bulk operations bar
+- Styled in danger red (#cc3333) for clarity
+- Removes selected lots from inventory (non-reversible)
+- Confirmation dialog shows which lots will be deleted + total quantity
+
+**SCU Display Consistency:**
+- All quantity displays converted from cSCU to SCU format
+  - Example: "180 cSCU" → "1.80 SCU"
+- SPLIT input now in SCU (user enters 0.50 to split off 50 cSCU)
+- COMBINE preview shows combined quantity in SCU
+- MOVE confirmation shows lot quantities in SCU
+- DELETE confirmation shows total quantity in SCU
+
+**Confirmation Dialog (Unified):**
+- Single reusable dialog for all bulk operations
+- Shows operation-specific message + details of affected lots
+- Contains inputs when needed:
+  - COMBINE: No additional input
+  - SPLIT: Input field for "Split Off (SCU)" with step 0.01
+  - MOVE: Dropdown to select new location
+  - DELETE: No additional input
+- All inputs handled within confirm dialog (no pre-overlay needed)
+
+*Codex Updates (Module 10):*
+- Updated Section 2 (Materials Database): Display vs entry clarification, Levski spelling
+- Updated Section 3 (Acquisition): Format description updated
+- Updated Section 4 (Blueprint Database): BASE tier explanation, tier selection behavior, Material Needs columns, Components subsection
+- Updated Section 9 (Data Sync): Blueprint count updated (~1,548), duplicate prevention documentation
+
+*Material Entry Label Updates (Modules 02, 03):*
+- Materials "Add Lot" form: "Quantity (SCU)" → "Quantity (cSCU)" for mined ore
+- Acquisition "Add Bulk" placeholder: Now reads "Quality / Quantity cSCU or Gems - press enter to apply"
+
+*Git Commits (Session 10+):*
+1. `0c890d8` — Document Session 10: Materials Needs debugging and fixes
+2. `dea430e` — Update material entry labels to clarify cSCU format
+3. `b14604b` — Update Codex documentation for Session 10+ changes
+4. `8171a2e` — Increase Materials Database width and add bulk DELETE operation
+5. `6b58ba3` — Add confirmation dialog for all bulk operations
+6. `285f7fc` — Simplify bulk operations to 2-step confirmation with SCU display
+
+*Testing Notes:*
+- ✅ 2-step confirmation workflow functional for all bulk operations
+- ✅ SCU display consistent across all operation confirmations
+- ✅ SPLIT input accepts decimal SCU values (0.01 step)
+- ✅ MOVE location selection in confirmation dialog
+- ✅ DELETE shows quantities in SCU
+- ✅ Bulk button states (enabled/disabled) working correctly
+- ✅ Codex documentation updated and reflects all changes
+
+*Edge Cases & Known Behavior:*
+- COMBINE alerts if lots are different materials or locations (before confirmation dialog)
+- SPLIT requires exactly 1 lot selected
+- MOVE requires 1+ lots all at same location
+- DELETE works with 1+ lots (no location restriction)
+- All operations clear selection after execution
+- All quantities internally stored in cSCU; display always converts to SCU
 
 ---
 

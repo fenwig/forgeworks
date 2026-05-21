@@ -1,7 +1,7 @@
 # TI Forgeworks — Project Context
 
-**Last updated:** 2026-05-18 (Session 10)
-**Status:** 4.8 Live — Ship Components Enabled, Materials Needs Fixed (Public GitHub)
+**Last updated:** 2026-05-20 (Session 11+)
+**Status:** 4.9 Live — Gem Quality Tracking, COMBINE QUALITY, BASE Tier (Public GitHub)
 **GitHub:** github.com/fenwig/Forgeworks (Public — clone and open HTML files directly)
 
 ---
@@ -263,6 +263,101 @@ D:\Support Files\Crafting App\
 **Display format:** `"LumaCore — Power Plant, Size 1, Competition, Grade A"`
 
 **Component types recognized:** PowerPlant, Cooler, Radar, Shield, QuantumDrive, WeaponGun, MiningLaser, SalvageModifier, TractorBeam, FuelIntake, FuelTank
+
+---
+
+## Recently Changed Files (2026-05-20 Session 11+)
+
+**Gem Quality Tracking Fixes, COMBINE QUALITY Feature, BASE Tier Addition, Material Deduction Correction:**
+
+- `forgeworks_forge.html` (Module 06) — Critical material deduction fix + lot picker display correction
+  - **Line 689:** Changed `formatQty(l.qty,...)` to `formatQty(l.qty/100,...)` to display cSCU quantities as SCU in lot picker
+  - **Lines 727-728 (selectLot function):** Fixed unit conversion for material deduction:
+    - Changed `const take=Math.min(lot.qty,stillNeeded);` to `const take=Math.min(lot.qty/100,stillNeeded);` (convert cSCU to SCU for comparison)
+    - Changed `slotSelections[si].push({lotId,qty_taken:take,quality:lot.quality});` to `slotSelections[si].push({lotId,qty_taken:take*100,quality:lot.quality});` (convert back to cSCU for storage)
+  - **Root cause:** qty_taken was being stored in SCU while lot.qty is in cSCU, so makeItem() subtracted wrong units (180 cSCU -= 2.00 SCU instead of 180 -= 200)
+  - **Technical clarification:** Game provides all info in SCU; inventory stores in cSCU (×100); selectLot must convert for comparison then reconvert for internal storage
+  - Commits: `0c90fc7`, `1159caa`
+
+- `forgeworks_materials.html` (Module 02) — Material Database UI enhancements
+  - **Quality filter:** Replaced 4 buttons (All, 700, 800, 900) with dropdown (`<select class="filter-select" id="qual-filter">`)
+  - **New COMBINE QUALITY button:** Combines all like-quality lots at selected location in one operation
+    - Added `openCombineQuality()` function — checks location selection, opens confirmation dialog
+    - Added `doCombineQuality()` function — groups lots by (ore, quality), combines groups with 2+ lots, removes old lots, persists changes
+    - Disabled when `filterLoc === 'all'` (requires specific location)
+    - One-click combines ALL like-quality ores simultaneously at selected location
+  - **New setQualFilter() function** — handles dropdown value changes
+  - **Updated showConfirmDialog()** — handles 'combineQuality' action with preview
+  - **Updated executeConfirmedAction()** — calls doCombineQuality() for combineQuality case
+  - **Updated updateOpButtons()** — disables COMBINE QUALITY button when location is 'all'
+  - Commit: `a593f1c`
+
+- `forgeworks_blueprints.html` (Module 04) — Gem quality tracking fixes + BASE tier addition
+  - **getBands() function (lines 438-452):** Complete refactor to handle gems correctly
+    - **Old behavior:** All gems dumped into b500, leaving b700/b800/b900 empty regardless of actual gem quality
+    - **New behavior:** Unified logic groups both ore and gems by quality bands: filters by `l.quality >= 500 && l.quality < 700` for b500, etc.
+    - **Key fix:** Gems have specific quality values (500-699, 700-799, 800-899, 900+) in database and should be grouped by quality bands like ore
+  - **renderNeeds() function (line 816):** Fixed HAVE quantity calculation to not divide gems by 100
+    - **Old:** `const safeHave=(isNaN(have)?0:(have||0))/100;` (always divides)
+    - **New:** `const safeHave=info.isGem?(isNaN(have)?0:(have||0)):(isNaN(have)?0:(have||0))/100;` (only divides ore, not gems)
+    - **Reason:** Gems are stored as whole numbers; ore stored in cSCU; must apply division only to ore
+  - **renderTracker() function (blueprint cards):** Added BASE tier support
+    - **Line 655-656:** Fixed effectiveTiers normalization — convert 'BASE' string to 500 for numeric tier checks
+    - **Line 681:** Added 500 to tierCols array — `[500,700,800,900]` instead of `[700,800,900]`
+    - **Line 683:** Tier-specific band retrieval — `const bv=tier===500?b.b500:tier===700?b.b700:tier===800?b.b800:b.b900;`
+    - **Line 686:** Conditional tier label — shows 'BASE' for tier 500, shows '700+', '800+', '900+' for others
+  - Commits: `9f8d9dd`, `6496156`
+
+- `forgeworks_ocr.html` (Module 08) — Box-splitting removal
+  - **Removed lines 924-937:** BOX_SIZES constant and splitIntoBoxes() function (no longer needed)
+  - **Changed parsing logic:** From `const expanded = []; for (const row of rows) { for (const boxQty of splitIntoBoxes(row.qty)) { ... } }` to direct `renderTable(rows);`
+  - **Reason:** Users now have COMBINE QUALITY button to manually organize lots; auto-splitting was removing user control
+  - Commit: `826e923`
+
+- `forgeworks_codex.html` (Module 10) — Documentation updates
+  - **Added to Bulk Operations section:** Description of COMBINE QUALITY button — "merges all lots at selected location sharing same ore and quality into single lots"
+  - **Removed from Resource Acquisition Notes:** "For refinery box yields specifically, use **OCR Import** instead — it auto-splits yields into individual box lots" (no longer accurate)
+  - **Updated OCR Import "Reviewing Results":** Changed from "module automatically splits into standard box sizes" to reference COMBINE QUALITY button for manual lot organization
+  - Commit: `219f71b`
+
+**Technical Concepts Clarified:**
+- **cSCU vs SCU:** Internally, ore stored in cSCU (1 SCU = 100 cSCU) for precision; displayed as SCU to users. Gems stored as whole numbers, never converted.
+- **Gem quality tiers:** Gems have quality values (500-699 for BASE, 700-799, etc.) stored in database; grouped by bands just like ore
+- **Unit conversion discipline:** Game provides all ingredient data in SCU; inventory stores as cSCU; selectLot must convert both ways; renderNeeds must apply conversion only where appropriate
+- **Tier array type safety:** All tier values must be strings for localStorage safety; 'BASE' is converted to 500 only for numeric comparisons
+- **Two-step confirmation workflow:** Simplified UI for bulk operations (click button → confirmation dialog → execute)
+
+---
+
+## Recently Changed Files (2026-05-18 Session 10+)
+
+**Materials Database UI Enhancements & Simplified Workflows:**
+- `forgeworks_materials.html` (Module 02) — Major refactor of bulk operations
+  - **Width increase:** Page max-width increased from 1200px to 1500px
+  - **Bulk DELETE:** Added new bulk delete operation alongside COMBINE, SPLIT, MOVE
+  - **Simplified 2-step workflow:** Removed intermediate overlays; single confirmation dialog handles all operations
+  - **SCU display:** All quantity displays converted from cSCU to SCU for consistency
+  - **SPLIT input:** Changed from cSCU to SCU format (user enters 0.50 SCU to split off)
+  - **MOVE location:** Location selection now in confirmation dialog
+  - **Confirmation dialog:** Unified dialog shows operation-specific details + required inputs
+  - Commits: `8171a2e`, `6b58ba3`, `285f7fc`
+
+**Codex & Label Updates:**
+- `forgeworks_codex.html` (Module 10) — Documentation updates for all changes
+  - Clarified Materials Database display vs entry (materials shown in SCU, entered in cSCU)
+  - Changed "Levsky" → "Levski" (correct spelling throughout)
+  - Updated Acquisition form label description
+  - Added BASE tier explanation (500-699 quality)
+  - Explained tier selection behavior (no tiers = any quality acceptable)
+  - Expanded Material Needs column descriptions (NEED vs HAVE with color coding)
+  - Added Components subsection (tracking and material needs integration)
+  - Updated Data Sync section (blueprint count ~1,548; added duplicate prevention explanation)
+  - Commit: `b14604b`
+
+- `forgeworks_materials.html` & `forgeworks_acquisition.html` (Modules 02, 03)
+  - Add Lot form label: "Quantity (SCU)" → "Quantity (cSCU)" for mined ore
+  - Add Bulk placeholder: Updated to "Quality / Quantity cSCU or Gems - press enter to apply"
+  - Commit: `dea430e`
 
 ---
 
