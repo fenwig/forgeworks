@@ -652,7 +652,8 @@ function renderTracker(){
 
     // Effective tiers for expanded detail = user tiers + any order quality tiers
     const orderTiers=Object.keys(qualGroups).map(Number);
-    const effectiveTiers=[...new Set([...userTiers,...orderTiers])].sort((a,b)=>a-b);
+    const normalizedUserTiers=userTiers.map(t=>t==='BASE'?500:Number(t));
+    const effectiveTiers=[...new Set([...normalizedUserTiers,...orderTiers])].sort((a,b)=>a-b);
 
     const anyTierReady=t.personal&&(userTiers.length===0||userTiers.some(tier=>ready['r'+tier]));
     const anyOrderReady=userTiers.length===0?Object.entries(qualGroups).length>0:Object.entries(qualGroups).some(([qual,qty])=>checkReady(bp,qty)['r'+qual]);
@@ -677,13 +678,14 @@ function renderTracker(){
         </div>`;
       }
       const b=getBands(ing.name);
-      const tierCols=[700,800,900].map(tier=>{
+      const tierCols=[500,700,800,900].map(tier=>{
         const isEff=effectiveTiers.includes(tier);
-        const bv=tier===700?b.b700:tier===800?b.b800:b.b900;
+        const bv=tier===500?b.b500:tier===700?b.b700:tier===800?b.b800:b.b900;
         const suf=bv>=need;
         const valCls=isEff?(suf?'ok':'short'):'dim';
+        const tierLbl=tier===500?'BASE':tier+'+';
         const valTxt=isEff?(formatQty(bv,isGem)+(suf?' ✓':'')):'—';
-        return`<span class="tier-block"><span class="tier-lbl">${tier}+</span><span class="tier-amt ${valCls}">${valTxt}</span></span>`;
+        return`<span class="tier-block"><span class="tier-lbl">${tierLbl}</span><span class="tier-amt ${valCls}">${valTxt}</span></span>`;
       }).join('');
       return`<div class="detail-ing-row">
         <span class="detail-ing-name">${ing.name}${isGem?'<span class="ing-gem" style="margin-left:4px">GEM</span>':''}</span>
