@@ -912,8 +912,8 @@ function renderLogRow(job){
 
   const detailActions=job.orderId
     ?`<span class="log-detail-order-label">Linked to Order #${String(job.orderId).padStart(3,'0')}</span>
-       <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();detachLogOrder(${job.id})">Detach Order</button>${exportBtn}`
-    :`<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openLogOrderPicker(${job.id})">Attach Order</button>${logPickerHtml}${exportBtn}`;
+       <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();detachLogOrder(${job.id})">Detach Order</button>${exportBtn}<button class="btn btn-danger btn-sm" style="margin-left:auto" onclick="event.stopPropagation();deleteLogEntry(${job.id})">Delete</button>`
+    :`<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openLogOrderPicker(${job.id})">Attach Order</button>${logPickerHtml}${exportBtn}<button class="btn btn-danger btn-sm" style="margin-left:auto" onclick="event.stopPropagation();deleteLogEntry(${job.id})">Delete</button>`;
 
   return`<div class="log-row${job.orderId?' is-order':''}">
     <div class="log-header" onclick="toggleLogEntry(${job.id})">
@@ -964,6 +964,17 @@ function detachLogOrder(jobId){
   updateStats();
   renderLog();
   toast('ORDER DETACHED — ORDER REVERTED TO IN PROGRESS');
+}
+
+function deleteLogEntry(jobId){
+  const job=craftingLog.find(j=>j.id===jobId);
+  if(!job) return;
+  if(!confirm(`Remove "${job.bpLabel}" from crafting log?`)) return;
+  craftingLog=craftingLog.filter(j=>j.id!==jobId);
+  writeLog();
+  updateStats();
+  renderLog();
+  toast('CRAFTING LOG ENTRY DELETED');
 }
 
 // ── COMPONENT EXPORT ──
