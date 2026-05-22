@@ -670,21 +670,21 @@ function renderTracker(){
       const need=ing.qty*detailQty;
       if(isAsl){
         const b=getBands('aslarite');
-        const suf=b.total500plus>=need;
+        const suf=(b.total500plus/100)>=need;
         return`<div class="detail-ing-row">
           <span class="detail-ing-name">${ing.name}<span class="asl-note">500+OK</span></span>
           <span class="detail-needed">Need ${formatQty(need,false)} <span style="font-size:10px;color:var(--tmi-text-dim)">SCU</span></span>
-          <div class="band-pills"><span class="bp-pill pasl${suf?' suf':''}">${formatQty(b.total500plus,false)} <span style="font-size:10px;color:var(--tmi-text-dim)">SCU</span>${suf?' ✓':''}</span></div>
+          <div class="band-pills"><span class="bp-pill pasl${suf?' suf':''}">${formatQty(b.total500plus/100,false)} <span style="font-size:10px;color:var(--tmi-text-dim)">SCU</span>${suf?' ✓':''}</span></div>
         </div>`;
       }
       const b=getBands(ing.name);
       const tierCols=[500,700,800,900].map(tier=>{
         const isEff=effectiveTiers.includes(tier);
         const bv=tier===500?b.b500:tier===700?b.b700:tier===800?b.b800:b.b900;
-        const suf=bv>=need;
+        const suf=(isGem?bv:bv/100)>=need;
         const valCls=isEff?(suf?'ok':'short'):'dim';
         const tierLbl=tier===500?'BASE':tier+'+';
-        const valTxt=isEff?(formatQty(bv,isGem)+(suf?' ✓':'')):'—';
+        const valTxt=isEff?(formatQty(isGem?bv:bv/100,isGem)+(suf?' ✓':'')):'—';
         return`<span class="tier-block"><span class="tier-lbl">${tierLbl}</span><span class="tier-amt ${valCls}">${valTxt}</span></span>`;
       }).join('');
       return`<div class="detail-ing-row">
