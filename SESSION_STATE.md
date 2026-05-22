@@ -1,11 +1,11 @@
 # SESSION STATE — TI Forgeworks
-Last updated: 2026-05-20 (Session 11+ — Gem Quality Tracking, COMBINE QUALITY, BASE Tier)
+Last updated: 2026-05-21 (Session 11+ Continued — Blueprint Card Quantity Conversion Fix)
 
 ---
 
 ## Where to Resume
 
-**Current state:** Gem quality tracking fully fixed, COMBINE QUALITY feature implemented, BASE tier (500-699) added to blueprint tracker cards, OCR box-splitting removed, forgeworks_context.md and SESSION_STATE.md updated. All 7 Session 11+ commits pushed to GitHub (main branch).
+**Current state:** All blueprint card quantity conversions fixed (cSCU→SCU). Gem quality tracking working, COMBINE QUALITY feature implemented, BASE tier (500-699) correctly pulling 500-699 quality materials, OCR box-splitting removed. All changes tested and verified. Ready for next session testing.
 
 **Next session priorities:**
 1. Pull from GitHub: `git pull origin main` (will get all Session 11+ changes including gem fixes)
