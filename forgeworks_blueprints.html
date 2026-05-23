@@ -53,6 +53,7 @@
   .bp-card:hover{border-left-color:var(--tmi-gold);background:var(--tmi-bg-hover);}
   .bp-card.owned{border-left-color:var(--tmi-success);}
   .bp-card-header{padding:9px 14px;display:flex;align-items:center;gap:8px;cursor:pointer;}
+  .bp-list .bp-card-header{display:grid;grid-template-columns:500px 200px auto auto;gap:12px;}
   .tracker-list .bp-card-header{display:grid;grid-template-columns:500px 200px auto auto;gap:12px;}
   .bp-name{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;letter-spacing:1.5px;color:var(--tmi-text-primary);text-transform:uppercase;}
   .bp-cmp-detail{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:400;letter-spacing:0.5px;color:var(--tmi-gold-bright);text-transform:none;margin-left:8px;}
@@ -530,12 +531,15 @@ function renderBrowser(){
     if(bp.type==='Ammunition'&&bp.capacity) tags.push('×'+bp.capacity);
     return`<div class="bp-card${isOwned?' owned':''}">
       <div class="bp-card-header" onclick="toggleExpBrowser(${bp.id})">
-        <span class="bp-name">${label}${cmpDetail?'<span class="bp-cmp-detail">'+cmpDetail+'</span>':''}</span>
-        <span class="bp-tag">${tags.filter(Boolean).join(' · ')}</span>
-        ${DEFAULT_BLUEPRINT_NAMES.has(label.toLowerCase())?'<span class="bp-default">[DEFAULT]</span>':''}
-        ${bp.has_mission?'<span class="bp-mission">MISSION</span>':''}
-        ${t.order?'<span class="bp-order-badge">★ ORDER</span>':''}
-        <div class="bp-actions" onclick="event.stopPropagation()">
+        <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
+          <span class="bp-name">${label}${cmpDetail?'<span class="bp-cmp-detail">'+cmpDetail+'</span>':''}</span>
+          <span class="bp-tag">${tags.filter(Boolean).join(' · ')}</span>
+          ${DEFAULT_BLUEPRINT_NAMES.has(label.toLowerCase())?'<span class="bp-default">[DEFAULT]</span>':''}
+          ${bp.has_mission?'<span class="bp-mission">MISSION</span>':''}
+          ${t.order?'<span class="bp-order-badge">★ ORDER</span>':''}
+        </div>
+        <div></div>
+        <div class="bp-actions" style="display:flex;gap:6px;" onclick="event.stopPropagation()">
           <button class="own-btn${isOwned?' owned':''}" onclick="toggleOwned(${bp.id})">${isOwned?'✓ OWNED':'OWNED'}</button>
           <button class="track-btn${t.personal?' tracked':''}" onclick="togglePersonal(${bp.id})">${t.personal?'✓ TRACKED':'TRACK'}</button>
         </div>
