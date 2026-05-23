@@ -725,7 +725,7 @@ function selectLot(si,lotId){
   const stillNeeded=ing.qty-getSlotFilled(si);
   if(stillNeeded<=0) return;
   const take=Math.min(lot.qty/100,stillNeeded);
-  slotSelections[si].push({lotId,qty_taken:take*100,quality:lot.quality});
+  slotSelections[si].push({lotId,qty_taken:take,quality:lot.quality});
   if(getSlotFilled(si)>=ing.qty) openPickerSlot=-1;
   renderSlots();
   renderTierRow();
@@ -778,7 +778,7 @@ function makeItem(){
   bp.ingredients.forEach((ing,si)=>{
     slotSelections[si].forEach(e=>{
       const lot=lots.find(l=>l.id===e.lotId);
-      if(lot) lot.qty-=e.qty_taken;
+      if(lot) lot.qty-=e.qty_taken*100;
     });
   });
   lots=lots.filter(l=>l.qty>0);
