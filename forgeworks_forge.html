@@ -806,6 +806,7 @@ function makeItem(){
     if(o){
       o.status='readytodeliver';
       writeActiveOrders(orders.filter(x=>x.status!=='delivered'));
+      localStorage.setItem('forgex-all-orders',JSON.stringify(orders));
     }
   }
   attachedOrderId=null;
