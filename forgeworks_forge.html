@@ -803,9 +803,9 @@ function makeItem(){
   if(hadOrder){
     const orders=readActiveOrders();
     const o=orders.find(o=>o.id===attachedOrderId);
-    if(o&&o.status==='readytocraft'){
+    if(o){
       o.status='readytodeliver';
-      localStorage.setItem('forgex-active-orders',JSON.stringify(orders.filter(x=>x.status!=='delivered')));
+      writeActiveOrders(orders.filter(x=>x.status!=='delivered'));
     }
   }
   attachedOrderId=null;
