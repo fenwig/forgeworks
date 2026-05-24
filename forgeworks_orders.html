@@ -417,6 +417,7 @@ function setFilter(s,btn){
   statusFilter=s;
   document.querySelectorAll('.order-bar .filter-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
+  orders=loadOrders();
   renderOrders();
 }
 
