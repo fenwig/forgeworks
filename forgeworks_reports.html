@@ -484,7 +484,7 @@ function buildReport2(){
   } else {
     // Component & Weapon view
     const compList=owned.filter(bp=>
-      (bp.type==='ShipComponent' && (bp.base?.includes('Military')||bp.base?.includes('Stealth')) && bp.meta?.component_grade==='A') ||
+      (bp.type==='ShipComponent' && (bp.meta?.component_class==='Military'||bp.meta?.component_class==='Stealth') && bp.meta?.component_grade==='A') ||
       bp.type==='Weapon'
     ).map(bp=>{
       const avail=checkAvailability(bp,lots);
@@ -588,7 +588,7 @@ function buildReport3(){
     </div>`;
   } else {
     const compList=owned.filter(bp=>
-      (bp.type==='ShipComponent' && (bp.base?.includes('Military')||bp.base?.includes('Stealth')) && bp.meta?.component_grade==='A') ||
+      (bp.type==='ShipComponent' && (bp.meta?.component_class==='Military'||bp.meta?.component_class==='Stealth') && bp.meta?.component_grade==='A') ||
       bp.type==='Weapon'
     ).sort((a,b)=>a.base.localeCompare(b.base));
     function compTbl(){
