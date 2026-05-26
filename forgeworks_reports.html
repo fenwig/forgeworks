@@ -483,7 +483,7 @@ function buildReport2(){
     document.getElementById('r2-content').innerHTML=brandHTML('Crafting Availability — Weapons','')+html;
   } else {
     // Component & Ship Weapon view
-    const compList=owned.filter(bp=>
+    const allComps=owned.filter(bp=>
       bp.type==='ShipComponent' && (
         (bp.meta?.component_class==='Military'||bp.meta?.component_class==='Stealth') && bp.meta?.component_grade==='A' ||
         bp.meta?.component_type==='Weapon Gun'
@@ -493,19 +493,18 @@ function buildReport2(){
       const showIt=(show700&&avail[700])||(show800&&avail[800])||(show900&&avail[900]);
       return showIt?{bp,avail}:null;
     }).filter(Boolean).sort((a,b)=>a.bp.base.localeCompare(b.bp.base));
-    let html;
-    if(!compList.length){
-      html='<div class="empty-state">No Military and Stealth Grade A components or weapons ready to craft</div>';
-    } else {
-      html=`<table class="rpt-full-table"><thead><tr>
+
+    const shipWeapons=allComps.filter(({bp})=>bp.meta?.component_type==='Weapon Gun');
+    const militaryStealth=allComps.filter(({bp})=>bp.meta?.component_type!=='Weapon Gun');
+
+    const tblHTML=(items)=>{
+      if(!items.length)return'<div class="empty-state">No items ready to craft</div>';
+      return`<table class="rpt-full-table"><thead><tr>
         <th>Name</th><th>Type/Details</th><th>Ready At</th>
-      </tr></thead><tbody>`+compList.map(({bp,avail})=>{
-        let detail='';
-        if(bp.type==='ShipComponent'){
-          const m=bp.meta||{};
-          const sizeGrade=m.component_size!=null && m.component_grade?`${m.component_size}${m.component_grade}`:'';
-          detail=[m.component_type,m.component_class,sizeGrade].filter(Boolean).join(' ');
-        }
+      </tr></thead><tbody>`+items.map(({bp,avail})=>{
+        const m=bp.meta||{};
+        const sizeGrade=m.component_size!=null && m.component_grade?`${m.component_size}${m.component_grade}`:'';
+        const detail=[m.component_type,m.component_class,sizeGrade].filter(Boolean).join(' ');
         const badges=[
           show700&&avail[700]?'<span class="avail-badge avail-700">700+</span>':'',
           show800&&avail[800]?'<span class="avail-badge avail-800">800+</span>':'',
@@ -517,7 +516,18 @@ function buildReport2(){
           <td><div class="avail-badges">${badges}</div></td>
         </tr>`;
       }).join('')+'</tbody></table>';
-    }
+    };
+
+    const html=`<div class="rpt-cols">
+      <div class="rpt-card">
+        <div class="rpt-card-header"><span class="rpt-card-title">Ship Weapons</span><span class="rpt-card-count">${shipWeapons.length} item${shipWeapons.length!==1?'s':''}</span></div>
+        ${tblHTML(shipWeapons)}
+      </div>
+      <div class="rpt-card">
+        <div class="rpt-card-header"><span class="rpt-card-title">Military & Stealth Grade A</span><span class="rpt-card-count">${militaryStealth.length} item${militaryStealth.length!==1?'s':''}</span></div>
+        ${tblHTML(militaryStealth)}
+      </div>
+    </div>`;
     document.getElementById('r2-content').innerHTML=brandHTML('Crafting Availability — Military and Stealth Grade A Components & Ship Weapons','')+html;
   }
 }
@@ -587,15 +597,19 @@ function buildReport3(){
       ${weaponTbl()}
     </div>`;
   } else {
-    const compList=owned.filter(bp=>
+    const allComps=owned.filter(bp=>
       bp.type==='ShipComponent' && (
         (bp.meta?.component_class==='Military'||bp.meta?.component_class==='Stealth') && bp.meta?.component_grade==='A' ||
         bp.meta?.component_type==='Weapon Gun'
       )
     ).sort((a,b)=>a.base.localeCompare(b.base));
-    function compTbl(){
-      if(!compList.length) return'<div class="empty-state">No Military and Stealth Grade A components or weapons owned</div>';
-      return`<table class="rpt-table"><tbody>`+compList.map(bp=>{
+
+    const shipWeapons=allComps.filter(bp=>bp.meta?.component_type==='Weapon Gun');
+    const militaryStealth=allComps.filter(bp=>bp.meta?.component_type!=='Weapon Gun');
+
+    const tblHTML=(items)=>{
+      if(!items.length)return'<div class="empty-state">No items owned</div>';
+      return`<table class="rpt-table"><tbody>`+items.map(bp=>{
         const m=bp.meta||{};
         const sizeGrade=m.component_size!=null && m.component_grade?`${m.component_size}${m.component_grade}`:'';
         const detail=[m.component_type,m.component_class,sizeGrade].filter(Boolean).join(' ');
@@ -604,10 +618,17 @@ function buildReport3(){
           <td><span class="bp-cmp-detail">${detail}</span></td>
         </tr>`;
       }).join('')+'</tbody></table>';
-    }
-    html=`<div class="rpt-card">
-      <div class="rpt-card-header"><span class="rpt-card-title">Military and Stealth Grade A Components & Ship Weapons</span><span class="rpt-card-count">${compList.length} blueprint${compList.length!==1?'s':''}</span></div>
-      ${compTbl()}
+    };
+
+    html=`<div class="rpt-cols">
+      <div class="rpt-card">
+        <div class="rpt-card-header"><span class="rpt-card-title">Ship Weapons</span><span class="rpt-card-count">${shipWeapons.length} blueprint${shipWeapons.length!==1?'s':''}</span></div>
+        ${tblHTML(shipWeapons)}
+      </div>
+      <div class="rpt-card">
+        <div class="rpt-card-header"><span class="rpt-card-title">Military & Stealth Grade A</span><span class="rpt-card-count">${militaryStealth.length} blueprint${militaryStealth.length!==1?'s':''}</span></div>
+        ${tblHTML(militaryStealth)}
+      </div>
     </div>`;
   }
   document.getElementById('r3-content').innerHTML=brandHTML('Owned Blueprints','')+html;
