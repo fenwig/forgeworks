@@ -482,10 +482,12 @@ function buildReport2(){
     }
     document.getElementById('r2-content').innerHTML=brandHTML('Crafting Availability — Weapons','')+html;
   } else {
-    // Component & Weapon view
+    // Component & Ship Weapon view
     const compList=owned.filter(bp=>
-      (bp.type==='ShipComponent' && (bp.meta?.component_class==='Military'||bp.meta?.component_class==='Stealth') && bp.meta?.component_grade==='A') ||
-      bp.type==='Weapon'
+      bp.type==='ShipComponent' && (
+        (bp.meta?.component_class==='Military'||bp.meta?.component_class==='Stealth') && bp.meta?.component_grade==='A' ||
+        bp.meta?.component_type==='Weapon Gun'
+      )
     ).map(bp=>{
       const avail=checkAvailability(bp,lots);
       const showIt=(show700&&avail[700])||(show800&&avail[800])||(show900&&avail[900]);
@@ -503,8 +505,6 @@ function buildReport2(){
           const m=bp.meta||{};
           const sizeGrade=m.component_size!=null && m.component_grade?`${m.component_size}${m.component_grade}`:'';
           detail=[m.component_type,m.component_class,sizeGrade].filter(Boolean).join(' ');
-        } else if(bp.type==='Weapon'){
-          detail=bp.weapon_type||'';
         }
         const badges=[
           show700&&avail[700]?'<span class="avail-badge avail-700">700+</span>':'',
@@ -588,20 +588,17 @@ function buildReport3(){
     </div>`;
   } else {
     const compList=owned.filter(bp=>
-      (bp.type==='ShipComponent' && (bp.meta?.component_class==='Military'||bp.meta?.component_class==='Stealth') && bp.meta?.component_grade==='A') ||
-      bp.type==='Weapon'
+      bp.type==='ShipComponent' && (
+        (bp.meta?.component_class==='Military'||bp.meta?.component_class==='Stealth') && bp.meta?.component_grade==='A' ||
+        bp.meta?.component_type==='Weapon Gun'
+      )
     ).sort((a,b)=>a.base.localeCompare(b.base));
     function compTbl(){
       if(!compList.length) return'<div class="empty-state">No Military and Stealth Grade A components or weapons owned</div>';
       return`<table class="rpt-table"><tbody>`+compList.map(bp=>{
-        let detail='';
-        if(bp.type==='ShipComponent'){
-          const m=bp.meta||{};
-          const sizeGrade=m.component_size!=null && m.component_grade?`${m.component_size}${m.component_grade}`:'';
-          detail=[m.component_type,m.component_class,sizeGrade].filter(Boolean).join(' ');
-        } else if(bp.type==='Weapon'){
-          detail=bp.weapon_type||'';
-        }
+        const m=bp.meta||{};
+        const sizeGrade=m.component_size!=null && m.component_grade?`${m.component_size}${m.component_grade}`:'';
+        const detail=[m.component_type,m.component_class,sizeGrade].filter(Boolean).join(' ');
         return`<tr>
           <td><span class="bp-name">${bp.base}</span></td>
           <td><span class="bp-cmp-detail">${detail}</span></td>
