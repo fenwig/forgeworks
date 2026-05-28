@@ -144,9 +144,9 @@
   .rpt-full-table th:nth-child(4), .rpt-full-table td:nth-child(4){width:264px;text-align:left;}
 
   /* Report 2 & 3 — Component section (2-column layout) */
-  #report-2 .rpt-cols .rpt-full-table th:first-child, #report-2 .rpt-cols .rpt-full-table td:first-child{width:240px;}
-  #report-2 .rpt-cols .rpt-full-table th:nth-child(2), #report-2 .rpt-cols .rpt-full-table td:nth-child(2){width:280px;}
-  #report-2 .rpt-cols .rpt-full-table th:nth-child(3), #report-2 .rpt-cols .rpt-full-table td:nth-child(3){width:140px;}
+  #report-2 .rpt-cols .rpt-full-table th:first-child, #report-2 .rpt-cols .rpt-full-table td:first-child{width:200px;}
+  #report-2 .rpt-cols .rpt-full-table th:nth-child(2), #report-2 .rpt-cols .rpt-full-table td:nth-child(2){width:260px;}
+  #report-2 .rpt-cols .rpt-full-table th:nth-child(3), #report-2 .rpt-cols .rpt-full-table td:nth-child(3){width:120px;}
 
   #report-3 .rpt-cols .rpt-table th:first-child, #report-3 .rpt-cols .rpt-table td:first-child{width:240px;}
   #report-3 .rpt-cols .rpt-table th:nth-child(2), #report-3 .rpt-cols .rpt-table td:nth-child(2){width:320px;}
@@ -217,6 +217,7 @@
     <div style="width:1px;height:20px;background:var(--rpt-border);flex-shrink:0;margin:0 6px;"></div>
     <span class="filter-label">Show Available At</span>
     <div class="check-wrap">
+      <label class="check-label"><input type="checkbox" id="r2-base" checked onchange="buildReport2()"> BASE</label>
       <label class="check-label"><input type="checkbox" id="r2-700" checked onchange="buildReport2()"> 700+</label>
       <label class="check-label"><input type="checkbox" id="r2-800" checked onchange="buildReport2()"> 800+</label>
       <label class="check-label"><input type="checkbox" id="r2-900" checked onchange="buildReport2()"> 900+</label>
@@ -304,7 +305,7 @@ function checkAvailability(bp,lots){
   const inv={};
   lots.forEach(l=>{if(!inv[l.ore])inv[l.ore]=[];inv[l.ore].push(l);});
   const result={};
-  [700,800,900].forEach(band=>{
+  [500,700,800,900].forEach(band=>{
     const lo=band,hi=band===900?1001:band+100;
     result[band]=bp.ingredients.every(ing=>{
       const stock=inv[ing.name]||[];
@@ -401,6 +402,7 @@ function setR2View(view,btn){
 }
 
 function buildReport2(){
+  const showBase=document.getElementById('r2-base').checked;
   const show700=document.getElementById('r2-700').checked;
   const show800=document.getElementById('r2-800').checked;
   const show900=document.getElementById('r2-900').checked;
@@ -423,7 +425,7 @@ function buildReport2(){
       return{...g,ref,avail:checkAvailability(ref,lots)};
     });
     const craftable=groupList
-      .filter(g=>(show700&&g.avail[700])||(show800&&g.avail[800])||(show900&&g.avail[900]))
+      .filter(g=>(showBase&&g.avail[500])||(show700&&g.avail[700])||(show800&&g.avail[800])||(show900&&g.avail[900]))
       .sort((a,b)=>a.base.localeCompare(b.base));
     let html;
     if(!craftable.length){
@@ -435,6 +437,7 @@ function buildReport2(){
         const name=[g.base,g.finish].filter(Boolean).join(' ');
         const slots=g.pieces.map(p=>`<span class="slot-pill">${p.slot||'—'}</span>`).join('');
         const badges=[
+          showBase&&g.avail[500]?'<span class="avail-badge avail-700">BASE</span>':'',
           show700&&g.avail[700]?'<span class="avail-badge avail-700">700+</span>':'',
           show800&&g.avail[800]?'<span class="avail-badge avail-800">800+</span>':'',
           show900&&g.avail[900]?'<span class="avail-badge avail-900">900+</span>':'',
@@ -455,7 +458,7 @@ function buildReport2(){
       const key=bp.base+'|'+(bp.weapon_type||'');
       if(!weaponGroups[key]){
         const avail=checkAvailability(bp,lots);
-        const showIt=(show700&&avail[700])||(show800&&avail[800])||(show900&&avail[900]);
+        const showIt=(showBase&&avail[500])||(show700&&avail[700])||(show800&&avail[800])||(show900&&avail[900]);
         if(showIt){
           weaponGroups[key]={base:bp.base,weapon_type:bp.weapon_type,finishes:[],avail};
         }
@@ -477,6 +480,7 @@ function buildReport2(){
         const label=hasTypeInBase?g.base:g.base+(g.weapon_type?' ['+g.weapon_type+']':'');
         const finishes=g.finishes.join(' &nbsp; ');
         const badges=[
+          showBase&&g.avail[500]?'<span class="avail-badge avail-700">BASE</span>':'',
           show700&&g.avail[700]?'<span class="avail-badge avail-700">700+</span>':'',
           show800&&g.avail[800]?'<span class="avail-badge avail-800">800+</span>':'',
           show900&&g.avail[900]?'<span class="avail-badge avail-900">900+</span>':'',
@@ -498,7 +502,7 @@ function buildReport2(){
       )
     ).map(bp=>{
       const avail=checkAvailability(bp,lots);
-      const showIt=(show700&&avail[700])||(show800&&avail[800])||(show900&&avail[900]);
+      const showIt=(showBase&&avail[500])||(show700&&avail[700])||(show800&&avail[800])||(show900&&avail[900]);
       return showIt?{bp,avail}:null;
     }).filter(Boolean).sort((a,b)=>a.bp.base.localeCompare(b.bp.base));
 
@@ -514,6 +518,7 @@ function buildReport2(){
         const sizeGrade=m.component_size!=null && m.component_grade?`${m.component_size}${m.component_grade}`:'';
         const detail=[m.component_type,m.component_class,sizeGrade].filter(Boolean).join(' ');
         const badges=[
+          showBase&&avail[500]?'<span class="avail-badge avail-700">BASE</span>':'',
           show700&&avail[700]?'<span class="avail-badge avail-700">700+</span>':'',
           show800&&avail[800]?'<span class="avail-badge avail-800">800+</span>':'',
           show900&&avail[900]?'<span class="avail-badge avail-900">900+</span>':'',
