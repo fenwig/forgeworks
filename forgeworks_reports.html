@@ -332,8 +332,9 @@ function tierClass(q){if(q>=900)return'rpt-tier-900';if(q>=800)return'rpt-tier-8
 // ── Quantity formatter ──────────────────────────────────────────────────────────
 function formatQty(qty,isGem){
   if(isGem) return `<span style="color:var(--rpt-gold);font-weight:700">${Math.round(qty)}</span>`;
-  const whole=Math.floor(qty);
-  const decimal=String(Math.round((qty%1)*100)).padStart(2,'0');
+  const scuQty=qty/100;
+  const whole=Math.floor(scuQty);
+  const decimal=String(Math.round((scuQty%1)*100)).padStart(2,'0');
   return `<span style="color:var(--rpt-gold);font-weight:700">${whole}</span><span style="color:var(--rpt-gold);font-weight:700;margin-left:3px">.${decimal}</span>`;
 }
 
