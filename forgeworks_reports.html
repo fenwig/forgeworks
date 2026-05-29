@@ -47,6 +47,9 @@
   .filter-label{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1.5px;color:var(--rpt-text-dim);text-transform:uppercase;white-space:nowrap;}
   .date-input{background:var(--rpt-card);border:1px solid var(--rpt-border);color:var(--rpt-text);font-family:'Share Tech Mono',monospace;font-size:12px;padding:4px 8px;outline:none;}
   .date-input:focus{border-color:var(--rpt-gold);}
+  .location-select{background:var(--rpt-card);border:1px solid var(--rpt-border);color:var(--rpt-text);font-family:'Share Tech Mono',monospace;font-size:12px;padding:4px 8px;outline:none;cursor:pointer;}
+  .location-select:focus{border-color:var(--rpt-gold);}
+  .location-select option{background:var(--rpt-card);color:var(--rpt-text);}
   .filter-clear{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;color:var(--rpt-text-dim);background:transparent;border:1px solid var(--rpt-border);padding:4px 10px;cursor:pointer;text-transform:uppercase;}
   .check-wrap{display:flex;gap:10px;}
   .check-label{display:flex;align-items:center;gap:4px;font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--rpt-text-sub);cursor:pointer;letter-spacing:1px;}
@@ -204,6 +207,11 @@
     <span class="filter-label">and</span>
     <input type="date" class="date-input" id="r1-to" onchange="buildReport1()">
     <button class="filter-clear" onclick="clearFilter('r1-from','r1-to');buildReport1()">Clear</button>
+    <div style="width:1px;height:20px;background:var(--rpt-border);flex-shrink:0;margin:0 6px;"></div>
+    <span class="filter-label">Location</span>
+    <select class="location-select" id="r1-location" onchange="buildReport1()">
+      <option value="all">ALL</option>
+    </select>
   </div>
   <div class="rpt-body" id="r1-content"></div>
 </div>
@@ -355,9 +363,30 @@ function showTab(n,btn){
 // ── REPORT 1 — Materials ───────────────────────────────────────────────────────
 function buildReport1(){
   const from=document.getElementById('r1-from').value,to=document.getElementById('r1-to').value;
+  const selectedLoc=document.getElementById('r1-location').value;
   const hasFilter=from||to;
+  const hasLocFilter=selectedLoc!=='all';
   const allLots=loadLots();
-  const lots=hasFilter?allLots.filter(l=>inRange(l.date,from,to)):allLots;
+
+  // Build location dropdown options on first load
+  const locSel=document.getElementById('r1-location');
+  if(locSel.children.length===1){
+    const uniqueLocs=new Set();
+    allLots.forEach(l=>{if(l.location)uniqueLocs.add(l.location);});
+    const locArray=Array.from(uniqueLocs).sort();
+    locArray.forEach(loc=>{
+      const opt=document.createElement('option');
+      opt.value=loc;
+      opt.textContent=loc;
+      locSel.appendChild(opt);
+    });
+  }
+
+  // Apply filters
+  let lots=allLots;
+  if(hasFilter)lots=lots.filter(l=>inRange(l.date,from,to));
+  if(hasLocFilter)lots=lots.filter(l=>(l.location||'')===selectedLoc);
+
   const byOre={};
   lots.forEach(l=>{if(!byOre[l.ore])byOre[l.ore]={hand_mined:l.hand_mined,lots:[]};byOre[l.ore].lots.push(l);});
   const ores=[],gems=[];
