@@ -795,7 +795,7 @@ function makeItem(){
   });
 
   const today=new Date().toISOString().split('T')[0];
-  const job={id:nextJobId++,bpId:bp.id,bpLabel:getBpLabel(bp),orderId:attachedOrderId,crafted:today,qualityTier:tier,materials};
+  const job={id:nextJobId++,bpId:bp.id,bpLabel:getBpLabel(bp),orderId:attachedOrderId,crafted:today,qualityTier:tier,slot:bp.slot,materials};
   craftingLog.unshift(job);
   writeLog();
 
