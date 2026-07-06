@@ -722,9 +722,14 @@ function buildReport5(){
     document.getElementById('r5-content').innerHTML=brandHTML('Crafted Items',dateNote)+'<div class="empty-state">No crafted items found</div>';
     return;
   }
+  const slotAbbrev={'Arms':'Arm','Legs':'Leg','Helmet':'Head','Backpack':'Back','Core':'Core'};
   const rows=entries.map(e=>{
     const bp=getBpById(e.bpId);
-    const label=bp?getBpLabel(bp):(e.bpLabel||'Unknown');
+    let label=bp?getBpLabel(bp):(e.bpLabel||'Unknown');
+    if(bp&&bp.type==='Armor'&&e.slot){
+      const slotName=slotAbbrev[e.slot]||e.slot;
+      label=label.replace(' Armor',' '+slotName);
+    }
     const tl=tierLabel(e.qualityTier),tc=tierClass(e.qualityTier||0);
     return`<tr>
       <td><span class="rpt-item-name">${label}</span></td>
