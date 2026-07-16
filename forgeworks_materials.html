@@ -90,11 +90,11 @@
 
   .form-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:100;align-items:center;justify-content:center;}
   .form-overlay.open{display:flex;}
-  .form-panel{background:var(--tmi-bg-panel);border:1px solid var(--tmi-border);width:400px;max-width:95vw;}
-  .form-header{background:var(--tmi-bg-card);border-bottom:1px solid var(--tmi-border-dim);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;}
+  .form-panel{background:var(--tmi-bg-panel);border:1px solid var(--tmi-border);width:400px;max-width:95vw;display:flex;flex-direction:column;max-height:85vh;}
+  .form-header{background:var(--tmi-bg-card);border-bottom:1px solid var(--tmi-border-dim);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
   .form-title{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tmi-gold);}
   .form-close{background:none;border:none;color:var(--tmi-text-secondary);cursor:pointer;font-size:18px;padding:0 4px;}
-  .form-body{padding:16px;}
+  .form-body{padding:16px;overflow-y:auto;flex:1;min-height:0;}
   .form-row{margin-bottom:14px;}
   .form-lbl{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--tmi-text-dim);text-transform:uppercase;margin-bottom:5px;display:block;}
   .form-lbl-hint{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--tmi-text-dim);margin-left:8px;letter-spacing:0;}
@@ -103,7 +103,7 @@
   .form-select option{background:var(--tmi-bg-panel);}
   .form-row-inline{display:flex;gap:10px;}
   .form-row-inline .form-row{flex:1;}
-  .form-footer{padding:12px 16px;border-top:1px solid var(--tmi-border-dim);display:flex;gap:10px;justify-content:flex-end;}
+  .form-footer{padding:12px 16px;border-top:1px solid var(--tmi-border-dim);display:flex;gap:10px;justify-content:flex-end;flex-shrink:0;background:var(--tmi-bg-panel);}
   .btn-cancel{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;letter-spacing:2px;color:var(--tmi-text-secondary);background:transparent;border:1px solid var(--tmi-border-dim);padding:7px 16px;cursor:pointer;text-transform:uppercase;}
   .btn-save{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:2px;color:var(--tmi-bg-deep);background:var(--tmi-gold);border:none;padding:7px 20px;cursor:pointer;text-transform:uppercase;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);}
 
