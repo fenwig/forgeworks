@@ -445,7 +445,11 @@ async function startSync() {
       if (rec.game_version) gameVersion = rec.game_version;
       const mapped = mapBlueprint(rec, blueprints.length + 1);
       if (mapped && !blockedUUIDs.has(mapped.uuid)) blueprints.push(mapped);
-      else if (mapped) { skipped++; log(`Skipped blocked duplicate: ${mapped.base}`, 'warn'); }
+      else if (mapped) {
+        skipped++;
+        log(`Skipped blocked duplicate: ${mapped.base}`, 'warn');
+        skippedTypes['Duplicate'] = (skippedTypes['Duplicate'] || 0) + 1;
+      }
       else { skipped++; const t=rec.output?.type||'unknown'; skippedTypes[t]=(skippedTypes[t]||0)+1; }
     }
     setProgress(Math.round(100 / totalPages), `Page 1 / ${totalPages} — ${blueprints.length} imported`);
@@ -460,8 +464,15 @@ async function startSync() {
         if (rec.game_version) gameVersion = rec.game_version;
         const mapped = mapBlueprint(rec, blueprints.length + 1);
         if (mapped && !blockedUUIDs.has(mapped.uuid)) blueprints.push(mapped);
-        else if (mapped) skipped++;
-        else skipped++;
+        else if (mapped) {
+          skipped++;
+          skippedTypes['Duplicate'] = (skippedTypes['Duplicate'] || 0) + 1;
+        }
+        else {
+          skipped++;
+          const t=rec.output?.type||'unknown';
+          skippedTypes[t]=(skippedTypes[t]||0)+1;
+        }
       }
 
       const pct = Math.round(page / totalPages * 100);
